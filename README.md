@@ -2,13 +2,11 @@
 
 <div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Helm Chart](https://img.shields.io/badge/Helm-v0.0.7-blue)](https://github.com/ds-horizon/odin)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24%2B-326CE5?logo=kubernetes)](https://kubernetes.io/)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-green.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![Helm Chart](https://img.shields.io/badge/Helm-v0.0.1-blue)](https://github.com/ds-horizon/odin)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.30%2B-326CE5?logo=kubernetes)](https://kubernetes.io/)
 
 **Production-ready deployment platform for Kubernetes environments**
-
-[Quick Start](#quick-start) • [Prerequisites](#prerequisites) • [Post-Installation](#post-installation) • [Operations](#operations) • [FAQ](#frequently-asked-questions)
 
 </div>
 
@@ -391,7 +389,7 @@ Odin will support metrics in future releases
 
 ### Community
 
-- **License**: MIT License (see [LICENSE](LICENSE))
+- **License**: GNU Lesser General Public License v3.0 (see [LICENSE](LICENSE))
 - **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md) (if available)
 - **Code of Conduct**: See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) (if available)
 
@@ -418,7 +416,7 @@ Odin is built on top of excellent open-source projects:
 ---
 
 **Last Updated**: January 2025
-**Version**: 0.0.7
+**Version**: 0.0.1
 **Status**: Production Ready
 
 For the latest updates, visit: https://github.com/ds-horizon/odin
