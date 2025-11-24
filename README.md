@@ -4,7 +4,7 @@
 
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-green.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![Helm Chart](https://img.shields.io/badge/Helm-v0.0.1-blue)](https://github.com/ds-horizon/odin)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24%2B-326CE5?logo=kubernetes)](https://kubernetes.io/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.30%2B-326CE5?logo=kubernetes)](https://kubernetes.io/)
 
 **Production-ready deployment platform for Kubernetes environments**
 
