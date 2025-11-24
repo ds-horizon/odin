@@ -1,0 +1,115 @@
+{{ if .Values.discoveryService.enabled }}
+apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ include "discoveryService.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  {{- if .Values.discoveryService.annotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.annotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "discoveryService.labels.standard" . | nindent 4 }}
+    {{- if .Values.discoveryService.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.discoveryService.replicaCount }}
+  strategy: {{- include "common.tplvalues.render" (dict "value" .Values.discoveryService.updateStrategy "context" $ ) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "discoveryService.labels.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- if .Values.discoveryService.podAnnotations }}
+      annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.podAnnotations "context" $ ) | nindent 4 }}
+      {{- end }}
+      labels: {{- include "discoveryService.labels.matchLabels" . | nindent 8 }}
+        {{- if .Values.discoveryService.labels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.labels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.discoveryService.podLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.podLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "discoveryService.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ template "discoveryService.serviceAccountName" . }}
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              echo "Waiting for MySQL to be ready..."
+              until nc -z -v -w30 {{ include "odin.mysql.master.host" . }} 3306
+              do
+                echo "Waiting for MySQL connection..."
+                sleep 5
+              done
+              echo "MySQL is ready!"
+      containers:
+        - name: discovery-service
+          image: {{ include "discoveryService.image" . }}
+          imagePullPolicy: {{ .Values.discoveryService.image.pullPolicy }}
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{ include "discoveryService.envs" . | nindent 12 }}
+            {{- if .Values.discoveryService.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.discoveryService.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+          {{- if .Values.discoveryService.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8080
+            initialDelaySeconds: {{ .Values.discoveryService.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.discoveryService.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.discoveryService.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.discoveryService.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.discoveryService.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.discoveryService.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8080
+            initialDelaySeconds: {{ .Values.discoveryService.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.discoveryService.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.discoveryService.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.discoveryService.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.discoveryService.readinessProbe.failureThreshold }}
+          {{- end }}
+
+          {{- if .Values.discoveryService.startupProbe.enabled }}
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: {{ .Values.discoveryService.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.discoveryService.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.discoveryService.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.discoveryService.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.discoveryService.startupProbe.failureThreshold }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.discoveryService.resources | nindent 12 }}
+          {{- if .Values.discoveryService.lifecycle }}
+          lifecycle:
+            {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.lifecycle "context" $ ) | nindent 12 }}
+          {{- end }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.discoveryService.tolerations "context" $) | nindent 8 }}
+      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.discoveryService.nodeSelector "context" $) | nindent 8 }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.discoveryService.affinity "context" $) | nindent 8 }}
+{{- end }}

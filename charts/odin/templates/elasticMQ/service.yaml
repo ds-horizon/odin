@@ -1,0 +1,19 @@
+{{- if not .Values.elasticMQ.external.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "elasticmq.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "elasticmq.labels.standard" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9324
+      targetPort: 9324
+      name: sqs
+    - port: 9325
+      targetPort: 9325
+      name: stats
+  selector:
+    {{- include "elasticmq.labels.matchLabels" . | nindent 4 }}
+{{- end }}

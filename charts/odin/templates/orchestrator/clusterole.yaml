@@ -1,0 +1,33 @@
+{{ if .Values.orchestrator.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "orchestrator.fullname" . }}
+  labels: {{- include "orchestrator.labels.standard" . | nindent 4 }}
+    {{- if .Values.orchestrator.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  - serviceaccounts
+  - pods
+  - pods/log
+  verbs:
+  - '*'
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - '*'
+{{- end }}

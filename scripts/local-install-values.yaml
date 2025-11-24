@@ -1,0 +1,85 @@
+# MinIO configuration (object storage)
+minio:
+  replicas: 2
+  persistence:
+    enabled: true
+    size: 5Gi
+
+# MySQL Database configuration
+mysql:
+  mysql:
+    size: 1
+    configuration: |
+      max_connections=50
+      innodb_buffer_pool_size=256M
+    resources:
+      requests:
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+  orchestrator:
+    size: 1
+  proxy:
+    haproxy:
+      size: 1
+  backup:
+    enabled: false
+  unsafeFlags:
+    mysqlSize: true
+    orchestratorSize: true
+    proxySize: true
+
+accountManager:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  extraEnvVars:
+    - name: JVM_OPTS
+      value: "-Xms128m -Xmx128m -Xmn64m"
+
+discoveryService:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  extraEnvVars:
+    - name: JVM_OPTS
+      value: "-Xms128m -Xmx128m -Xmn64m"
+
+# Deployer service configuration
+deployer:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  extraEnvVars:
+    - name: ODIN_LOGSTORE_ENABLE_SSL
+      value: "false"
+    - name: JVM_OPTS
+      value: "-Xms128m -Xmx128m -Xmn64m"
+
+# Orchestrator configuration (KEDA-based scaling)
+orchestrator:
+  scaledJob:
+    minReplicaCount: 1
+
+  extraEnvVars:
+    - name: ODIN_DSL_STATE_S3_FORCE_PATH_STYLE
+      value: "true"
+    - name: ODIN_RUNNER_DIND_ENABLED
+      value: "false"
+    - name: ODIN_RUNNER_HOST_VOLUME_MOUNTS
+      value: '[{"name":"host-file-system","hostPath":"/local","mountPath":"/host"},{"name":"host-tmp-dir","hostPath":"/mnt/tmp","mountPath":"/tmp"},{"name":"docker-socket-volume","hostPath":"/var/run/docker.sock","mountPath":"/var/run/docker.sock", "type":"Socket"}]'
+
+
+# Elasticsearch configuration
+elasticsearch:
+  master:
+    replicaCount: 1
+  data:
+    replicaCount: 1
+    heapSize: 512m
+    resources:
+      limits:
+        memory: 1Gi

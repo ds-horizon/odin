@@ -1,0 +1,28 @@
+{{ if .Values.discoveryService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "discoveryService.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "discoveryService.labels.standard" . | nindent 4 }}
+    {{- if .Values.discoveryService.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.discoveryService.service.annotations .Values.discoveryService.annotations }}
+  annotations:
+    {{- if .Values.discoveryService.service.annotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.service.annotations "context" $) | nindent 4 }}
+    {{- end }}
+    {{- if .Values.discoveryService.annotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.discoveryService.annotations "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
+spec:
+  type: {{ .Values.discoveryService.service.type }}
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: grpc
+  selector: {{- include "discoveryService.labels.matchLabels" . | nindent 4 }}
+{{- end }}

@@ -1,0 +1,28 @@
+{{ if .Values.deployer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deployer.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "deployer.labels.standard" . | nindent 4 }}
+    {{- if .Values.deployer.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.deployer.service.annotations .Values.deployer.annotations }}
+  annotations:
+    {{- if .Values.deployer.service.annotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.service.annotations "context" $) | nindent 4 }}
+    {{- end }}
+    {{- if .Values.deployer.annotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.annotations "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
+spec:
+  type: {{ .Values.deployer.service.type }}
+  ports:
+    - port: 80
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+  selector: {{- include "deployer.labels.matchLabels" . | nindent 4 }}
+{{- end }}

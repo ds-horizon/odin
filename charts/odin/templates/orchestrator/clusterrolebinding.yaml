@@ -1,0 +1,18 @@
+{{ if .Values.orchestrator.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "orchestrator.fullname" . }}
+  labels: {{- include "orchestrator.labels.standard" . | nindent 4 }}
+    {{- if .Values.orchestrator.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "orchestrator.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "orchestrator.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+{{- end }}

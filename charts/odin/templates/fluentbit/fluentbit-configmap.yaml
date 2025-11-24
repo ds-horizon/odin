@@ -1,0 +1,71 @@
+{{- if not .Values.fluentbit.external.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fluentbit.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "fluentbit.fullname" . }}
+    helm.sh/chart: {{ include "common.names.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+      Daemon Off
+      Flush 1
+      Log_Level info
+      Parsers_File /fluent-bit/etc/parsers.conf
+      Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
+      HTTP_Server On
+      HTTP_Listen 0.0.0.0
+      HTTP_Port 2020
+      Health_Check On
+
+    [INPUT]
+        Name          tail
+        Path          /var/log/containers/*.log
+        multiline.parser docker, cri
+        Tag           kube.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+        Buffer_Chunk_Size 256K
+        Buffer_Max_Size 512K
+        Threaded true
+
+    # Add Kubernetes metadata
+    [FILTER]
+        Name             kubernetes
+        Match            kube.*
+        Merge_Log        On
+        Keep_Log         Off
+        Buffer_Size      512K
+        Namespace_Labels On
+
+    [FILTER]
+        Name   grep
+        Match  kube.*
+        Regex  $kubernetes_namespace['labels']['createdBy'] odin
+
+    [FILTER]
+        Name   grep
+        Match  kube.*
+        Regex  $kubernetes['container_name'] runner
+
+    [OUTPUT]
+        Name           es
+        Match          kube.*
+        Host           {{ include "odin.elasticsearch.host" . | trim }}
+        Port           {{ include "odin.elasticsearch.port" . | trim }}
+        HTTP_User      {{ include "odin.elasticsearch.username" . | trim }}
+        HTTP_Passwd    {{ include "odin.elasticsearch.password" . | trim }}
+        TLS            Off
+        TLS.Verify     Off
+        Trace_Output   On
+        Trace_Error    On
+        Logstash_Format On
+        Logstash_Prefix_Key $kubernetes_namespace['labels']['traceId']
+        Suppress_Type_Name On
+        Pipeline       add_ingest_time
+
+{{- end }}

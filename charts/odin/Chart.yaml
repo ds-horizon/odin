@@ -1,0 +1,38 @@
+apiVersion: v2
+name: odin
+description: A Helm chart for deploying odin components
+type: application
+version: 0.0.7
+appVersion: 0.0.1
+keywords:
+  - odin
+dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
+    version: 2.x.x
+  - name: minio
+    repository: https://charts.min.io/
+    version: 5.4.0
+  - name: ps-db
+    repository: https://percona.github.io/percona-helm-charts/
+    alias: mysql
+    version: 0.12.0
+    condition: percona-mysql.enabled
+  - name: redis
+    repository: https://charts.bitnami.com/bitnami
+    version: 20.x.x
+    condition: redis.internal.enabled
+  - name: elasticsearch
+    repository: https://charts.bitnami.com/bitnami
+    version: 22.1.6
+    condition: elasticsearch.internal.enabled
+  - name: fluent-bit
+    repository: https://charts.bitnami.com/bitnami
+    version: 3.1.13
+    alias: fluentbit
+    condition: fluentbit.internal.enabled
+maintainers:
+  - name: ds-horizon
+    url: https://github.com/ds-horizon/odin

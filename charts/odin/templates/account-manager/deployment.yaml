@@ -1,0 +1,115 @@
+{{ if .Values.accountManager.enabled }}
+apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ include "accountManager.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  {{- if .Values.accountManager.annotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.annotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "accountManager.labels.standard" . | nindent 4 }}
+    {{- if .Values.accountManager.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.accountManager.replicaCount }}
+  strategy: {{- include "common.tplvalues.render" (dict "value" .Values.accountManager.updateStrategy "context" $ ) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "accountManager.labels.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- if .Values.accountManager.podAnnotations }}
+      annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.podAnnotations "context" $ ) | nindent 4 }}
+      {{- end }}
+      labels: {{- include "accountManager.labels.matchLabels" . | nindent 8 }}
+        {{- if .Values.accountManager.labels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.labels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.accountManager.podLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.podLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "accountManager.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ template "accountManager.serviceAccountName" . }}
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              echo "Waiting for MySQL to be ready..."
+              until nc -z -v -w30 {{ include "odin.mysql.master.host" . }} 3306
+              do
+                echo "Waiting for MySQL connection..."
+                sleep 5
+              done
+              echo "MySQL is ready!"
+      containers:
+        - name: account-manager
+          image: {{ include "accountManager.image" . }}
+          imagePullPolicy: {{ .Values.accountManager.image.pullPolicy }}
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{ include "accountManager.envs" . | nindent 12 }}
+            {{- if .Values.accountManager.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.accountManager.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+          {{- if .Values.accountManager.livenessProbe.enabled }}
+          livenessProbe:
+            grpc:
+              port: 8080
+              service: liveness
+            initialDelaySeconds: {{ .Values.accountManager.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.accountManager.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.accountManager.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.accountManager.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.accountManager.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.accountManager.readinessProbe.enabled }}
+          readinessProbe:
+            grpc:
+              port: 8080
+              service: readiness
+            initialDelaySeconds: {{ .Values.accountManager.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.accountManager.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.accountManager.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.accountManager.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.accountManager.readinessProbe.failureThreshold }}
+          {{- end }}
+
+          {{- if .Values.accountManager.startupProbe.enabled }}
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: {{ .Values.accountManager.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.accountManager.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.accountManager.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.accountManager.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.accountManager.startupProbe.failureThreshold }}
+          {{- end }}
+          ports:
+            - name: grpc
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.accountManager.resources | nindent 12 }}
+          {{- if .Values.accountManager.lifecycle }}
+          lifecycle:
+            {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.lifecycle "context" $ ) | nindent 12 }}
+          {{- end }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.accountManager.tolerations "context" $) | nindent 8 }}
+      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.accountManager.nodeSelector "context" $) | nindent 8 }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.accountManager.affinity "context" $) | nindent 8 }}
+  {{- end }}

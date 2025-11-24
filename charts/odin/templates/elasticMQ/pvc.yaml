@@ -1,0 +1,18 @@
+{{- if not .Values.elasticMQ.external.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "elasticmq.fullname" . }}-data
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "elasticmq.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.elasticMQ.persistence.storageClass }}
+  storageClassName: {{ .Values.elasticMQ.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.elasticMQ.persistence.size }}
+{{- end }}

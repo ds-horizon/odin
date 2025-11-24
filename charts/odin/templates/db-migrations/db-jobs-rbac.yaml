@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: odin-db-migrate-sa
+  labels:
+    app: odin-db-setup
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: odin-db-job-watcher
+  labels:
+    app: odin-db-setup
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch"]
+    resourceNames: ["odin-create-db"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: odin-db-migrate-job-binding
+  labels:
+    app: odin-db-setup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: odin-db-job-watcher
+subjects:
+  - kind: ServiceAccount
+    name: odin-db-migrate-sa
+    namespace: {{ .Release.Namespace }}

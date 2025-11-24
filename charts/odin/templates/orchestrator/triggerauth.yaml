@@ -1,0 +1,27 @@
+{{ if .Values.orchestrator.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: {{ include "orchestrator.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.orchestrator.annotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.annotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "orchestrator.labels.standard" . | nindent 4 }}
+    {{- if .Values.orchestrator.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+spec:
+{{ if not .Values.orchestrator.scaledJob.triggers.authentication.provider }}
+  secretTargetRef:
+  - parameter: awsAccessKeyID
+    name: {{ include "orchestrator.fullname" . }}-secret
+    key: AWS_ACCESS_KEY_ID
+  - parameter: awsSecretAccessKey
+    name: {{ include "orchestrator.fullname" . }}-secret
+    key: AWS_SECRET_ACCESS_KEY
+{{- else }}
+  podIdentity:
+    provider: {{ .Values.orchestrator.scaledJob.triggers.authentication.provider }}
+{{- end }}
+{{- end }}

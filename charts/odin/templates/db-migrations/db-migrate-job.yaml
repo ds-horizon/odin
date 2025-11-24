@@ -1,0 +1,79 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: odin-migrate-db
+  labels:
+    app: odin-db-setup
+    job-type: db-migrate
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      {{- include "deployer.imagePullSecrets" . | nindent 6 }}
+      restartPolicy: Never
+      serviceAccountName: odin-db-migrate-sa
+      initContainers:
+        - name: wait-for-db-create-job
+          image: bitnamilegacy/kubectl:1.33.4
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              echo "Waiting for odin-create-db job to complete..."
+              until kubectl wait --for=condition=complete --timeout=600s job/odin-create-db -n {{ .Release.Namespace }}
+              do
+                echo "Checking if odin-create-db job failed..."
+                if kubectl get job odin-create-db -n {{ .Release.Namespace }} -o jsonpath='{.status.failed}' | grep -q "1"; then
+                  echo "ERROR: odin-create-db job failed. Cannot proceed with migration."
+                  exit 1
+                fi
+                echo "Still waiting for odin-create-db to complete..."
+                sleep 10
+              done
+              echo "Database creation completed successfully!"
+
+      containers:
+        - name: liquibase-migrate-deployer-db
+          image: {{ include "deployer.image" . }}
+          command: ["liquibase"]
+          imagePullPolicy: {{ .Values.deployer.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+          args:
+            - "--classpath=/opt/liquibase/mysql-connector-java.jar"
+            - "--changeLogFile={{ .Values.deployer.migrationChangelogPath }}/db-migrate-changelog.xml"
+            - "--url={{ printf "jdbc:mysql://%s/odin_deployer" (include "odin.mysql.master.host" .) }}"
+            - "--username={{ include "odin.mysql.username" . }}"
+            - "--password={{ include "odin.mysql.password" . }}"
+            - "update"
+
+        - name: liquibase-migrate-account-manager-db
+          image: {{ include "accountManager.image" . }}
+          command: [ "liquibase" ]
+          imagePullPolicy: {{ .Values.accountManager.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+          args:
+            - "--classpath=/opt/liquibase/mysql-connector-java.jar"
+            - "--changeLogFile={{ .Values.accountManager.migrationChangelogPath }}/db-migrate-changelog.xml"
+            - "--url={{ printf "jdbc:mysql://%s/odin_account_manager" (include "odin.mysql.master.host" .) }}"
+            - "--username={{ include "odin.mysql.username" . }}"
+            - "--password={{ include "odin.mysql.password" . }}"
+            - "update"
+
+        - name: liquibase-migrate-discovery-service-db
+          image: {{ include "discoveryService.image" . }}
+          command: [ "liquibase" ]
+          imagePullPolicy: {{ .Values.discoveryService.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+          args:
+            - "--classpath=/opt/liquibase/mysql-connector-java.jar"
+            - "--changeLogFile={{ .Values.discoveryService.migrationChangelogPath }}/db-migrate-changelog.xml"
+            - "--url={{ printf "jdbc:mysql://%s/odin_discovery_service" (include "odin.mysql.master.host" .) }}"
+            - "--username={{ include "odin.mysql.username" . }}"
+            - "--password={{ include "odin.mysql.password" . }}"
+            - "update"

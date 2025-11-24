@@ -1,0 +1,46 @@
+{{ if .Values.orchestrator.runnerNamespaceCleanup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.orchestrator.runnerNamespaceCleanup.name }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  schedule: {{ .Values.orchestrator.runnerNamespaceCleanup.schedule }}
+  concurrencyPolicy: {{ .Values.orchestrator.runnerNamespaceCleanup.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.orchestrator.runnerNamespaceCleanup.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.orchestrator.runnerNamespaceCleanup.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ template "orchestrator.serviceAccountName" . }}
+          containers:
+            - name: namespace-cleaner
+              image: bitnami/kubectl:latest
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  #!/bin/sh
+                  set -e
+                  echo "Starting cleanup of old namespaces"
+
+                  THRESHOLD_DATE=$(($(date -u -d "$RETENTION_PERIOD_DAYS days ago" +"%s") * 1000))
+                  echo "Threshold date: $THRESHOLD_DATE"
+
+                  kubectl get namespaces -o json | jq -r '.items[] | select(.metadata.labels.createdBy == "odin" and .metadata.labels.createdAt != null) | "\(.metadata.name) \(.metadata.labels.createdAt)"' |
+                  while read -r namespace createdAt; do
+                    echo "Checking namespace $namespace created at $createdAt"
+                    if [ "$createdAt" \< "$THRESHOLD_DATE" ]; then
+                      echo "Deleting namespace $namespace created at $createdAt"
+                      kubectl delete namespace "$namespace"
+                    fi
+                  done
+                  echo "Cleanup completed"
+              env:
+                - name: TZ
+                  value: UTC
+                - name: RETENTION_PERIOD_DAYS
+                  value: "{{ .Values.orchestrator.runnerNamespaceCleanup.retentionPeriodDays }}"
+          restartPolicy: OnFailure
+{{- end }}

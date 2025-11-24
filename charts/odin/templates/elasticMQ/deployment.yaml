@@ -1,0 +1,47 @@
+{{- if not .Values.elasticMQ.external.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "elasticmq.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "elasticmq.labels.standard" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.elasticMQ.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "elasticmq.labels.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "elasticmq.labels.matchLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - name: elasticmq
+          image: "{{ .Values.elasticMQ.image.repository }}:{{ .Values.elasticMQ.image.tag }}"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+          volumeMounts:
+            - name: config
+              mountPath: /opt/elasticmq/conf/elasticmq.conf
+              subPath: elasticmq.conf
+            - name: data
+              mountPath: /data
+          args:
+            - "-Dconfig.file=/opt/elasticmq/conf/elasticmq.conf"
+          ports:
+            - containerPort: 9324
+            - containerPort: 9325
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "elasticmq.fullname" . }}-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "elasticmq.fullname" . }}-data
+{{- end }}

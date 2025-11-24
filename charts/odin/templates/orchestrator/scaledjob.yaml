@@ -1,0 +1,79 @@
+{{ if .Values.orchestrator.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: {{ include "orchestrator.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  {{- if .Values.orchestrator.annotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.annotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "orchestrator.labels.standard" . | nindent 4 }}
+    {{- if .Values.orchestrator.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+spec:
+  jobTargetRef:
+    parallelism: {{ .Values.orchestrator.scaledJob.job.parallelism }}
+    completions: {{ .Values.orchestrator.scaledJob.job.completions }}
+    activeDeadlineSeconds: {{ .Values.orchestrator.scaledJob.job.activeDeadlineSeconds }}
+    backoffLimit: {{ .Values.orchestrator.scaledJob.job.backoffLimit }}
+    template:
+      metadata:
+        {{- if .Values.orchestrator.podAnnotations }}
+        annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.podAnnotations "context" $ ) | nindent 4 }}
+        {{- end }}
+        labels: {{- include "orchestrator.labels.matchLabels" . | nindent 8 }}
+          {{- if .Values.orchestrator.labels }}
+          {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.labels "context" $ ) | nindent 8 }}
+          {{- end }}
+          {{- if .Values.orchestrator.podLabels }}
+          {{- include "common.tplvalues.render" ( dict "value" .Values.orchestrator.podLabels "context" $ ) | nindent 8 }}
+          {{- end }}
+      spec:
+        {{- include "orchestrator.imagePullSecrets" . | nindent 8 }}
+        serviceAccountName: {{ template "orchestrator.serviceAccountName" . }}
+        containers:
+          - name: orchestrator
+            image: {{ include "orchestrator.image" . }}
+            imagePullPolicy: {{ .Values.orchestrator.image.pullPolicy }}
+            envFrom:
+              - secretRef:
+                  name: {{ include "elasticmq.fullname" . }}-secrets
+            env:
+              - name: POD_IP
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
+              - name: POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+              {{ include "orchestrator.envs" . | nindent 14 }}
+              {{- if .Values.orchestrator.extraEnvVars }}
+              {{- include "common.tplvalues.render" (dict "value" .Values.orchestrator.extraEnvVars "context" $) | nindent 14 }}
+              {{- end }}
+            resources:
+              {{- toYaml .Values.orchestrator.resources | nindent 14 }}
+
+  pollingInterval: {{ .Values.orchestrator.scaledJob.pollingInterval }}
+  successfulJobsHistoryLimit: {{ .Values.orchestrator.scaledJob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.orchestrator.scaledJob.failedJobsHistoryLimit }}
+  minReplicaCount: {{ .Values.orchestrator.scaledJob.minReplicaCount }}
+  maxReplicaCount: {{ .Values.orchestrator.scaledJob.maxReplicaCount }}
+  rollout:
+    strategy: {{ .Values.orchestrator.scaledJob.rollout.strategy }}
+    propagationPolicy: {{ .Values.orchestrator.scaledJob.rollout.propagationPolicy }}
+  scalingStrategy:
+    strategy: {{ .Values.orchestrator.scaledJob.scalingStrategy.strategy }}
+    customScalingQueueLengthDeduction: {{ .Values.orchestrator.scaledJob.scalingStrategy.customScalingQueueLengthDeduction }}
+    customScalingRunningJobPercentage: {{ .Values.orchestrator.scaledJob.scalingStrategy.customScalingRunningJobPercentage | toJson }}
+    pendingPodConditions: {{ .Values.orchestrator.scaledJob.scalingStrategy.pendingPodConditions }}
+    multipleScalersCalculation: "max"
+
+  triggers:
+    - type: {{ .Values.orchestrator.scaledJob.triggers.provider }}
+      authenticationRef:
+        name: {{ include "orchestrator.fullname" . }}
+      metadata:
+        {{ include "orchestrator.scaledJob.trigger.metadata" . | nindent 8 }}
+{{- end }}

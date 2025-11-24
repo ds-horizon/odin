@@ -1,0 +1,78 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: odin-create-db
+  labels:
+    app: odin-db-setup
+    job-type: db-create
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      {{- include "deployer.imagePullSecrets" . | nindent 6 }}
+      restartPolicy: Never
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              echo "Waiting for MySQL to be ready..."
+              until nc -z -v -w30 {{ include "odin.mysql.master.host" . }} 3306
+              do
+                echo "Waiting for MySQL connection..."
+                sleep 5
+              done
+              echo "MySQL is ready!"
+      containers:
+        - name: liquibase-create-deployer-db
+          image: {{ include "deployer.image" . }}
+          command: ["liquibase"]
+          imagePullPolicy: {{ .Values.deployer.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+          args:
+            - "--classpath=/opt/liquibase/mysql-connector-java.jar"
+            - "--changeLogFile={{ .Values.deployer.migrationChangelogPath }}/db-create-changelog.xml"
+            - "--databaseChangeLogTableName=DEPLOYER_DBCREATE_CHANGELOG"
+            - "--databaseChangeLogLockTableName=DEPLOYER_DBCREATE_CHANGELOG_LOCK"
+            - "--url={{ printf "jdbc:mysql://%s/sys" (include "odin.mysql.master.host" .) }}"
+            - "--username={{ include "odin.mysql.username" . }}"
+            - "--password={{ include "odin.mysql.password" . }}"
+            - "update"
+
+        - name: liquibase-create-account-manager-db
+          image: {{ include "accountManager.image" . }}
+          command: [ "liquibase" ]
+          imagePullPolicy: {{ .Values.accountManager.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+          args:
+            - "--classpath=/opt/liquibase/mysql-connector-java.jar"
+            - "--changeLogFile={{ .Values.accountManager.migrationChangelogPath }}/db-create-changelog.xml"
+            - "--databaseChangeLogTableName=ACCOUNTMANAGER_DBCREATE_CHANGELOG"
+            - "--databaseChangeLogLockTableName=ACCOUNTMANAGER_DBCREATE_CHANGELOG_LOCK"
+            - "--url={{ printf "jdbc:mysql://%s/sys" (include "odin.mysql.master.host" .) }}"
+            - "--username={{ include "odin.mysql.username" . }}"
+            - "--password={{ include "odin.mysql.password" . }}"
+            - "update"
+
+        - name: liquibase-create-discovery-service-db
+          image: {{ include "discoveryService.image" . }}
+          command: [ "liquibase" ]
+          imagePullPolicy: {{ .Values.discoveryService.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+          args:
+            - "--classpath=/opt/liquibase/mysql-connector-java.jar"
+            - "--changeLogFile={{ .Values.discoveryService.migrationChangelogPath }}/db-create-changelog.xml"
+            - "--databaseChangeLogTableName=DISCOVERY_DBCREATE_CHANGELOG"
+            - "--databaseChangeLogLockTableName=DISCOVERY_DBCREATE_CHANGELOG_LOCK"
+            - "--url={{ printf "jdbc:mysql://%s/sys" (include "odin.mysql.master.host" .) }}"
+            - "--username={{ include "odin.mysql.username" . }}"
+            - "--password={{ include "odin.mysql.password" . }}"
+            - "update"

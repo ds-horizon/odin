@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-config" (include "elasticmq.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "elasticmq.labels.standard" . | nindent 4 }}
+data:
+  elasticmq.conf: |
+    include classpath("application.conf")
+
+    # Create queues on startup
+    {{- if and .Values.elasticMQ.createQueues.enabled .Values.elasticMQ.createQueues.queues }}
+    queues {
+    {{- range .Values.elasticMQ.createQueues.queues }}
+      {{ .name }} {
+        defaultVisibilityTimeout = {{ .defaultVisibilityTimeout }}
+      }
+    {{- end }}
+    }
+    {{- end }}
+
+    {{- if .Values.elasticMQ.mqConfig }}
+{{ .Values.elasticMQ.mqConfig | indent 4 }}
+  {{- end }}

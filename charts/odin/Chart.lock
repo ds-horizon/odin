@@ -1,0 +1,21 @@
+dependencies:
+- name: common
+  repository: https://charts.bitnami.com/bitnami
+  version: 2.31.4
+- name: minio
+  repository: https://charts.min.io/
+  version: 5.4.0
+- name: ps-db
+  repository: https://percona.github.io/percona-helm-charts/
+  version: 0.12.0
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 20.13.4
+- name: elasticsearch
+  repository: https://charts.bitnami.com/bitnami
+  version: 22.1.6
+- name: fluent-bit
+  repository: https://charts.bitnami.com/bitnami
+  version: 3.1.13
+digest: sha256:bac21683af5c82893e43206af6068f5f24b6f637aef319fdf0b297090360a46e
+generated: "2025-10-30T14:21:04.320259+05:30"

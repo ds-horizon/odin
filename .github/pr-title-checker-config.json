@@ -1,0 +1,9 @@
+{
+  "CHECKS": {
+    "regexp": "^(chore|feat|fix|hotfix|test|docs|ci|release|refactor): .*"
+  },
+  "MESSAGES": {
+    "success": "Valid PR Title",
+    "failure": "PR Title is invalid. It must follow regex: '^(chore|feat|fix|hotfix|test|docs|ci|release|refactor): .*'"
+  }
+}

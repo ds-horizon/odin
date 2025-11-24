@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: odin-elasticsearch-setup
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: setup-es
+          image: curlimages/curl:8.8.0
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              ES_HOST={{ include "odin.elasticsearch.host" . | trim }}:{{ include "odin.elasticsearch.port" . | trim }}
+              echo "Waiting for Elasticsearch at $ES_HOST..."
+              until curl $ES_HOST >/dev/null; do
+                echo "Elasticsearch not ready, retrying in 5s..."
+                sleep 5
+              done
+
+              echo "Creating/Updating ingest pipeline..."
+              curl -X PUT "$ES_HOST/_ingest/pipeline/add_ingest_time" \
+                -H 'Content-Type: application/json' \
+                -d '{
+                      "description": "Add ingest timestamp to documents",
+                      "processors": [
+                        { "set": { "field": "ingest_time", "value": "{{"{{"}}_ingest.timestamp{{"}}"}}" } }
+                      ]
+                    }'

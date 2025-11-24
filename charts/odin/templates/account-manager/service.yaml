@@ -1,0 +1,28 @@
+{{ if .Values.accountManager.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "accountManager.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "accountManager.labels.standard" . | nindent 4 }}
+    {{- if .Values.accountManager.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.accountManager.service.annotations .Values.accountManager.annotations }}
+  annotations:
+    {{- if .Values.accountManager.service.annotations }}
+      {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.service.annotations "context" $) | nindent 4 }}
+      {{- end }}
+      {{- if .Values.accountManager.annotations }}
+      {{- include "common.tplvalues.render" ( dict "value" .Values.accountManager.annotations "context" $ ) | nindent 4 }}
+      {{- end }}
+  {{- end }}
+spec:
+  type: {{ .Values.accountManager.service.type }}
+  ports:
+    - port: 80
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+  selector: {{- include "accountManager.labels.matchLabels" . | nindent 4 }}
+  {{- end }}

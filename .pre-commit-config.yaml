@@ -1,0 +1,36 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+
+- repo: https://github.com/bitnami/readme-generator-for-helm
+  rev: 2.7.0
+  hooks:
+  - id: helm-readme-generator
+    pass_filenames: false
+    always_run: true
+    args: [--readme=charts/odin/README.md, --values=charts/odin/values.yaml]
+
+- repo: https://github.com/crate-ci/typos
+  rev: v1.31.2
+  hooks:
+    - id: typos
+
+- repo: https://github.com/gruntwork-io/pre-commit
+  rev: v0.1.29
+  hooks:
+    - id: helmlint
+    - id: shellcheck
+      args: ["--enable require-variable-braces,deprecate-which"]
+
+- repo: https://github.com/commitizen-tools/commitizen
+  rev: v4.6.0
+  hooks:
+    - id: commitizen
+
+- repo: https://github.com/gitleaks/gitleaks
+  rev: v8.25.1
+  hooks:
+    - id: gitleaks

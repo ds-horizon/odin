@@ -1,0 +1,119 @@
+{{ if .Values.deployer.enabled }}
+apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ include "deployer.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  {{- if .Values.deployer.annotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.annotations "context" $ ) | nindent 4 }}
+  {{- end }}
+  labels: {{- include "deployer.labels.standard" . | nindent 4 }}
+    {{- if .Values.deployer.labels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.labels "context" $ ) | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.deployer.replicaCount }}
+  strategy: {{- include "common.tplvalues.render" (dict "value" .Values.deployer.updateStrategy "context" $ ) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "deployer.labels.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- if .Values.deployer.podAnnotations }}
+      annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.podAnnotations "context" $ ) | nindent 4 }}
+      {{- end }}
+      labels: {{- include "deployer.labels.matchLabels" . | nindent 8 }}
+        {{- if .Values.deployer.labels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.labels "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.deployer.podLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.podLabels "context" $ ) | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "deployer.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ template "deployer.serviceAccountName" . }}
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              echo "Waiting for MySQL to be ready..."
+              until nc -z -v -w30 {{ include "odin.mysql.master.host" . }} 3306
+              do
+                echo "Waiting for MySQL connection..."
+                sleep 5
+              done
+              echo "MySQL is ready!"
+      containers:
+        - name: deployer
+          image: {{ include "deployer.image" . }}
+          imagePullPolicy: {{ .Values.deployer.image.pullPolicy }}
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{ include "deployer.envs" . | nindent 12 }}
+            {{- if .Values.deployer.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.deployer.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mysql.secretsName }}
+            - secretRef:
+                name: {{ include "elasticmq.fullname" . }}-secrets
+            - secretRef:
+                name: {{ include "deployer.fullname" . }}-auth-keys
+          {{- if .Values.deployer.livenessProbe.enabled }}
+          livenessProbe:
+            grpc:
+              port: 8080
+              service: liveness
+            initialDelaySeconds: {{ .Values.deployer.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployer.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.deployer.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.deployer.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.deployer.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.deployer.readinessProbe.enabled }}
+          readinessProbe:
+            grpc:
+              port: 8080
+              service: readiness
+            initialDelaySeconds: {{ .Values.deployer.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployer.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.deployer.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.deployer.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.deployer.readinessProbe.failureThreshold }}
+          {{- end }}
+
+          {{- if .Values.deployer.startupProbe.enabled }}
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: {{ .Values.deployer.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployer.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.deployer.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.deployer.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.deployer.startupProbe.failureThreshold }}
+          {{- end }}
+          ports:
+            - name: grpc
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.deployer.resources | nindent 12 }}
+          {{- if .Values.deployer.lifecycle }}
+          lifecycle:
+            {{- include "common.tplvalues.render" ( dict "value" .Values.deployer.lifecycle "context" $ ) | nindent 12 }}
+          {{- end }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.deployer.tolerations "context" $) | nindent 8 }}
+      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.deployer.nodeSelector "context" $) | nindent 8 }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.deployer.affinity "context" $) | nindent 8 }}
+{{- end }}
