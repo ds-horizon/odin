@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
@@ -34,7 +34,6 @@ jobs:
         uses: helm/chart-releaser-action@v1
         with:
           mark_as_latest: false
-          packages_with_index: true # TODO Remove after the repository is public
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-chart-{{ .Version }}"
