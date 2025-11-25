@@ -1,0 +1,342 @@
+---
+title: Getting Started
+description: Install Odin platform and CLI in under 15 minutes
+---
+
+Get up and running with Odin on a local Kubernetes cluster. This guide will walk you through installation, configuration, and deploying your first service.
+
+## Prerequisites
+
+### Hardware Requirements
+
+#### Local Development (Kind Cluster)
+
+| Resource | Minimum |
+|----------|---------|
+| **RAM** | 8 GB |
+| **CPU** | 4 cores |
+| **Disk Space** | 20 GB free |
+| **OS** | macOS 11+, Linux (Ubuntu 20.04+) |
+
+### Software Requirements
+
+The following tools must be installed on your system:
+
+| Tool | Minimum Version | Installation |
+|------|----------------|--------------|
+| **kubectl** | v1.24+ | [Install Guide](https://kubernetes.io/docs/tasks/tools/) |
+| **Helm** | v3.8+ | [Install Guide](https://helm.sh/docs/intro/install/) |
+| **Docker** | v20.10+ | [Install Guide](https://docs.docker.com/get-docker/) |
+| **curl** | v7.68+ | Pre-installed on most systems |
+
+:::note
+The installation script will automatically check for these prerequisites and guide you through installing any missing tools.
+:::
+
+### Kubernetes Version Compatibility
+
+| Kubernetes Version | Status |
+|-------------------|--------|
+| **1.30 - 1.34** | ✅ Compatible |
+| **< 1.29** | ⚠️ Not Tested |
+
+## Quick Start: One-Command Installation
+
+Get Odin running on a local Kind cluster in under 15 minutes:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/ds-horizon/odin/master/install.sh)
+```
+
+### What This Does
+
+The installation script automatically:
+
+1. ✅ Clones the Odin repository
+2. ✅ Checks and installs prerequisites (kubectl, Helm, Docker, Kind)
+3. ✅ Creates a local Kind cluster named `odin-cluster`
+4. ✅ Sets up local Docker registry
+5. ✅ Installs KEDA and Percona MySQL Operator
+6. ✅ Deploys Odin with all components
+7. ✅ Creates local development accounts
+8. ✅ Optionally installs Odin CLI
+
+**Expected Duration**: 7-10 minutes (depending on internet speed and hardware)
+
+### Installation Output
+
+You'll see output similar to:
+
+```
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║             Odin Helm Chart Installation                  ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+
+[Step 1/14] Checking kubectl installation
+✓ kubectl is available
+
+[Step 2/14] Checking Helm installation
+✓ Helm is available
+
+[INFO] Would you like to install Odin on a local Kind cluster? [y/N]: y
+
+[Step 3/14] Setting up Docker for Kind cluster
+✓ Docker is running
+
+[Step 4/14] Installing Kind
+✓ Kind installed successfully
+
+[Step 5/14] Setting up Docker registry for Kind
+✓ Local registry 'kind-registry' started
+
+[Step 6/14] Creating Kubernetes cluster
+✓ Kind cluster 'odin-cluster' is ready
+
+...
+
+[Step 14/14] Installing Odin CLI
+✓ Odin CLI installed successfully!
+
+🎉 Odin installation completed successfully!
+```
+
+## CLI Setup
+
+After installation completes, configure the Odin CLI:
+
+### Step 1: Locate the CLI Binary
+
+If you installed the CLI during installation:
+
+```bash
+# CLI is installed in your home directory
+ls -la ~/odin
+
+# Move to PATH
+sudo mv ~/odin /usr/local/bin/odin
+chmod +x /usr/local/bin/odin
+```
+
+### Step 2: Verify CLI Installation
+
+```bash
+# Check version
+odin version
+```
+
+### Step 3: Port-Forward to Deployer
+
+Open a terminal and forward the deployer service to localhost:
+
+```bash
+# Forward deployer service to localhost
+kubectl port-forward svc/odin-deployer -n odin 8080:80
+```
+
+:::note
+Keep this terminal open. Open a new terminal for the next steps.
+:::
+
+### Step 4: Configure Odin CLI
+
+In a new terminal, configure the CLI to connect to your local Odin backend:
+
+```bash
+# Configure Odin CLI for local development
+odin configure --org-id 0 --backend-address 127.0.0.1:8080 -I -P
+```
+
+**Flags explained:**
+- `--org-id 0`: Use organization ID 0 (default for local development)
+- `--backend-address 127.0.0.1:8080`: Connect to port-forwarded deployer
+- `-I`: Skip TLS host verification (insecure mode for local dev)
+- `-P`: Use plaintext gRPC without TLS
+
+### Step 5: Test the Installation
+
+```bash
+# List environments (should be empty initially)
+odin list env
+```
+
+If you see the output without errors, congratulations! 🎉 Odin is successfully installed and configured.
+
+## Next Steps: Deploy Your First Service
+
+Now that Odin is installed and configured, you can deploy your first service:
+
+1. **Create an Environment**: Set up an isolated namespace for your services
+2. **Define Your Service**: Create a service definition JSON
+3. **Configure Provisioning**: Specify how components should be deployed
+4. **Deploy**: Use the CLI to deploy your service
+
+For a complete walkthrough, see:
+- [Deploy Your First Service](/odin/howto/deploy-first-service) - Step-by-step tutorial
+- [Key Concepts](/odin/concepts/overview) - Understand environments, services, and components
+- [CLI Reference](/odin/cli/reference) - Complete command documentation
+
+## Common CLI Commands
+
+Here are some common commands you'll use:
+
+```bash
+# List all environments
+odin list env
+
+# Create an environment
+odin create env dev --accounts docker/local
+
+# Describe an environment
+odin describe env dev
+
+# Deploy a service
+odin deploy service --env dev --file service.json --provisioning provisioning.json
+
+# Check service status
+odin status env dev --service my-service
+
+# Undeploy a service
+odin undeploy service my-service --env dev
+
+# Get help
+odin --help
+odin deploy --help
+```
+
+## Troubleshooting
+
+### Port-Forward Connection Issues
+
+If you can't connect to the backend:
+
+```bash
+# Check if port-forward is running
+ps aux | grep "port-forward"
+
+# Verify deployer pod is running
+kubectl get pods -n odin | grep deployer
+
+# Restart port-forward
+kubectl port-forward svc/odin-deployer -n odin 8080:80
+```
+
+### CLI Configuration Issues
+
+If `odin list env` fails:
+
+```bash
+# Check CLI configuration
+cat ~/.odin/config
+
+# Reconfigure with verbose output
+odin configure --org-id 0 --backend-address 127.0.0.1:8080 -I -P --verbose
+```
+
+### Cluster Issues
+
+Check cluster health:
+
+```bash
+# Check all pods in odin namespace
+kubectl get pods -n odin
+
+# Check specific component logs
+kubectl logs -n odin deployment/odin-deployer
+
+# Describe pod for events
+kubectl describe pod -n odin <pod-name>
+```
+
+## Advanced Installation Options
+
+### Installing on Existing Kubernetes Cluster
+
+To install on an existing cluster instead of Kind:
+
+```bash
+# Clone the repository
+git clone https://github.com/ds-horizon/odin.git
+cd odin
+
+# Install with Helm directly
+helm install odin ./charts/odin --namespace odin --create-namespace
+```
+
+### Custom Installation with Values
+
+For production or custom configurations:
+
+```bash
+# Create custom values file
+cat > custom-values.yaml <<EOF
+deployer:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+mysql:
+  mysql:
+    size: 3
+
+redis:
+  architecture: replication
+  replica:
+    replicaCount: 2
+EOF
+
+# Install with custom values
+./install.sh --values custom-values.yaml
+```
+
+### Uninstallation
+
+To remove Odin from your cluster:
+
+```bash
+# Using the uninstall script
+cd odin
+./uninstall.sh
+
+# Or manually with Helm
+helm uninstall odin -n odin
+kubectl delete namespace odin
+```
+
+## What's Installed
+
+After successful installation, your cluster will have:
+
+| Component | Purpose |
+|-----------|---------|
+| **odin-deployer** | Main deployment orchestration service |
+| **odin-orchestrator** | Job orchestration with KEDA autoscaling |
+| **odin-account-manager** | Cloud provider account management |
+| **odin-discovery-service** | Service discovery and registration |
+| **MySQL (Percona)** | Database for state management |
+| **Redis** | Caching and session storage |
+| **MinIO** | Object storage for artifacts |
+| **ElasticMQ** | Message queue (SQS-compatible) |
+| **FluentBit** | Log aggregation |
+
+## Next Steps
+
+:::tip[🎉 Success!]
+Congratulations! You've successfully installed Odin and configured the CLI.
+
+**Next steps:**
+- [Deploy Your First Service](/odin/howto/deploy-first-service) - Complete walkthrough
+- [Key Concepts](/odin/concepts/overview) - Understand services, components, and environments
+- [CLI Reference](/odin/cli/reference) - All available commands
+- [How-To Guides](/odin/howto/overview) - Common tasks and workflows
+:::
+
+## Additional Resources
+
+- **GitHub Repository**: https://github.com/ds-horizon/odin
+- **Issue Tracker**: https://github.com/ds-horizon/odin/issues
+- **Helm Chart**: https://github.com/ds-horizon/odin/tree/master/charts/odin
+- **License**: MIT License
