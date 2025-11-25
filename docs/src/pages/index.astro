@@ -1,0 +1,48 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { Card, CardGrid } from "@astrojs/starlight/components";
+import logo from "../assets/odin-logo.png";
+---
+
+<StarlightPage
+  frontmatter={{
+    title: "Odin",
+    template: "splash",
+    hero: {
+      title: "Accelerate Your Software Development Lifecycle",
+      tagline:
+        "A CLI-based platform to streamline deployment and distribution with versioning, environment parity, and guaranteed deployment across EC2 and Kubernetes.",
+      image: {
+        file: logo,
+      },
+      actions: [
+        {
+          text: "Get started",
+          link: "/odin/introduction/getting-started",
+          icon: "right-arrow",
+          variant: "primary",
+        },
+        {
+          text: "Read the overview",
+          link: "/odin/introduction/overview",
+          variant: "minimal",
+        },
+      ],
+    },
+  }}
+>
+  <CardGrid>
+    <Card title="Environment Parity" icon="puzzle">
+      Minimal and easy-to-understand DSL to define services that works across EC2 and Kubernetes platforms seamlessly.
+    </Card>
+    <Card title="Service as Functional Unit" icon="rocket">
+      Define boundaries with a set of components which can be treated as blackbox, making deployment and management simple.
+    </Card>
+    <Card title="Versioning & Immutability" icon="star">
+      All services and components are versioned in Odin and are immutable. Use SNAPSHOT for dev/QA, CONCRETE for production.
+    </Card>
+    <Card title="Consistent Deployment" icon="approve-check">
+      Guaranteed and consistent deployment across environments with built-in validation, rollback capabilities, and audit trails.
+    </Card>
+  </CardGrid>
+</StarlightPage>
