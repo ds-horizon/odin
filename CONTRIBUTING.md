@@ -43,9 +43,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 * Add tests for new features
 * Update documentation for API changes
 
-### Java Style Guide
+### Style Guide
 
-* Follow [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
 * Use meaningful variable and method names
 * Keep methods focused and concise
 
