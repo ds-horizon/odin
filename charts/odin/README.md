@@ -2,9 +2,11 @@
 
 # Odin Helm Chart
 
-Odin is a deployment tool
+## Installing the Chart
 
-> For installation and uninstallation instructions, see the repository root `README.md`.
+```console
+helm install <my-release> oci://registry-1.docker.io/odinhq/odin
+```
 
 ## Parameters
 
