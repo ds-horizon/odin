@@ -46,7 +46,7 @@ Learn about:
 - **Deploy vs Operate**: Understanding the lifecycle
 - **Artefact Management**: How Odin handles your builds
 
-No prerequisites, no jargon—just curiosity required.
+No prerequisites, no jargon, just curiosity required.
 
 ---
 
