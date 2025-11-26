@@ -1,0 +1,1643 @@
+## @section Global parameters
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry, imagePullSecrets
+##
+
+## @param global.imageRegistry Global Docker image registry
+## @param global.imagePullSecrets Global Docker registry secret names as an array
+##
+global:
+  imageRegistry: ""
+  ## E.g.
+  ## imagePullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
+  imagePullSecrets: []
+
+## @param nameOverride String to partially override common.names.fullname
+##
+nameOverride: ""
+
+## @param fullnameOverride String to fully override common.names.fullname
+##
+fullnameOverride: ""
+
+## @param extraDeploy Array of extra objects to deploy with the release
+##
+extraDeploy: []
+
+## @section Deployer parameters
+##
+deployer:
+  ## @param deployer.enabled Enable deployer deployment
+  ##
+  enabled: true
+
+  ## Deployer image configuration
+  ## @param deployer.image.registry Deployer image registry
+  ## @param deployer.image.repository Deployer image repository
+  ## @param deployer.image.tag Deployer image tag (immutable tags are recommended)
+  ## @param deployer.image.pullPolicy Image pull policy
+  ## @param deployer.image.pullSecrets Deployer image pull secrets
+  ##
+  image:
+    registry: docker.io
+    repository: odinhq/deployer
+    tag: 0.0.2
+    ## Specify a imagePullPolicy
+    ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets
+    ## Secrets must be manually created in the namespace
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ## Example:
+    ## pullSecrets:
+    ##   - myRegistryKeySecretName
+    ##
+    pullSecrets: []
+
+  ## Deployer security configuration
+  ##
+  security:
+    ## @param deployer.security.auth.publicKey ES256 public key for deployer authentication (PEM format, single-line or multiline)
+    ##
+    auth:
+      publicKey: ""
+      ## @param deployer.security.auth.privateKey ES256 private key for deployer authentication (PEM format, single-line or multiline)
+      ##
+      privateKey: ""
+
+  ## @param deployer.labels Labels to add to all deployed objects (sub-charts are not considered)
+  ##
+  labels: {}
+
+  ## @param deployer.annotations Annotations to add to all deployed objects
+  ##
+  annotations: {}
+
+  ## @section Deployment parameters
+  ##
+
+  ## @param deployer.extraEnvVars Extra environment variables to be set on deployer container
+  ## Example:
+  ##   - name: FOO
+  ##     value: BAR
+  ##
+  extraEnvVars: []
+
+  ## @param deployer.migrationChangelogPath Path to the migration changelog file
+  ##
+  migrationChangelogPath: "resources/db/mysql"
+
+  ## @param deployer.lifecycle Hooks for pod lifecycle
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
+  ##
+  lifecycle: {}
+
+  ## @param deployer.replicaCount Number of deployer replicas
+  ##
+  replicaCount: 1
+
+  ## @param deployer.affinity Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## @param deployer.nodeSelector Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## @param deployer.tolerations Toleration for pod
+  ## Example:
+  ## tolerations:
+  ##   - key: "key1"
+  ##     operator: "Equal"
+  ##     value: "value1"
+  ##     effect: "NoSchedule"
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## @param deployer.updateStrategy.type Update Strategy for deployer deployment
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  ##
+  updateStrategy:
+    type: RollingUpdate
+
+  ## @param deployer.podAnnotations Additional pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## @param deployer.podLabels Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  podLabels: {}
+
+  ## Deployer pods' resource requests and limits
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'
+  ## @param deployer.resources.limits The resources limits for deployer containers
+  ## @param deployer.resources.requests The requested resources for deployer containers
+  ##
+  resources:
+    ## Example:
+    ## limits:
+    ##   cpu: 2
+    ##   memory: 4Gi
+    ##
+    limits: {}
+    ## Example:
+    ## requests:
+    ##   cpu: 2
+    ##   memory: 4Gi
+    ##
+    requests: {}
+
+  ## Configure extra options for deployer containers' liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+  ## @param deployer.livenessProbe.enabled Enable livenessProbe
+  ## @param deployer.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+  ## @param deployer.livenessProbe.periodSeconds Period seconds for livenessProbe
+  ## @param deployer.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+  ## @param deployer.livenessProbe.failureThreshold Failure threshold for livenessProbe
+  ## @param deployer.livenessProbe.successThreshold Success threshold for livenessProbe
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 1
+    failureThreshold: 3
+
+  ## @param deployer.readinessProbe.enabled Enable readinessProbe
+  ## @param deployer.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+  ## @param deployer.readinessProbe.periodSeconds Period seconds for readinessProbe
+  ## @param deployer.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+  ## @param deployer.readinessProbe.failureThreshold Failure threshold for readinessProbe
+  ## @param deployer.readinessProbe.successThreshold Success threshold for readinessProbe
+  ##
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 3
+    failureThreshold: 2
+
+  ## Configure extra options for startup probe
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param deployer.startupProbe.enabled Enable startupProbe
+  ## @param deployer.startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+  ## @param deployer.startupProbe.periodSeconds Period seconds for startupProbe
+  ## @param deployer.startupProbe.timeoutSeconds Timeout seconds for startupProbe
+  ## @param deployer.startupProbe.failureThreshold Failure threshold for startupProbe
+  ## @param deployer.startupProbe.successThreshold Success threshold for startupProbe
+  ##
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 1
+    failureThreshold: 2
+
+  ## @section Traffic Exposure Parameters
+  ##
+
+  ## Deployer service parameters
+  ##
+  service:
+    ## @param deployer.service.type Deployer service type
+    ##
+    type: ClusterIP
+    ## @param deployer.service.annotations Provide any additional annotations which may be required.
+    ##
+    annotations: {}
+
+  ## @section RBAC parameters
+  ##
+
+  ## Deployer pods ServiceAccount
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  ##
+  serviceAccount:
+    ## @param deployer.serviceAccount.create Enable the creation of a ServiceAccount for deployer pods
+    ##
+    create: true
+    ## @param deployer.serviceAccount.name The name of the ServiceAccount to use
+    ## If not set and create is true, a name is generated using the deployer fullname template
+    ##
+    name: ""
+    ## @param deployer.serviceAccount.annotations Annotations for deployer service account
+    ##
+    annotations: {}
+    ## @param deployer.serviceAccount.automountServiceAccountToken Automount API credentials for a service account
+    ##
+    automountServiceAccountToken: true
+
+## @section Orchestrator parameters
+##
+orchestrator:
+  ## @param orchestrator.enabled Enable orchestrator deployment
+  ## NOTE: KEDA must be installed in the cluster before enabling orchestrator
+  ## Install KEDA: helm repo add kedacore https://kedacore.github.io/charts && helm install keda kedacore/keda --namespace keda --create-namespace
+  ##
+  enabled: true
+
+  ## Orchestrator image configuration
+  ## @param orchestrator.image.registry Orchestrator image registry
+  ## @param orchestrator.image.repository Orchestrator image repository
+  ## @param orchestrator.image.tag Orchestrator image tag (immutable tags are recommended)
+  ## @param orchestrator.image.pullPolicy Image pull policy
+  ## @param orchestrator.image.pullSecrets Orchestrator image pull secrets
+  ##
+  image:
+    registry: docker.io
+    repository: odinhq/orchestrator
+    tag: 0.0.3
+    ## Specify a imagePullPolicy
+    ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets
+    ## Secrets must be manually created in the namespace
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ## Example:
+    ## pullSecrets:
+    ##   - myRegistryKeySecretName
+    ##
+    pullSecrets: []
+
+  ## @param orchestrator.labels Labels to add to all deployed objects (sub-charts are not considered)
+  ##
+  labels: {}
+
+  ## @param orchestrator.annotations Annotations to add to all deployed objects
+  ##
+  annotations: {}
+
+  ## @section Deployment parameters
+  ##
+
+  ## @param orchestrator.extraEnvVars Extra environment variables to be set on orchestrator container
+  ## Example:
+  ##   - name: FOO
+  ##     value: BAR
+  ##
+  extraEnvVars: []
+
+  ## @param orchestrator.podAnnotations Additional pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## @param orchestrator.podLabels Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  podLabels: {}
+
+  ## Orchestrator pods' resource requests and limits
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'
+  ## @param orchestrator.resources.limits The resources limits for orchestrator containers
+  ## @param orchestrator.resources.requests The requested resources for orchestrator containers
+  ##
+  resources:
+    ## Example:
+    ## limits:
+    ##   cpu: 2
+    ##   memory: 4Gi
+    ##
+    limits: {}
+    ## Example:
+    ## requests:
+    ##   cpu: 2
+    ##   memory: 4Gi
+    ##
+    requests: {}
+
+  ## @section RBAC parameters
+  ##
+
+  ## Orchestrator pods ServiceAccount
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  ##
+  serviceAccount:
+    ## @param orchestrator.serviceAccount.create Enable the creation of a ServiceAccount for orchestrator pods
+    ##
+    create: true
+    ## @param orchestrator.serviceAccount.name The name of the ServiceAccount to use
+    ## If not set and create is true, a name is generated using the orchestrator fullname template
+    ##
+    name: ""
+    ## @param orchestrator.serviceAccount.annotations Annotations for orchestrator service account
+    ##
+    annotations: {}
+    ## @param orchestrator.serviceAccount.automountServiceAccountToken Automount API credentials for a service account
+    ##
+    automountServiceAccountToken: true
+
+  ## @section ScaledJob configuration
+  ##
+  scaledJob:
+    ## ScaledJob job configuration
+    ##
+    job:
+      ## @param orchestrator.scaledJob.job.parallelism Max number of desired pods
+      ##
+      parallelism: 100
+      ## @param orchestrator.scaledJob.job.completions Desired number of successfully finished pods
+      ##
+      completions: 1
+      ## @param orchestrator.scaledJob.job.activeDeadlineSeconds Duration in seconds relative to the startTime that the job may be active before the system tries to terminate it; value must be positive integer
+      ##
+      activeDeadlineSeconds: 36000
+      ## @param orchestrator.scaledJob.job.backoffLimit Number of retries before marking this job failed
+      ##
+      backoffLimit: 2
+
+    ## @param orchestrator.scaledJob.pollingInterval The time in seconds between each poll
+    ##
+    pollingInterval: 5
+
+    ## @param orchestrator.scaledJob.successfulJobsHistoryLimit Number completed jobs should be kept
+    ##
+    successfulJobsHistoryLimit: 5
+
+    ## @param orchestrator.scaledJob.failedJobsHistoryLimit Number failed jobs should be kept
+    ##
+    failedJobsHistoryLimit: 100
+
+    ## @param orchestrator.scaledJob.minReplicaCount Minimum number of replicas to scale down to
+    ##
+    minReplicaCount: 2
+
+    ## @param orchestrator.scaledJob.maxReplicaCount Max number of replicas
+    ##
+    maxReplicaCount: 1000
+
+    ## ScaledJob rollout configuration
+    ##
+    rollout:
+      ## @param orchestrator.scaledJob.rollout.strategy Rollout strategy scaledJob will use
+      ##
+      strategy: default
+      ## @param orchestrator.scaledJob.rollout.propagationPolicy Kubernetes propagation policy for cleaning up existing jobs during rollout
+      ##
+      propagationPolicy: background
+
+    ## ScaledJob scaling strategy configuration
+    ##
+    scalingStrategy:
+      ## @param orchestrator.scaledJob.scalingStrategy.strategy Scaling strategy to use
+      ##
+      strategy: "default"
+      ## @param orchestrator.scaledJob.scalingStrategy.customScalingQueueLengthDeduction Parameter to optimize custom scaling strategy
+      ##
+      customScalingQueueLengthDeduction: 1
+      ## @param orchestrator.scaledJob.scalingStrategy.customScalingRunningJobPercentage Parameter to optimize custom scaling strategy
+      ##
+      customScalingRunningJobPercentage: "0.5"
+      ## @param orchestrator.scaledJob.scalingStrategy.pendingPodConditions Parameter to calculate pending job count per the specified pod conditions
+      ##
+      pendingPodConditions:
+        - "PodScheduled"
+      ## @param orchestrator.scaledJob.scalingStrategy.multipleScalersCalculation How to calculate the target metrics when multiple scalers are defined
+      ##
+      multipleScalersCalculation: "max"
+
+    ## ScaledJob triggers configuration
+    ##
+    triggers:
+      ## @param orchestrator.scaledJob.triggers.provider Type of the trigger
+      ##
+      provider: aws-sqs-queue
+      ## Metadata for the trigger, some metadata is injected automatically based on queue provider but somethings are required
+      ## Example:
+      ##   metadata:
+      ##     awsRegion: us-east-1
+      ##     queueURL: https://sqs.us-east-1.amazonaws.com/954754807219/odin-request-queue
+      ##
+      metadata:
+        ## @param orchestrator.scaledJob.triggers.metadata.awsRegion AWS region
+        ##
+        awsRegion: us-east-1
+        ## @param orchestrator.scaledJob.triggers.metadata.awsEndpoint AWS endpoint
+        ##
+        awsEndpoint: http://odin-elasticmq.odin.svc.cluster.local:9324
+        ## @param orchestrator.scaledJob.triggers.metadata.queueURL AWS queue URL
+        ##
+        queueURL: "http://odin-elasticmq.odin.svc.cluster.local:9324/000000000000/odin-request-queue"
+        ## @param orchestrator.scaledJob.triggers.metadata.awsAccessKeyID AWS access key ID
+        ##
+        awsAccessKeyID: "dummyValue"
+        ## @param orchestrator.scaledJob.triggers.metadata.awsSecretAccessKey AWS secret access key
+        ##
+        awsSecretAccessKey: "dummyValue"
+
+      ## Triggers authentication configuration
+      ##
+      authentication:
+        ## @param orchestrator.scaledJob.triggers.authentication.provider Type of the authentication
+        ##
+        provider: ""
+  ## @section runnerNamespaceCleanup configuration
+  ##
+  runnerNamespaceCleanup:
+    ## @param orchestrator.runnerNamespaceCleanup.name Name for cronJob
+    ##
+    name: "odin-orchestrator-cleanup-namespaces"
+
+    ## @param orchestrator.runnerNamespaceCleanup.enabled To enable runner namespace cleanup job
+    ##
+    enabled: true
+
+    ## @param orchestrator.runnerNamespaceCleanup.schedule Schedule for cleaning up namespaces of runner
+    ##
+    schedule: "0 0 * * *"
+
+    ## @param orchestrator.runnerNamespaceCleanup.concurrencyPolicy Concurrency policy for cronJob
+    ##
+    concurrencyPolicy: Allow
+
+    ## @param orchestrator.runnerNamespaceCleanup.successfulJobsHistoryLimit Limit on storing successful job history
+    ##
+    successfulJobsHistoryLimit: 5
+
+    ## @param orchestrator.runnerNamespaceCleanup.failedJobsHistoryLimit Limit on storing failed job history
+    ##
+    failedJobsHistoryLimit: 5
+
+    ## @param orchestrator.runnerNamespaceCleanup.retentionPeriodDays TTL for runner namespaces
+    ##
+    retentionPeriodDays: "2"
+
+## @section Discovery service parameters
+##
+discoveryService:
+  ## @param discoveryService.enabled Enable Discovery service deployment
+  ##
+  enabled: true
+
+  ## Discovery service image configuration
+  ## @param discoveryService.image.registry Discovery service image registry
+  ## @param discoveryService.image.repository Discovery service image repository
+  ## @param discoveryService.image.tag Discovery service image tag (immutable tags are recommended)
+  ## @param discoveryService.image.pullPolicy Image pull policy
+  ## @param discoveryService.image.pullSecrets Discovery service image pull secrets
+  ##
+  image:
+    registry: docker.io
+    repository: odinhq/discovery
+    tag: 0.0.1
+    ## Specify a imagePullPolicy
+    ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets
+    ## Secrets must be manually created in the namespace
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ## Example:
+    ## pullSecrets:
+    ##   - myRegistryKeySecretName
+    ##
+    pullSecrets: []
+
+  ## @param discoveryService.labels Labels to add to all deployed objects (sub-charts are not considered)
+  ##
+  labels: {}
+
+  ## @param discoveryService.annotations Annotations to add to all deployed objects
+  ##
+  annotations: {}
+
+  ## @section Deployment parameters
+  ##
+
+  ## @param discoveryService.extraEnvVars Extra environment variables to be set on discovery service container
+  ## Example:
+  ##   - name: FOO
+  ##     value: BAR
+  ##
+  extraEnvVars: []
+
+  ## @param discoveryService.migrationChangelogPath Path to the migration changelog file
+  ##
+  migrationChangelogPath: "resources/db/mysql"
+
+  ## @param discoveryService.lifecycle Hooks for pod lifecycle
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
+  ##
+  lifecycle: {}
+
+  ## @param discoveryService.replicaCount Number of discovery service replicas
+  ##
+  replicaCount: 1
+
+  ## @param discoveryService.affinity Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## @param discoveryService.nodeSelector Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## @param discoveryService.tolerations Toleration for pod
+  ## Example:
+  ## tolerations:
+  ##   - key: "key1"
+  ##     operator: "Equal"
+  ##     value: "value1"
+  ##     effect: "NoSchedule"
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## @param discoveryService.updateStrategy.type Update Strategy for Discovery service deployment
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  ##
+  updateStrategy:
+    type: RollingUpdate
+
+  ## @param discoveryService.podAnnotations Additional pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## @param discoveryService.podLabels Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  podLabels: {}
+
+  ## Discovery service pods' resource requests and limits
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'
+  ## @param discoveryService.resources.limits The resources limits for discovery service containers
+  ## @param discoveryService.resources.requests The requested resources for discovery service containers
+  ##
+  resources:
+    ## Example:
+    ## limits:
+    ##   cpu: 2
+    ##   memory: 4Gi
+    ##
+    limits: {}
+    ## Example:
+    ## requests:
+    ##   cpu: 2
+    ##   memory: 4Gi
+    ##
+    requests: {}
+
+  ## Configure extra options for discovery service containers' liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+  ## @param discoveryService.livenessProbe.enabled Enable livenessProbe
+  ## @param discoveryService.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+  ## @param discoveryService.livenessProbe.periodSeconds Period seconds for livenessProbe
+  ## @param discoveryService.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+  ## @param discoveryService.livenessProbe.failureThreshold Failure threshold for livenessProbe
+  ## @param discoveryService.livenessProbe.successThreshold Success threshold for livenessProbe
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 1
+    failureThreshold: 3
+
+  ## @param discoveryService.readinessProbe.enabled Enable readinessProbe
+  ## @param discoveryService.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+  ## @param discoveryService.readinessProbe.periodSeconds Period seconds for readinessProbe
+  ## @param discoveryService.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+  ## @param discoveryService.readinessProbe.failureThreshold Failure threshold for readinessProbe
+  ## @param discoveryService.readinessProbe.successThreshold Success threshold for readinessProbe
+  ##
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 3
+    failureThreshold: 2
+
+  ## Configure extra options for startup probe
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param discoveryService.startupProbe.enabled Enable startupProbe
+  ## @param discoveryService.startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+  ## @param discoveryService.startupProbe.periodSeconds Period seconds for startupProbe
+  ## @param discoveryService.startupProbe.timeoutSeconds Timeout seconds for startupProbe
+  ## @param discoveryService.startupProbe.failureThreshold Failure threshold for startupProbe
+  ## @param discoveryService.startupProbe.successThreshold Success threshold for startupProbe
+  ##
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 1
+    failureThreshold: 2
+
+  ## @section Traffic Exposure Parameters
+  ##
+
+  ## Discovery service parameters
+  ##
+  service:
+    ## @param discoveryService.service.type Discovery service service type
+    ##
+    type: ClusterIP
+    ## @param discoveryService.service.annotations Provide any additional annotations which may be required.
+    ##
+    annotations: {}
+
+  ## @section RBAC parameters
+  ##
+
+  ## Discovery service pods ServiceAccount
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  ##
+  serviceAccount:
+    ## @param discoveryService.serviceAccount.create Enable the creation of a ServiceAccount for discovery service pods
+    ##
+    create: true
+    ## @param discoveryService.serviceAccount.name The name of the ServiceAccount to use
+    ## If not set and create is true, a name is generated using the discovery service fullname template
+    ##
+    name: ""
+    ## @param discoveryService.serviceAccount.annotations Annotations for discovery service account
+    ##
+    annotations: {}
+    ## @param discoveryService.serviceAccount.automountServiceAccountToken Automount API credentials for a service account
+    ##
+    automountServiceAccountToken: true
+
+## @section Account manager parameters
+##
+accountManager:
+  ## @param accountManager.enabled Enable Account manager deployment
+  ##
+  enabled: true
+
+  ## Account manager image configuration
+  ## @param accountManager.image.registry Account manager image registry
+  ## @param accountManager.image.repository Account manager image repository
+  ## @param accountManager.image.tag Account manager image tag (immutable tags are recommended)
+  ## @param accountManager.image.pullPolicy Image pull policy
+  ## @param accountManager.image.pullSecrets Account manager image pull secrets
+  ##
+  image:
+    registry: docker.io
+    repository: odinhq/account-manager
+    tag: 0.0.5
+    ## Specify a imagePullPolicy
+    ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets
+    ## Secrets must be manually created in the namespace
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ## Example:
+    ## pullSecrets:
+    ##   - myRegistryKeySecretName
+    ##
+    pullSecrets: []
+
+  ## @param accountManager.labels Labels to add to all deployed objects (sub-charts are not considered)
+  ##
+  labels: {}
+
+  ## @param accountManager.annotations Annotations to add to all deployed objects
+  ##
+  annotations: {}
+
+  ## @section Deployment parameters
+  ##
+
+  ## @param accountManager.extraEnvVars Extra environment variables to be set on account manager container
+  ## Example:
+  ##   - name: FOO
+  ##     value: BAR
+  ##
+  extraEnvVars: []
+
+  ## @param accountManager.migrationChangelogPath Path to the migration changelog file
+  ##
+  migrationChangelogPath: "resources/db/mysql"
+
+  ## @param accountManager.lifecycle Hooks for pod lifecycle
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
+  ##
+  lifecycle: {}
+
+  ## @param accountManager.replicaCount Number of Account manager replicas
+  ##
+  replicaCount: 1
+
+  ## @param accountManager.affinity Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## @param accountManager.nodeSelector Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## @param accountManager.tolerations Toleration for pod
+  ## Example:
+  ## tolerations:
+  ##   - key: "key1"
+  ##     operator: "Equal"
+  ##     value: "value1"
+  ##     effect: "NoSchedule"
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## @param accountManager.updateStrategy.type Update Strategy for Account manager deployment
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  ##
+  updateStrategy:
+    type: RollingUpdate
+
+  ## @param accountManager.podAnnotations Additional pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## @param accountManager.podLabels Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  podLabels: {}
+
+  ## Account manager pods' resource requests and limits
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'
+  ## @param accountManager.resources.limits The resources limits for account manager containers
+  ## @param accountManager.resources.requests The requested resources for account manager containers
+  ##
+  resources:
+    ## Example:
+    ## limits:
+    ##   cpu: 2
+    ##   memory: 4Gi
+    ##
+    limits: {}
+    ## Example:
+    ## requests:
+    ##   cpu: 2
+    ##   memory: 4Gi
+    ##
+    requests: {}
+
+  ## Configure extra options for account manager containers' liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+  ## @param accountManager.livenessProbe.enabled Enable livenessProbe
+  ## @param accountManager.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+  ## @param accountManager.livenessProbe.periodSeconds Period seconds for livenessProbe
+  ## @param accountManager.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+  ## @param accountManager.livenessProbe.failureThreshold Failure threshold for livenessProbe
+  ## @param accountManager.livenessProbe.successThreshold Success threshold for livenessProbe
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 1
+    failureThreshold: 3
+
+  ## @param accountManager.readinessProbe.enabled Enable readinessProbe
+  ## @param accountManager.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+  ## @param accountManager.readinessProbe.periodSeconds Period seconds for readinessProbe
+  ## @param accountManager.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+  ## @param accountManager.readinessProbe.failureThreshold Failure threshold for readinessProbe
+  ## @param accountManager.readinessProbe.successThreshold Success threshold for readinessProbe
+  ##
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 3
+    failureThreshold: 2
+
+  ## Configure extra options for startup probe
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param accountManager.startupProbe.enabled Enable startupProbe
+  ## @param accountManager.startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+  ## @param accountManager.startupProbe.periodSeconds Period seconds for startupProbe
+  ## @param accountManager.startupProbe.timeoutSeconds Timeout seconds for startupProbe
+  ## @param accountManager.startupProbe.failureThreshold Failure threshold for startupProbe
+  ## @param accountManager.startupProbe.successThreshold Success threshold for startupProbe
+  ##
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 1
+    failureThreshold: 2
+
+  ## @section Traffic Exposure Parameters
+  ##
+
+  ## Account manager service parameters
+  ##
+  service:
+    ## @param accountManager.service.type Account manager service type
+    ##
+    type: ClusterIP
+    ## @param accountManager.service.annotations Provide any additional annotations which may be required.
+    ##
+    annotations: {}
+
+  ## @section RBAC parameters
+  ##
+
+  ## Account manager pods ServiceAccount
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  ##
+  serviceAccount:
+    ## @param accountManager.serviceAccount.create Enable the creation of a ServiceAccount for account manager pods
+    ##
+    create: true
+    ## @param accountManager.serviceAccount.name The name of the ServiceAccount to use
+    ## If not set and create is true, a name is generated using the account manager fullname template
+    ##
+    name: ""
+    ## @param accountManager.serviceAccount.annotations Annotations for account manager service account
+    ##
+    annotations: {}
+    ## @param accountManager.serviceAccount.automountServiceAccountToken Automount API credentials for a service account
+    ##
+    automountServiceAccountToken: true
+
+## @section Minio parameters
+##
+minio:
+  ## This updates the service name for minio deployment
+  ## It is used to generate the endpoint url for the minio deployment
+  ## If modified, update the value in mysql.backup.storages.s3local.s3.endpointUrl
+  ##
+  ## @param minio.fullnameOverride Fullname override for minio deployment
+  ##
+  fullnameOverride: "odin-minio"
+
+  ## @param minio.enabled Enable minio deployment
+  ##
+  enabled: true
+
+  ## MinIO image configuration
+  ##
+  image:
+    ## @param minio.image.repository Minio image repository
+    ##
+    repository: quay.io/minio/minio
+    ## @param minio.image.tag Minio image tag
+    ##
+    tag: RELEASE.2024-12-18T13-15-44Z
+    ## @param minio.image.pullPolicy Minio image pull policy
+    ##
+    pullPolicy: IfNotPresent
+
+  ## @param minio.rootUser Minio root user
+  ##
+  rootUser: "admin"
+
+  ## @param minio.rootPassword Minio root password
+  ##
+  rootPassword: "admin@123"
+
+  ## @param minio.region Minio region
+  ##
+  region: us-east-1
+
+  ## @param minio.replicas Minio replicas
+  ##
+  replicas: 3
+
+  ## @param minio.storageClass Storage class to use
+  ##
+  storageClass: ""
+
+  ## MinIO resources configuration
+  ##
+  resources:
+    requests:
+      ## @param minio.resources.requests.memory Minio resources requests memory
+      ##
+      memory: 1Gi
+
+  ## MinIO persistence configuration
+  ##
+  persistence:
+    ## @param minio.persistence.enabled Enable persistence
+    ##
+    enabled: true
+    ## @param minio.persistence.storageClass Storage class to use
+    ##
+    storageClass: ""
+    ## @param minio.persistence.size Size of the persistent volume
+    ##
+    size: 10Gi
+
+  ## List of buckets to be created after minio install
+  ## Note: For state bucket selection, the system looks for any bucket name containing "state"
+  ## If no "state" bucket is found, it uses the first bucket from this list
+  ##
+  buckets:
+    ## This bucket will be used for backup of mysql database
+    ## This value is referenced in mysql.backup.storages.s3local.s3.bucket
+    ## If modified, update the value in mysql.backup.storages.s3local.s3.bucket
+    ##
+    ## @param minio.buckets[0].name Odin backup bucket name
+    ## @param minio.buckets[0].policy Odin backup bucket policy
+    ##
+    - name: "odin-backup-bucket"
+      policy: public
+    ## This bucket will be used for state management of components
+    ## Contains "state" in name for automatic selection as state bucket
+    ##
+    ## @param minio.buckets[1].name Odin state bucket name
+    ## @param minio.buckets[1].policy Odin state bucket policy
+    ##
+    - name: "odin-state-bucket"
+      policy: public
+
+## @section Database parameters
+## Parameters are converted to environment variables for deployer
+##
+mysql:
+  ## External MySQL configuration
+  ## If enabled is true, then external Mysql configuration will be used
+  ## Else, Mysql will be deployed internally using percona mysql chart
+  ## That will require percona mysql operator to be installed in the cluster
+  ## Reference: https://docs.percona.com/percona-operator-for-mysql/ps/index.html
+  ## Operator Chart: https://github.com/percona/percona-server-mysql-operator
+  ##
+  external:
+    ## @param mysql.external.enabled Enable external Mysql
+    ##
+    enabled: false
+    ## @param mysql.external.username External Mysql username
+    ##
+    username: root
+    ## @param mysql.external.password External Mysql password
+    ##
+    password: ""
+    ## @param mysql.external.master.host External Mysql master host
+    ##
+    master:
+      host: mysql-master
+    ## @param mysql.external.slave.host External Mysql slave host
+    ##
+    slave:
+      host: mysql-slave
+
+  ## Percona Mysql server configuration
+  ##
+  ## @param mysql.fullnameOverride Name override for the mysql deployment
+  ##
+  fullnameOverride: "odin-mysql"
+
+  ## @param mysql.finalizers Finalizers for the mysql deployment
+  ##
+  finalizers:
+    - percona.com/delete-ssl
+    - percona.com/delete-mysql-pvc
+
+  ## @param mysql.secretsName Secrets name for the mysql deployment
+  ##
+  secretsName: "internal-odin-mysql"
+
+  ## MySQL cluster configuration
+  ##
+  mysql:
+    ## @param mysql.mysql.clusterType Cluster type
+    ##
+    clusterType: async
+
+    ## Enable MySQL service exposure
+    ##
+    expose:
+      ## @param mysql.mysql.expose.enabled Enable MySQL service exposure
+      ##
+      enabled: false
+
+  ## MySQL server orchestrator configuration
+  ##
+  orchestrator:
+    ## @param mysql.orchestrator.enabled Enable orchestrator deployment
+    ##
+    enabled: true
+
+  ## MySQL proxy configuration
+  ##
+  proxy:
+    ## @param mysql.proxy.haproxy.enabled Enable HAProxy
+    ## @param mysql.proxy.haproxy.resources.requests.memory HAProxy resources requests memory
+    ## @param mysql.proxy.haproxy.resources.limits.memory HAProxy resources limits memory
+    ##
+    haproxy:
+      enabled: true
+      resources:
+        requests:
+          memory: 256Mi
+        limits:
+          memory: 512Mi
+
+  ## MySQL server backup configuration
+  ##
+  backup:
+    ## @param mysql.backup.enabled Enable backup deployment
+    ##
+    enabled: true
+    ## @param mysql.backup.schedule Automatic Backup schedule
+    ##
+    schedule:
+    ## - name: "daily-midnight-backup"
+    ##   schedule: "0 0 * * *"
+    ##   keep: 2
+    ##   storageName: s3local
+
+    ## Backup storages configuration
+    ##
+    storages:
+      ## MySQL S3 local storage
+      ##
+      s3local:
+        s3:
+          ## @param mysql.backup.storages.s3local.s3.endpointUrl S3 local storage endpoint URL
+          ##
+          endpointUrl: 'http://odin-minio:9000'
+          ## @param mysql.backup.storages.s3local.s3.bucket S3 local storage bucket
+          ##
+          bucket: "odin-backup-bucket"
+          ## @param mysql.backup.storages.s3local.s3.credentialsSecret S3 local storage credentials secret
+          ##
+          credentialsSecret: "odin-minio-s3-credentials"
+          ## @param mysql.backup.storages.s3local.s3.region S3 local storage region
+          ##
+          region: us-east-1
+        ## @param mysql.backup.storages.s3local.type S3 local storage type
+        ##
+        type: s3
+        ## @param mysql.backup.storages.s3local.verifyTLS S3 local storage verify TLS
+        ##
+        verifyTLS: false
+
+## @section Redis parameters
+##
+redis:
+  ## External Redis configuration
+  ##
+  external:
+    ## @param redis.external.enabled Enable external Redis
+    ##
+    enabled: false
+    ## @param redis.external.host External Redis host
+    ##
+    host: redis-master
+    ## @param redis.external.port External Redis port
+    ##
+    port: 6379
+    ## @param redis.external.password External Redis password (leave empty if no auth)
+    ##
+    password: ""
+    ## @param redis.external.database External Redis database number
+    ##
+    database: 0
+
+  ## Internal Redis Configuration - Standalone Mode
+  ## Single instance Redis with ClusterIP service
+  ## Based on Bitnami Redis chart: https://github.com/bitnami/charts/tree/main/bitnami/redis
+  ## Only used when redis.external.enabled: false
+  ##
+  ## @param redis.fullnameOverride Fullname override for redis deployment
+  ##
+  fullnameOverride: "odin-redis"
+
+  ## Redis image configuration
+  ##
+  image:
+    ## @param redis.image.registry Redis image registry
+    ##
+    registry: docker.io
+    ## @param redis.image.repository Redis image repository
+    ##
+    repository: bitnamilegacy/redis
+    ## @param redis.image.tag Redis image tag
+    ##
+    tag: 8.2.1-debian-12-r0
+
+  ## @param redis.architecture Redis architecture
+  ##
+  architecture: standalone
+
+  ## Redis authentication configuration
+  ##
+  auth:
+    ## @param redis.auth.enabled Enable Redis authentication
+    ##
+    enabled: false
+
+  ## Redis master configuration
+  ##
+  master:
+    ## @param redis.master.count Number of Redis master instances
+    ##
+    count: 1
+
+    ## Redis master service configuration
+    ##
+    service:
+      ## @param redis.master.service.type Redis master service type
+      ##
+      type: ClusterIP
+
+    ## Redis master persistence configuration
+    ##
+    persistence:
+      ## @param redis.master.persistence.enabled Enable Redis master persistence
+      ##
+      enabled: false
+
+    ## Redis master container ports
+    ##
+    containerPorts:
+      ## @param redis.master.containerPorts.redis Redis master container port
+      ##
+      redis: 6379
+
+  ## Redis replica configuration
+  ## No replicas for standalone mode
+  ##
+  replica:
+    ## @param redis.replica.replicaCount Number of Redis replicas
+    ##
+    replicaCount: 0
+
+  ## Redis sentinel configuration
+  ## Disable sentinel for standalone mode
+  ##
+  sentinel:
+    ## @param redis.sentinel.enabled Enable Redis sentinel
+    ##
+    enabled: false
+
+## @section Elasticsearch parameters
+##
+elasticsearch:
+  ## External Elasticsearch configuration
+  ##
+  external:
+    ## @param elasticsearch.external.enabled Enable external elasticsearch
+    ##
+    enabled: false
+    ## @param elasticsearch.external.host External Elasticsearch host
+    ##
+    host: elasticsearch-host
+    ## @param elasticsearch.external.port Elasticsearch Redis port
+    ##
+    port: 9200
+    ## @param elasticsearch.external.username External Elasticsearch username (leave empty if no auth)
+    ##
+    username: ""
+    ## @param elasticsearch.external.password External Elasticsearch password (leave empty if no auth)
+    ##
+    password: ""
+
+  ## Internal Elasticsearch Configuration
+  ## Elasticsearch Stack with ClusterIP service
+  ## Based on Bitnami Elasticsearch chart: https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
+  ## Only used when elasticsearch.external.enabled: false
+  ##
+  ## @param elasticsearch.fullnameOverride Fullname override for redis deployment
+  ##
+  fullnameOverride: "odin-elasticsearch"
+
+  ## @param elasticsearch.clusterName Elasticsearch cluster name
+  ##
+  clusterName: "odin-elasticsearch"
+
+  ## Elasticsearch image configuration
+  ##
+  image:
+    ## @param elasticsearch.image.registry Elasticsearch image registry
+    ##
+    registry: docker.io
+    ## @param elasticsearch.image.repository Elasticsearch image repository
+    ##
+    repository: bitnamilegacy/elasticsearch
+    ## @param elasticsearch.image.tag Elasticsearch image tag
+    ##
+    tag: 9.1.2-debian-12-r0
+
+  ## @param elasticsearch.sysctlImage.enabled Enable kernel settings modifier image
+  ##
+  sysctlImage:
+    enabled: false
+
+  ## Internal Elasticsearch security configuration
+  ##
+  security:
+    ## @param elasticsearch.security.enabled Enable X-Pack Security settings
+    ##
+    enabled: false
+    ## @param elasticsearch.security.elasticPassword Custom Elasticsearch authentication Password
+    ##
+    elasticPassword: "changeme"
+    ## @param elasticsearch.security.tls.autoGenerated Create self-signed TLS certificates.
+    ## NOTE: If autoGenerated certs are enabled and a new node type is enabled using helm upgrade, make sure you remove previously existing Elasticsearch TLS secrets.
+    ## Otherwise, the new node certs won't match the existing certs.
+    ##
+    tls:
+      autoGenerated: true
+
+  ## Master-eligible nodes parameters
+  ##
+  master:
+    ## @param elasticsearch.master.replicaCount Number of master-eligible replicas to deploy
+    ##
+    replicaCount: 3
+
+    ## @param elasticsearch.master.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if elasticsearch.master.resources is set (elasticsearch.master.resources is recommended for production).
+    ##
+    resourcesPreset: "small"
+
+    ## @param elasticsearch.master.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+    ## Example:
+    ## resources:
+    ##   requests:
+    ##     cpu: 2
+    ##     memory: 512Mi
+    ##   limits:
+    ##     cpu: 3
+    ##     memory: 1024Mi
+    ##
+    resources: {}
+
+    ## @param elasticsearch.master.heapSize Elasticsearch master node heap size.
+    ## Note: The recommended heapSize is half of the container's memory.
+    ##
+    heapSize: 128m
+
+    ## Enable persistence using Persistent Volume Claims
+    ##
+    persistence:
+      ## @param elasticsearch.master.persistence.size Persistent Volume Size
+      ##
+      size: 16Gi
+
+  ## Data-only nodes parameters
+  ##
+  data:
+    ## @param elasticsearch.data.replicaCount Number of data-only replicas to deploy
+    ##
+    replicaCount: 2
+
+    ## @param elasticsearch.data.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if elasticsearch.data.resources is set (elasticsearch.data.resources is recommended for production).
+    ##
+    resourcesPreset: "medium"
+
+    ## @param elasticsearch.data.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+    ## Example:
+    ## resources:
+    ##   requests:
+    ##     cpu: 2
+    ##     memory: 512Mi
+    ##   limits:
+    ##     cpu: 3
+    ##     memory: 1024Mi
+    ##
+    resources: {}
+
+    ## @param elasticsearch.data.heapSize Elasticsearch data node heap size.
+    ## Note: The recommended heapSize is half of the container's memory.
+    ##
+    heapSize: 1024m
+
+    ## Enable persistence using Persistent Volume Claims
+    ##
+    persistence:
+      ## @param elasticsearch.data.persistence.size Persistent Volume Size
+      ##
+      size: 15Gi
+
+  ## Coordinating-only nodes parameters
+  ##
+  coordinating:
+    ## @param elasticsearch.coordinating.replicaCount Number of coordinating-only replicas to deploy
+    ##
+    replicaCount: 0
+
+    ## @param elasticsearch.coordinating.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if elasticsearch.coordinating.resources is set (elasticsearch.coordinating.resources is recommended for production).
+    ##
+    resourcesPreset: "small"
+
+    ## @param elasticsearch.coordinating.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+    ## Example:
+    ## resources:
+    ##   requests:
+    ##     cpu: 2
+    ##     memory: 512Mi
+    ##   limits:
+    ##     cpu: 3
+    ##     memory: 1024Mi
+    ##
+    resources: {}
+
+    ## @param elasticsearch.coordinating.heapSize Elasticsearch coordinating node heap size.
+    ## Note: The recommended heapSize is half of the container's memory.
+    ##
+    heapSize: 128m
+
+  ## Ingest-only nodes parameters
+  ##
+  ingest:
+    ## @param elasticsearch.ingest.enabled Enable ingest nodes
+    ##
+    enabled: true
+
+    ## @param elasticsearch.ingest.replicaCount Number of ingest-only replicas to deploy
+    ##
+    replicaCount: 1
+
+    ## @param elasticsearch.ingest.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if elasticsearch.ingest.resources is set (elasticsearch.ingest.resources is recommended for production).
+    ##
+    resourcesPreset: "small"
+
+    ## @param elasticsearch.ingest.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+    ## Example:
+    ## resources:
+    ##   requests:
+    ##     cpu: 2
+    ##     memory: 512Mi
+    ##   limits:
+    ##     cpu: 3
+    ##     memory: 1024Mi
+    ##
+    resources: {}
+
+    ## @param elasticsearch.ingest.heapSize Elasticsearch ingest node heap size.
+    ## Note: The recommended heapSize is half of the container's memory.
+    ##
+    heapSize: 128m
+
+## @section Fluentbit parameters
+##
+fluentbit:
+  ## External Fluent Bit configuration
+  ##
+  external:
+    ## @param fluentbit.external.enabled Enable external Fluent Bit
+    ##
+    enabled: false
+
+  ## Internal Fluent Bit Configuration
+  ## Based on Bitnami Fluent Bit chart: https://github.com/bitnami/charts/tree/main/bitnami/fluent-bit
+  ## Only used when fluentbit.external.enabled: false
+  ##
+  ## @param fluentbit.fullnameOverride Fullname override for Fluent Bit deployment
+  ##
+  fullnameOverride: "odin-fluentbit"
+
+  ## Fluent Bit image configuration
+  ##
+  image:
+    ## @param fluentbit.image.registry Fluent Bit image registry
+    ##
+    registry: docker.io
+    ## @param fluentbit.image.repository Fluent Bit image repository
+    ##
+    repository: bitnamilegacy/fluent-bit
+    ## @param fluentbit.image.tag Fluent Bit image tag
+    ##
+    tag: 4.0.7
+
+  ## Fluent Bit daemonset configuration
+  ## Running as daemonset eases kubernetes pod monitoring and ensures its integrity
+  ## If daemonset is enabled, Fluent Bit deployment will be disabled
+  ##
+  daemonset:
+    ## @param fluentbit.daemonset.enabled Use a daemonset instead of a deployment. `replicaCount` will not take effect.
+    ##
+    enabled: true
+
+  ## @param fluentbit.existingConfigMap Name of an existing ConfigMap with the Fluent Bit config file
+  ##
+  existingConfigMap: odin-fluentbit-config
+
+  ## Fluent Bit resources configuration
+  ##
+  resources:
+    limits:
+      ## @param fluentbit.resources.limits.cpu CPU limit for Fluent Bit
+      ##
+      cpu: 500m
+      ## @param fluentbit.resources.limits.memory Memory limit for Fluent Bit
+      ##
+      memory: 512M
+    requests:
+      ## @param fluentbit.resources.requests.cpu CPU request for Fluent Bit
+      ##
+      cpu: 500m
+      ## @param fluentbit.resources.requests.memory Memory request for Fluent Bit
+      ##
+      memory: 100M
+
+  ## RBAC configuration for Fluent Bit
+  ## ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+  ##
+  rbac:
+    ## @param fluentbit.rbac.create Create RBAC resources for Fluent Bit
+    ##
+    create: true
+    ## @param fluentbit.rbac.nodeAccess Enable node-level access for Fluent Bit
+    ##
+    nodeAccess: true
+    ## @param fluentbit.rbac.rules[0].apiGroups API groups for Fluent Bit RBAC rules
+    ## @param fluentbit.rbac.rules[0].resources Resources for Fluent Bit RBAC rules
+    ## @param fluentbit.rbac.rules[0].verbs Verbs for Fluent Bit RBAC rules
+    ##
+    rules:
+      - apiGroups:
+          - ""
+        resources:
+          - pods
+          - namespaces
+        verbs:
+          - get
+          - list
+          - watch
+
+## @section ElasticMQ parameters
+##
+elasticMQ:
+  ## External SQS Queue Configuration
+  ##
+  external:
+    ## @param elasticMQ.external.enabled Enable external SQS
+    ##
+    enabled: false
+    ## @param elasticMQ.external.requestQueueUrl External SQS Request Queue URL
+    ##
+    requestQueueUrl: us-east-1.requestQueue.aws.com
+    ## @param elasticMQ.external.responseQueueUrl External SQS Response Queue URL
+    ##
+    responseQueueUrl: us-east-1.responseQueue.aws.com
+
+  ## Internal ElasticMQ Configuration
+  ## ElasticMQ with ClusterIP service
+  ## Only used when elasticMQ.external.enabled: false
+  ##
+  ## @param elasticMQ.fullnameOverride Fullname override for ElasticMQ deployment
+  ##
+  fullnameOverride: "odin-elasticmq"
+
+  ## ElasticMQ image configuration
+  ## @param elasticMQ.image.repository ElasticMQ image repository
+  ## @param elasticMQ.image.tag ElasticMQ image tag
+  ## @param elasticMQ.image.pullPolicy ElasticMQ image pull policy
+  ##
+  image:
+    repository: softwaremill/elasticmq
+    tag: 1.6.15
+    pullPolicy: IfNotPresent
+
+  ## @param elasticMQ.replicaCount Number of ElasticMQ replicas to run
+  ##
+  replicaCount: 1
+
+  ## @param elasticMQ.startServices Comma-separated list of AWS CLI service names which are the only ones allowed to be used (other services will then by default be prevented from being loaded).
+  ##
+  startServices: "sqs"
+
+  ## AWS configuration
+  ##
+  aws:
+    ## @param elasticMQ.aws.region Region for AWS Service.
+    ##
+    region: us-east-1
+    ## @param elasticMQ.aws.accessKeyId AWS Access Key ID
+    ##
+    accessKeyId: dummyValue
+    ## @param elasticMQ.aws.secretAccessKey AWS Secret Access Key
+    ##
+    secretAccessKey: dummyValue
+
+  ## @param elasticMQ.mqConfig Configuration for message queue
+  ##
+  mqConfig: |
+    queues-storage {
+      enabled = true
+      path = "/data/queues.conf"
+    }
+    messages-storage {
+      enabled = true
+      uri = "jdbc:h2:/data/elasticmq"
+    }
+    rest-sqs {
+      bind-port = 9324
+      bind-hostname = "0.0.0.0"
+    }
+    rest-stats {
+      enabled = true
+      bind-port = 9325
+      bind-hostname = "0.0.0.0"
+    }
+
+  ## ElasticMQ persistence configuration
+  ##
+  persistence:
+    ## @param elasticMQ.persistence.storageClass Persistent Volume storage class
+    ##
+    storageClass: ""
+    ## @param elasticMQ.persistence.size Persistent Volume size
+    ##
+    size: 2Gi
+
+  ## ElasticMQ resources configuration
+  ## Example:
+  ## resources:
+  ##   requests:
+  ##     cpu: 250m
+  ##     memory: 512Mi
+  ##   limits:
+  ##     cpu: 500m
+  ##     memory: 1Gi
+  ##
+  resources:
+    requests:
+      ## @param elasticMQ.resources.requests.memory Memory request for ElasticMQ
+      ##
+      memory: "512Mi"
+      ## @param elasticMQ.resources.requests.cpu CPU request for ElasticMQ
+      ##
+      cpu: "250m"
+    limits:
+      ## @param elasticMQ.resources.limits.memory Memory limit for ElasticMQ
+      ##
+      memory: "1Gi"
+      ## @param elasticMQ.resources.limits.cpu CPU limit for ElasticMQ
+      ##
+      cpu: "500m"
+
+  ## ElasticMQ service configuration
+  ## @param elasticMQ.service.type ElasticMQ service type
+  ## @param elasticMQ.service.port ElasticMQ service port
+  ## @param elasticMQ.service.nodePort ElasticMQ service nodePort
+  ##
+  service:
+    type: ClusterIP
+    port: 4566
+    nodePort: ""
+
+  ## @param elasticMQ.extraEnvVars[0].name Extra environment variable name
+  ## @param elasticMQ.extraEnvVars[0].value Extra environment variable value
+  ##
+  extraEnvVars:
+    - name: SQS_ENDPOINT_STRATEGY
+      value: "path"
+
+  ## Bootstrap required Queues in ElasticMQ
+  ##
+  createQueues:
+    ## @param elasticMQ.createQueues.enabled When enabled, will trigger the creation of queue names passed in elasticMQ.createQueues.queues.
+    ##
+    enabled: true
+    ## @param elasticMQ.createQueues.queues[0].name Queue name
+    ## @param elasticMQ.createQueues.queues[0].defaultVisibilityTimeout Queue default visibility timeout
+    ## @param elasticMQ.createQueues.queues[1].name Queue name
+    ## @param elasticMQ.createQueues.queues[1].defaultVisibilityTimeout Queue default visibility timeout
+    ##
+    queues:
+      - name: odin-request-queue
+        defaultVisibilityTimeout: "30 seconds"
+      - name: odin-response-queue
+        defaultVisibilityTimeout: "30 seconds"

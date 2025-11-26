@@ -25,5 +25,4 @@ replay_pid*
 
 target/
 .idea/
-values.yaml
 .cursor/

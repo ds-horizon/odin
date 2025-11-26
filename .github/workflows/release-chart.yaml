@@ -22,7 +22,7 @@ jobs:
           git config user.email "release-bot@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
 
       - name: Add dependency chart repos
         run: |
@@ -30,10 +30,17 @@ jobs:
           helm repo add minio https://charts.min.io/
           helm repo add percona https://percona.github.io/percona-helm-charts/
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1
-        with:
-          mark_as_latest: false
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-chart-{{ .Version }}"
+      - name: Update Chart.lock
+        working-directory: charts/odin
+        run: helm dependency update
+
+      - name: Lint chart
+        working-directory: charts/odin
+        run: helm lint .
+
+      - name: Publish helm chart
+        working-directory: charts
+        run: |
+          helm package odin
+          VERSION=$(yq -r '.version' odin/Chart.yaml)
+          helm push odin-${VERSION}.tgz ${{ vars.HELM_REGISTRY }}/${{ vars.HELM_REPOSITORY }} --username ${{ secrets.HELM_USERNAME }} --password ${{ secrets.HELM_PASSWORD }}

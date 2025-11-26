@@ -6,6 +6,7 @@ version: 0.0.1
 appVersion: 0.0.1
 keywords:
   - odin
+  - percona
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
