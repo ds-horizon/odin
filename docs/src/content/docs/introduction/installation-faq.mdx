@@ -1,0 +1,135 @@
+---
+title: Installation FAQ
+description: Common questions about Odin installation, configuration, and operations
+---
+
+## General Questions
+
+**Q: What is the minimum Kubernetes version required?**
+
+A: Kubernetes v1.30 or later. Versions 1.30-1.34 are tested and recommended.
+
+**Q: Can I install Odin on Minikube?**
+
+A: Yes, but Kind is recommended for local development. Minikube may require additional memory configuration.
+
+**Q: How much does Odin cost?**
+
+A: Odin is open-source and free to use under the MIT License. You only pay for the infrastructure it runs on.
+
+## Installation Questions
+
+**Q: Can I use external databases instead of internal ones?**
+
+A: Yes! You can configure external MySQL, Redis, and Elasticsearch:
+
+```yaml
+mysql:
+  external:
+    enabled: true
+    master:
+      host: "your-rds-endpoint.com"
+redis:
+  external:
+    enabled: true
+    host: "your-redis-endpoint.com"
+elasticsearch:
+  external:
+    enabled: true
+    host: "your-es-endpoint.com"
+```
+
+**Q: How do I customize resource allocations?**
+
+A: Create a custom values file:
+
+```yaml
+deployer:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 4Gi
+```
+
+Then install with: `./install.sh --values custom-values.yaml`
+
+## Configuration Questions
+
+**Q: What are ES256 keys and why are they required?**
+
+A: ES256 (ECDSA with P-256 curve and SHA-256) keys are used for secure authentication between components. They're automatically generated during installation or you can provide your own.
+
+
+**Q: How do I enable high availability?**
+
+A: Increase replica counts in your values file:
+
+```yaml
+deployer:
+  replicaCount: 3
+accountManager:
+  replicaCount: 2
+mysql:
+  mysql:
+    size: 3
+redis:
+  architecture: replication
+  master:
+    count: 1
+  replica:
+    replicaCount: 2
+```
+
+## Cloud-Specific Questions
+
+**Q: Can I install on EKS/GKE/AKS?**
+
+A: Yes! Odin works on all major cloud Kubernetes platforms.
+
+
+**Q: How do I expose Odin externally?**
+
+A: Use Kubernetes Ingress or LoadBalancer:
+
+```yaml
+deployer:
+  service:
+    type: LoadBalancer  # or configure Ingress
+```
+
+## Operational Questions
+
+**Q: How do I backup Odin data?**
+
+A: Enable automated backups for MySQL:
+
+```yaml
+mysql:
+  backup:
+    enabled: true
+    schedule:
+      - name: "daily-backup"
+        schedule: "0 2 * * *"
+        keep: 7
+        storageName: s3local
+```
+
+Backups are stored in MinIO (`odin-backup-bucket`).
+
+**Q: How do I upgrade Odin?**
+
+A: Use Helm upgrade:
+
+```bash
+helm repo update
+helm upgrade odin odin/odin -n odin --values your-values.yaml
+```
+
+For major version upgrades, always review the release notes and backup your data first.
+
+**Q: How do I completely remove Odin?**
+
+A: See the [Installation Guide](/odin/introduction/getting-started/) for uninstallation instructions.
