@@ -32,29 +32,6 @@ install_odin_cli() {
     # Install to home directory
     local install_dir="${HOME}"
 
-    # Get GitHub PAT from environment variable or prompt user
-    local github_token
-    if [[ -n "${GITHUB_TOKEN:-}" ]]; then
-        github_token="${GITHUB_TOKEN}"
-        log_info "Using GitHub PAT from GITHUB_TOKEN environment variable"
-    elif [[ -t 0 ]]; then
-        # prompt user for PAT
-        log_info "GitHub Personal Access Token (PAT) is required to download the CLI binary."
-        log_info "You can create one at: https://github.com/settings/tokens"
-        log_info "Required scope: 'public_repo' or 'repo'"
-        read -rsp "Enter your GitHub PAT: " github_token
-        echo ""
-    else
-        log_error "Non-interactive terminal detected and GITHUB_TOKEN not set."
-        log_info "Please set GITHUB_TOKEN environment variable or run in an interactive terminal."
-        return 1
-    fi
-
-    if [[ -z "${github_token}" ]]; then
-        log_error "GitHub PAT is required to download the CLI binary"
-        return 1
-    fi
-
     # Detect OS + ARCH
     local os_type arch_type
     os_type=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -88,7 +65,7 @@ install_odin_cli() {
     local asset_name="odin_${os_type}_${arch_type}.tar.gz"
 
     local latest_tag
-    if ! latest_tag=$(curl -s -L -H "Authorization: token ${github_token}" \
+    if ! latest_tag=$(curl -s -L \
         "${repo_url}/releases/latest" \
         | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'); then
         log_error "Failed to fetch latest release tag"
@@ -117,7 +94,7 @@ install_odin_cli() {
 
     # Extract asset ID from JSON
     local asset_id
-    asset_id=$(curl -s -L -H "Authorization: token ${github_token}" \
+    asset_id=$(curl -s -L \
         "${repo_url}/releases/tags/${latest_tag}" \
         | jq -r --arg name "${asset_name}" '.assets[] | select(.name == $name) | .id')
 
@@ -133,7 +110,6 @@ install_odin_cli() {
 
     # Download the asset
     if ! curl -L \
-        -H "Authorization: token ${github_token}" \
         -H "Accept: application/octet-stream" \
         "${repo_url}/releases/assets/${asset_id}" \
         -o "${archive_path}"; then
