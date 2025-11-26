@@ -1,10 +1,6 @@
 # Odin
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 **Production-ready deployment platform for your cloud**
-
-[What is Odin?](#what-is-odin) • [Core Concepts](#core-concepts) • [Installation](#installation)
 
 ---
 
@@ -90,29 +86,3 @@ The guide covers:
 
 - **Issue Tracker**: https://github.com/ds-horizon/odin/issues
 - **Releases**: https://github.com/ds-horizon/odin/releases
-
-
-### Community
-
-- **License**: MIT License (see [LICENSE](LICENSE))
-- **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-### Support
-
-For issues, questions, or contributions:
-
-1. **Check Documentation**: Review this guide
-2. **Search Issues**: Check if someone else has the same problem
-3. **Create Issue**: File a detailed issue on GitHub
-
----
-
-## Acknowledgments
-
-Odin is built on top of excellent open-source projects:
-- Kubernetes community
-- Helm project
-- KEDA maintainers
-- Percona team
-- Bitnami chart contributors
-- All other open-source dependencies
