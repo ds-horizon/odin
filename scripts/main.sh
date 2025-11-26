@@ -27,7 +27,7 @@ LOG_FILE="/tmp/odin-install-$(date +%Y%m%d-%H%M%S).log"
 # Default values
 DEFAULT_NAMESPACE="odin"
 DEFAULT_RELEASE_NAME="odin"
-DEFAULT_CHART_NAME="odin/odin"  # Chart from registry
+DEFAULT_CHART_NAME="oci://registry-1.docker.io/odinhq/odin"  # Chart from registry
 DEFAULT_VALUES_FILE=""  # Will use chart defaults or user-provided file
 
 # Command line options
