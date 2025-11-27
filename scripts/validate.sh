@@ -7,6 +7,10 @@
 # functions for the Odin Helm chart installation.
 #==============================================================================
 
+# Configuration constants
+readonly IMAGE_PULL_BATCH_SIZE=3
+readonly IMAGE_LOAD_BATCH_SIZE=3
+
 # Setup Docker registry for Kind context if needed
 setup_registry_for_context() {
     local context="$1"
@@ -27,6 +31,55 @@ maybe_preload_kind_images() {
         local cluster_name="${context#kind-}"
         preload_images_to_kind "${cluster_name}"
     fi
+}
+
+# Execute commands in parallel with batching
+# Usage: run_commands_in_batches batch_size progress_label command_prefix item1 item2 ...
+# Example: run_commands_in_batches 3 "Pulling" "docker pull" image1 image2 image3
+# Note: command_prefix can include options, e.g., "docker pull --quiet"
+run_commands_in_batches() {
+    local batch_size="$1"
+    local progress_label="$2"
+    local command_prefix="$3"
+    shift 3
+    local items=("$@")
+
+    local total_items=${#items[@]}
+    local current_index=0
+    local completed=0
+
+    log_info "${progress_label} ${total_items} items in batches of ${batch_size}..."
+
+    while [[ ${current_index} -lt ${total_items} ]]; do
+        local batch_pids=()
+
+        # Start batch
+        for ((i=0; i<batch_size && current_index<total_items; i++)); do
+            local item="${items[${current_index}]}"
+            # Use eval with proper quoting to handle commands with options
+            # Capture item in subshell to avoid race condition
+            (
+                # shellcheck disable=SC2034  # captured_item is used within eval context
+                local captured_item="${item}"
+                eval "${command_prefix}" '"${captured_item}"' > /dev/null 2>&1
+            ) &
+            batch_pids+=($!)
+            current_index=$((current_index + 1))
+        done
+
+        # Wait for batch to complete
+        for pid in "${batch_pids[@]}"; do
+            wait "${pid}"
+            completed=$((completed + 1))
+            # Show progress every batch or at the end
+            if [[ $((completed % batch_size)) -eq 0 ]] || [[ ${completed} -eq ${total_items} ]]; then
+                printf "\r\033[K%s[INFO]%s Progress: %s/%s items completed" "${BLUE}" "${NC}" "${completed}" "${total_items}" >&2
+            fi
+        done
+    done
+
+    echo ""
+    log_success "Completed ${completed}/${total_items} items"
 }
 
 # Connect to an existing Kind cluster
@@ -161,6 +214,7 @@ setup_kind_cluster_flow() {
             log_success "Kind installed and cluster created successfully"
             # Preload images after cluster creation
             preload_images_to_kind "odin-cluster"
+            return $?
         else
             log_error "Failed to install Kind and create cluster"
             return 1
@@ -1241,66 +1295,32 @@ get_odin_images() {
     fi
 }
 
-# Preload Docker images to Kind cluster
-preload_images_to_kind() {
-    local cluster_name="$1"
+# Pull Docker images in parallel
+pull_images_parallel() {
+    local images=("$@")
 
-    log_step "Preloading Docker images to Kind cluster"
-
-    log_debug "Cluster name: ${cluster_name}"
-
-    # Check if Kind cluster exists
-    if ! kind get clusters 2>/dev/null | grep -q "^${cluster_name}$"; then
-        log_error "Kind cluster '${cluster_name}' does not exist"
-        log_info "Available Kind clusters:"
-        kind get clusters 2>/dev/null || log_info "  (none)"
-        return 1
-    fi
-
-    log_debug "Kind cluster '${cluster_name}' exists"
-
-    # Get list of images to preload
-    local images=()
-    while IFS= read -r line; do
-        images+=("${line}")
-    done < <(get_odin_images)
-
-    log_info "Pulling ${#images[@]} images in parallel (this may take several minutes)..."
     log_info ""
+    run_commands_in_batches "${IMAGE_PULL_BATCH_SIZE}" "Pulling" "docker pull" "${images[@]}"
+    log_info ""
+}
 
-    # Pull all images in parallel
-    local pull_pids=()
-    local pull_failed=()
-    local total_images=${#images[@]}
+# Verify pulled images and populate global PULL_FAILED_IMAGES array
+verify_pulled_images() {
+    local images=("$@")
 
-    for image in "${images[@]}"; do
-        (docker pull "${image}" > /dev/null 2>&1) &
-        pull_pids+=($!)
-    done
-
-    # Wait for all pulls to complete with progress indicator
-    local completed=0
-    for pid in "${pull_pids[@]}"; do
-        wait "${pid}"
-        completed=$((completed + 1))
-        # Show progress every 3 images or at the end
-        if [[ $((completed % 3)) -eq 0 ]] || [[ ${completed} -eq ${total_images} ]]; then
-            printf "\r\033[K%s[INFO]%s Progress: %s/%s images pulled" "${BLUE}" "${NC}" "${completed}" "${total_images}" >&2
-        fi
-    done
-    echo ""
-
-    # Check pull results
     log_info ""
     log_info "Verifying pulled images..."
 
+    # Use global variable to return results (log functions write to stdout, not stderr)
+    declare -g -a PULL_FAILED_IMAGES=()
     local pull_success_count=0
+
     for image in "${images[@]}"; do
         if docker image inspect "${image}" >/dev/null 2>&1; then
             pull_success_count=$((pull_success_count + 1))
         else
             log_error "✗ ${image} (pull failed)"
-            pull_failed+=("${image}")
+            PULL_FAILED_IMAGES+=("${image}")
         fi
     done
 
@@ -1313,34 +1333,24 @@ preload_images_to_kind() {
         return 1
     fi
 
-    # Now load images into Kind cluster (3 at a time in parallel)
-    log_info "Loading images into Kind cluster '${cluster_name}' (3 at a time)..."
-    log_info ""
+    return 0
+}
+
+# Load images to Kind cluster
+load_images_to_kind_cluster() {
+    local cluster_name="$1"
+    shift
+    local images_to_load=("$@")
 
     # Setup cleanup trap for temporary files
     trap 'rm -f /tmp/kind-load-$$-*.log /tmp/kind-load-$$-*.log.exit 2>/dev/null' RETURN EXIT INT TERM
 
+    log_info "Loading images into Kind cluster '${cluster_name}' (${IMAGE_LOAD_BATCH_SIZE} at a time)..."
+    log_info ""
+
     local failed_images=()
     local loaded_count=0
-    local images_to_load=()
-
-    # Create associative array for O(1) lookup of failed pulls
-    declare -A pull_failed_map
-    for failed in "${pull_failed[@]}"; do
-        pull_failed_map["${failed}"]=1
-    done
-
-    # Build list of images to load (exclude failed pulls)
-    for image in "${images[@]}"; do
-        if [[ -n "${pull_failed_map[${image}]}" ]]; then
-            failed_images+=("${image}")
-        else
-            images_to_load+=("${image}")
-        fi
-    done
-
-    # Process images in batches of 3
-    local batch_size=3
+    local batch_size="${IMAGE_LOAD_BATCH_SIZE}"
     local total_to_load=${#images_to_load[@]}
     local current_index=0
 
@@ -1437,7 +1447,7 @@ preload_images_to_kind() {
 
     # Summary
     log_info "Image preload summary:"
-    log_info "  Successfully loaded: ${loaded_count}/${#images[@]}"
+    log_info "  Successfully loaded: ${loaded_count}/${total_to_load}"
 
     if [[ ${#failed_images[@]} -gt 0 ]]; then
         log_warning "Failed to load ${#failed_images[@]} image(s):"
@@ -1450,6 +1460,57 @@ preload_images_to_kind() {
     fi
 
     return 0
+}
+
+# Preload Docker images to Kind cluster (main orchestrator function)
+preload_images_to_kind() {
+    local cluster_name="$1"
+
+    log_step "Preloading Docker images to Kind cluster"
+
+    log_debug "Cluster name: ${cluster_name}"
+
+    # Check if Kind cluster exists
+    if ! kind get clusters 2>/dev/null | grep -q "^${cluster_name}$"; then
+        log_error "Kind cluster '${cluster_name}' does not exist"
+        log_info "Available Kind clusters:"
+        kind get clusters 2>/dev/null || log_info "  (none)"
+        return 1
+    fi
+
+    log_debug "Kind cluster '${cluster_name}' exists"
+
+    # Get list of images to preload
+    local images=()
+    while IFS= read -r line; do
+        images+=("${line}")
+    done < <(get_odin_images)
+
+    # Pull images in parallel
+    pull_images_parallel "${images[@]}"
+
+    # Verify pulled images (populates global PULL_FAILED_IMAGES array)
+    if ! verify_pulled_images "${images[@]}"; then
+        log_error "Image verification failed. Cannot proceed with loading."
+        return 1
+    fi
+
+    # Create associative array for O(1) lookup of failed pulls
+    declare -A pull_failed_map
+    for failed in "${PULL_FAILED_IMAGES[@]}"; do
+        pull_failed_map["${failed}"]=1
+    done
+
+    # Build list of images to load (exclude failed pulls)
+    local images_to_load=()
+    for image in "${images[@]}"; do
+        if [[ -z "${pull_failed_map[${image}]}" ]]; then
+            images_to_load+=("${image}")
+        fi
+    done
+
+    # Load images to Kind cluster
+    load_images_to_kind_cluster "${cluster_name}" "${images_to_load[@]}"
 }
 
 #==============================================================================
