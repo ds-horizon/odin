@@ -207,7 +207,6 @@ setup_local_dev_data() {
 
     # Generate kubeconfig for in-cluster access
     log_info "Generating kubeconfig for in-cluster access..."
-    local kubeconfig_base64
     kubeconfig_base64="$(
         kubectl config view --minify --raw \
             | sed 's#server: .*#server: https://kubernetes.default.svc.cluster.local#' \
