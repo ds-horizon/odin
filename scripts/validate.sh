@@ -462,10 +462,10 @@ check_docker_login() {
 
     log_info "Verifying Docker Hub authentication..."
 
-    # Try to pull a test image manifest to check authentication
-    # Use /dev/null for stdin to make it non-interactive
+    # Try to check authentication by running docker login non-interactively
+    # Redirect stdin from /dev/null to prevent hanging on credential prompts
     local login_output
-    login_output=$(echo "" | docker login 2>&1 < /dev/null)
+    login_output=$(docker login 2>&1 < /dev/null)
     local login_exit_code=$?
 
     # Check if output contains device confirmation code message
@@ -1269,42 +1269,24 @@ get_odin_images() {
         return 1
     fi
 
-    # Check if jq is available for parsing JSON
-    if command -v jq >/dev/null 2>&1; then
-        # Validate JSON syntax
-        if ! jq empty "${images_json}" 2>/dev/null; then
-            log_error "Invalid JSON in ${images_json}"
-            log_error "Please check the file for syntax errors"
-            return 1
-        fi
-
-        # Parse and return image list
-        local images
-        images=$(jq -r '.images[]' "${images_json}" 2>/dev/null)
-
-        if [[ -z "${images}" ]]; then
-            log_error "No images found in ${images_json}"
-            log_error "Expected JSON structure: {\"images\": [\"image1\", \"image2\", ...]}"
-            return 1
-        fi
-
-        echo "${images}"
-    else
-        # Fallback: use grep and sed for basic JSON parsing
-        log_debug "jq not available, using fallback JSON parser"
-        log_warning "Cannot validate JSON syntax without jq. Install jq for better error checking."
-
-        local images
-        images=$(grep -o '"docker\.io/[^"]*"' "${images_json}" | sed 's/"//g'; \
-                 grep -o '"quay\.io/[^"]*"' "${images_json}" | sed 's/"//g')
-
-        if [[ -z "${images}" ]]; then
-            log_error "No images found in ${images_json}"
-            return 1
-        fi
-
-        echo "${images}"
+    # Validate JSON syntax with jq
+    if ! jq empty "${images_json}" 2>/dev/null; then
+        log_error "Invalid JSON in ${images_json}"
+        log_error "Please check the file for syntax errors"
+        return 1
     fi
+
+    # Parse and return image list
+    local images
+    images=$(jq -r '.images[]' "${images_json}" 2>/dev/null)
+
+    if [[ -z "${images}" ]]; then
+        log_error "No images found in ${images_json}"
+        log_error "Expected JSON structure: {\"images\": [\"image1\", \"image2\", ...]}"
+        return 1
+    fi
+
+    echo "${images}"
 }
 
 # Pull Docker images in parallel
