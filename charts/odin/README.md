@@ -322,12 +322,17 @@ helm install <my-release> oci://registry-1.docker.io/odinhq/odin
 | `mysql.finalizers`                                   | Finalizers for the mysql deployment    | `["percona.com/delete-ssl","percona.com/delete-mysql-pvc"]` |
 | `mysql.secretsName`                                  | Secrets name for the mysql deployment  | `internal-odin-mysql`                                       |
 | `mysql.mysql.clusterType`                            | Cluster type                           | `async`                                                     |
+| `mysql.mysql.imagePullPolicy`                        | MySQL image pull policy                | `IfNotPresent`                                              |
 | `mysql.mysql.expose.enabled`                         | Enable MySQL service exposure          | `false`                                                     |
 | `mysql.orchestrator.enabled`                         | Enable orchestrator deployment         | `true`                                                      |
+| `mysql.orchestrator.imagePullPolicy`                 | Orchestrator image pull policy         | `IfNotPresent`                                              |
 | `mysql.proxy.haproxy.enabled`                        | Enable HAProxy                         | `true`                                                      |
 | `mysql.proxy.haproxy.resources.requests.memory`      | HAProxy resources requests memory      | `256Mi`                                                     |
 | `mysql.proxy.haproxy.resources.limits.memory`        | HAProxy resources limits memory        | `512Mi`                                                     |
+| `mysql.proxy.haproxy.imagePullPolicy`                | HAProxy image pull policy              | `IfNotPresent`                                              |
+| `mysql.proxy.router.imagePullPolicy`                 | Router image pull policy               | `IfNotPresent`                                              |
 | `mysql.backup.enabled`                               | Enable backup deployment               | `true`                                                      |
+| `mysql.backup.imagePullPolicy`                       | Backup image pull policy               | `IfNotPresent`                                              |
 | `mysql.backup.schedule`                              | Automatic Backup schedule              | `nil`                                                       |
 | `mysql.backup.storages.s3local.s3.endpointUrl`       | S3 local storage endpoint URL          | `http://odin-minio:9000`                                    |
 | `mysql.backup.storages.s3local.s3.bucket`            | S3 local storage bucket                | `odin-backup-bucket`                                        |
@@ -335,6 +340,8 @@ helm install <my-release> oci://registry-1.docker.io/odinhq/odin
 | `mysql.backup.storages.s3local.s3.region`            | S3 local storage region                | `us-east-1`                                                 |
 | `mysql.backup.storages.s3local.type`                 | S3 local storage type                  | `s3`                                                        |
 | `mysql.backup.storages.s3local.verifyTLS`            | S3 local storage verify TLS            | `false`                                                     |
+| `mysql.pmm.imagePullPolicy`                          | PMM image pull policy                  | `IfNotPresent`                                              |
+| `mysql.toolkit.imagePullPolicy`                      | Toolkit image pull policy              | `IfNotPresent`                                              |
 
 ### Redis parameters
 

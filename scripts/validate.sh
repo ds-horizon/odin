@@ -73,7 +73,7 @@ run_commands_in_batches() {
             completed=$((completed + 1))
             # Show progress every batch or at the end
             if [[ $((completed % batch_size)) -eq 0 ]] || [[ ${completed} -eq ${total_items} ]]; then
-                printf "\r\033[K%s[INFO]%s Progress: %s/%s items completed" "${BLUE}" "${NC}" "${completed}" "${total_items}" >&2
+                echo -ne "\r\033[K${BLUE}[INFO]${NC} Progress: ${completed}/${total_items} items completed"
             fi
         done
     done
@@ -1300,7 +1300,7 @@ pull_images_parallel() {
     local images=("$@")
 
     log_info ""
-    run_commands_in_batches "${IMAGE_PULL_BATCH_SIZE}" "Pulling" "docker pull" "${images[@]}"
+    run_commands_in_batches "${IMAGE_PULL_BATCH_SIZE}" "Pulling images" "docker pull" "${images[@]}"
     log_info ""
 }
 
