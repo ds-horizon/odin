@@ -8,7 +8,7 @@ minio:
 # MySQL Database configuration
 mysql:
   mysql:
-    size: 2
+    size: 1
     configuration: |
       max_connections=200
       innodb_buffer_pool_size=256M
