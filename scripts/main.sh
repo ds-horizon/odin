@@ -36,6 +36,7 @@ RELEASE_NAME="${DEFAULT_RELEASE_NAME}"
 CHART_NAME="${DEFAULT_CHART_NAME}"
 VALUES_FILE="${DEFAULT_VALUES_FILE}"
 DEBUG=false
+export PRELOAD_IMAGES=false
 
 #==============================================================================
 # IMPORT UTILITY MODULES

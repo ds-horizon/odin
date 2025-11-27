@@ -1041,6 +1041,9 @@ mysql:
     ## @param mysql.mysql.clusterType Cluster type
     ##
     clusterType: async
+    ## @param mysql.mysql.imagePullPolicy MySQL image pull policy
+    ##
+    imagePullPolicy: IfNotPresent
 
     ## Enable MySQL service exposure
     ##
@@ -1055,6 +1058,9 @@ mysql:
     ## @param mysql.orchestrator.enabled Enable orchestrator deployment
     ##
     enabled: true
+    ## @param mysql.orchestrator.imagePullPolicy Orchestrator image pull policy
+    ##
+    imagePullPolicy: IfNotPresent
 
   ## MySQL proxy configuration
   ##
@@ -1065,11 +1071,19 @@ mysql:
     ##
     haproxy:
       enabled: true
+      ## @param mysql.proxy.haproxy.imagePullPolicy HAProxy image pull policy
+      ##
+      imagePullPolicy: IfNotPresent
       resources:
         requests:
           memory: 256Mi
         limits:
           memory: 512Mi
+
+    router:
+      ## @param mysql.proxy.router.imagePullPolicy Router image pull policy
+      ##
+      imagePullPolicy: IfNotPresent
 
   ## MySQL server backup configuration
   ##
@@ -1077,6 +1091,9 @@ mysql:
     ## @param mysql.backup.enabled Enable backup deployment
     ##
     enabled: true
+    ## @param mysql.backup.imagePullPolicy Backup image pull policy
+    ##
+    imagePullPolicy: IfNotPresent
     ## @param mysql.backup.schedule Automatic Backup schedule
     ##
     schedule:
@@ -1110,6 +1127,16 @@ mysql:
         ## @param mysql.backup.storages.s3local.verifyTLS S3 local storage verify TLS
         ##
         verifyTLS: false
+
+  pmm:
+    ## @param mysql.pmm.imagePullPolicy PMM image pull policy
+    ##
+    imagePullPolicy: IfNotPresent
+
+  toolkit:
+    ## @param mysql.toolkit.imagePullPolicy Toolkit image pull policy
+    ##
+    imagePullPolicy: IfNotPresent
 
 ## @section Redis parameters
 ##
