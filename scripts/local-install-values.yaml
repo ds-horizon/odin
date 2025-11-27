@@ -38,6 +38,7 @@ accountManager:
       value: "-Xms128m -Xmx128m -Xmn64m"
 
 discoveryService:
+  replicaCount: 0
   resources:
     limits:
       memory: 512Mi
