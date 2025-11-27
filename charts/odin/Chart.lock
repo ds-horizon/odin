@@ -17,5 +17,8 @@ dependencies:
 - name: fluent-bit
   repository: https://charts.bitnami.com/bitnami
   version: 3.1.13
-digest: sha256:bac21683af5c82893e43206af6068f5f24b6f637aef319fdf0b297090360a46e
-generated: "2025-10-30T14:21:04.320259+05:30"
+- name: odin-discovery-controller
+  repository: https://ds-horizon.github.io/odin-discovery-controller/
+  version: 0.0.1
+digest: sha256:65a191745c5589612e5583226f8b9ea7d0b1e61ff5f92ddfc7257f303da95bdc
+generated: "2025-11-26T19:37:23.267956+05:30"

@@ -691,6 +691,25 @@ discoveryService:
     ##
     automountServiceAccountToken: true
 
+## @section Discovery Controller parameters
+##
+discoveryController:
+  ## @param discoveryController.enabled Enable discovery-controller deployment
+  ##
+  enabled: false
+
+  ## @section Discovery Controller Configuration
+  ## @extra controller Controller runtime configuration
+  controller:
+    ## @param discoveryController.controller.discoveryBackend Discovery backend service address
+    ## Defaults to the internal discovery service (odin-discovery-service:80)
+    ## Override this if using an external discovery service
+    discoveryBackend: "odin-discovery-service:80"
+    ## @param discoveryController.controller.orgId Organisation ID (required)
+    orgId: ""
+    ## @param discoveryController.controller.accountName Account name (required)
+    accountName: ""
+
 ## @section Account manager parameters
 ##
 accountManager:

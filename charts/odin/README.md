@@ -222,6 +222,21 @@ helm install <my-release> oci://registry-1.docker.io/odinhq/odin
 | `discoveryService.serviceAccount.annotations`                  | Annotations for discovery service account                          | `{}`   |
 | `discoveryService.serviceAccount.automountServiceAccountToken` | Automount API credentials for a service account                    | `true` |
 
+### Discovery Controller parameters
+
+| Name                          | Description                            | Value   |
+| ----------------------------- | -------------------------------------- | ------- |
+| `discoveryController.enabled` | Enable discovery-controller deployment | `false` |
+
+### Discovery Controller Configuration
+
+| Name                                              | Description                       | Value                       |
+| ------------------------------------------------- | --------------------------------- | --------------------------- |
+| `controller`                                      | Controller runtime configuration  |                             |
+| `discoveryController.controller.discoveryBackend` | Discovery backend service address | `odin-discovery-service:80` |
+| `discoveryController.controller.orgId`            | Organisation ID (required)        | `""`                        |
+| `discoveryController.controller.accountName`      | Account name (required)           | `""`                        |
+
 ### Account manager parameters
 
 | Name                               | Description                                                           | Value                    |
