@@ -45,7 +45,7 @@ connect_to_existing_kind_cluster() {
             return 0
         fi
 
-        log_warn "Cluster not available yet (attempt ${i}/${max_retries})"
+        log_info "Cluster not available yet (attempt ${i}/${max_retries})"
         sleep "${sleep_seconds}"
     done
 
