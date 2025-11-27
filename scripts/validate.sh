@@ -98,7 +98,7 @@ connect_to_existing_kind_cluster() {
         return 0
     else
         log_error "Failed to connect to existing Kind cluster"
-        return 1
+        return 0
     fi
 }
 

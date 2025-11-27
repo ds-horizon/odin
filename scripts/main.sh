@@ -222,12 +222,13 @@ setup_local_dev_data() {
     # Update kubeconfig field in the JSON file
     log_info "Updating kubeconfig in kind_service_account.json..."
 
-    escaped_kc=$(printf '%s' "${kubeconfig_base64}" | sed 's/[&/\]/\\&/g')
-
-    if ! sed -i '' "s/\"kubeconfig\": \".*\"/\"kubeconfig\": \"${escaped_kc}\"/" "${kind_sa_file}"; then
+    if ! jq --arg kc "${kubeconfig_base64}" '.kubeconfig = $kc' \
+           "${kind_sa_file}" > "${kind_sa_file}.tmp"; then
         log_error "Failed to update kubeconfig in ${kind_sa_file}"
         return 1
     fi
+
+    mv "${kind_sa_file}.tmp" "${kind_sa_file}"
 
     log_info "Starting port-forward to account-manager service..."
 
@@ -301,7 +302,7 @@ collect_user_input() {
 # Install Odin Helm chart
 install_odin() {
     # Prepare Helm command (using upgrade --install for idempotency)
-    local helm_cmd="helm upgrade --install ${RELEASE_NAME} ${CHART_NAME}"
+    local helm_cmd="helm upgrade --install ${RELEASE_NAME} charts/odin"
     log_info "Executing Helm upgrade --install..."
 
     # Add namespace
