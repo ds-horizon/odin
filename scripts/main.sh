@@ -209,21 +209,22 @@ setup_local_dev_data() {
     # Generate kubeconfig for in-cluster access
     log_info "Generating kubeconfig for in-cluster access..."
     local kubeconfig_base64
-    kubeconfig_base64=$(
-    kubectl config view --minify --raw \
-        | sed 's#server: .*#server: https://kubernetes.default.svc.cluster.local#' \
-        | base64 | tr -d '\n'
-    )
+    kubeconfig_base64="$(
+        kubectl config view --minify --raw \
+            | sed 's#server: .*#server: https://kubernetes.default.svc.cluster.local#' \
+            | base64 | tr -d '\n'
+    )"
+
     if [[ -z "${kubeconfig_base64}" ]]; then
         log_error "Failed to generate kubeconfig"
         return 1
     fi
 
-    # Update kubeconfig field in the JSON file
     log_info "Updating kubeconfig in kind_service_account.json..."
 
-    if ! jq --arg kc "${kubeconfig_base64}" '.kubeconfig = $kc' \
-           "${kind_sa_file}" > "${kind_sa_file}.tmp"; then
+    if ! jq --arg kc "${kubeconfig_base64}" \
+          '.kubeconfig = $kc' \
+          "${kind_sa_file}" > "${kind_sa_file}.tmp"; then
         log_error "Failed to update kubeconfig in ${kind_sa_file}"
         return 1
     fi
