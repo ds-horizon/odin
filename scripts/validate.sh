@@ -20,6 +20,15 @@ setup_registry_for_context() {
     fi
 }
 
+# Preload images if this is a Kind cluster
+maybe_preload_kind_images() {
+    local context="$1"
+    if [[ "${context}" == kind-* ]]; then
+        local cluster_name="${context#kind-}"
+        preload_images_to_kind "${cluster_name}"
+    fi
+}
+
 # Connect to an existing Kind cluster
 connect_to_existing_kind_cluster() {
     local cluster_name="$1"
@@ -27,11 +36,6 @@ connect_to_existing_kind_cluster() {
     log_success "Kind cluster '${cluster_name}' already exists"
     log_info "Using existing Kind cluster"
 
-    # Ensure registry is set up for local Kind cluster
-    log_step "Setting up Docker registry for Kind"
-    setup_kind_docker_registry || log_warning "Registry setup had issues but continuing"
-
-    log_step "Connecting to Kubernetes cluster"
     # Set kubectl context to local Kind cluster
     kubectl config use-context "kind-${cluster_name}" >/dev/null 2>&1
 
@@ -94,6 +98,10 @@ select_and_connect_to_context() {
             setup_registry_for_context "${selected_context}"
 
             log_step "Connecting to Kubernetes cluster"
+
+            # Preload images if this is a Kind cluster
+            maybe_preload_kind_images "${selected_context}"
+
             return 0
         else
             log_error "Failed to connect to cluster with context: ${selected_context}"
@@ -116,6 +124,12 @@ setup_kind_cluster_flow() {
         return 1
     fi
 
+    # Check Docker login early (before cluster creation)
+    if ! check_docker_login; then
+        log_error "Docker Hub authentication is required for Kind cluster setup"
+        exit 1
+    fi
+
     # Check if Kind is installed
     if command -v kind >/dev/null 2>&1; then
         log_step_skipped "Installing Kind" "already installed"
@@ -123,10 +137,18 @@ setup_kind_cluster_flow() {
         # Check if local Kind cluster exists
         local cluster_name="odin-cluster"
         if kind get clusters 2>/dev/null | grep -q "^${cluster_name}$"; then
-            connect_to_existing_kind_cluster "${cluster_name}"
+            if connect_to_existing_kind_cluster "${cluster_name}"; then
+                # Setup registry for Kind cluster
+                log_step "Setting up Docker registry for Kind"
+                setup_kind_docker_registry || log_warning "Registry setup had issues but continuing"
+
+                # Preload images
+                preload_images_to_kind "${cluster_name}"
+            fi
             return $?
         else
-            create_new_kind_cluster
+            create_new_kind_cluster && \
+                preload_images_to_kind "${cluster_name}"
             return $?
         fi
     else
@@ -137,7 +159,8 @@ setup_kind_cluster_flow() {
         # Install Kind and create cluster (this function handles step 4 and 5)
         if install_kind_cluster; then
             log_success "Kind installed and cluster created successfully"
-            return 0
+            # Preload images after cluster creation
+            preload_images_to_kind "odin-cluster"
         else
             log_error "Failed to install Kind and create cluster"
             return 1
@@ -177,6 +200,10 @@ connect_to_existing_cluster() {
             setup_registry_for_context "${current_context}"
 
             log_step "Connecting to Kubernetes cluster"
+
+            # Preload images if this is a Kind cluster
+            maybe_preload_kind_images "${current_context}"
+
             return 0
         else
             # User wants to choose a different context
@@ -224,6 +251,10 @@ connect_to_existing_cluster() {
                 setup_registry_for_context "${selected_context}"
 
                 log_step "Connecting to Kubernetes cluster"
+
+                # Preload images if this is a Kind cluster
+                maybe_preload_kind_images "${selected_context}"
+
                 return 0
             else
                 log_error "Failed to connect to cluster with context: ${selected_context}"
@@ -357,6 +388,58 @@ check_docker() {
 
     log_success "Docker is running"
     return 0
+}
+
+# Check Docker Hub authentication
+check_docker_login() {
+    log_step "Checking Docker Hub authentication"
+
+    log_info "Verifying Docker Hub authentication..."
+
+    # Try to pull a test image manifest to check authentication
+    # Use /dev/null for stdin to make it non-interactive
+    local login_output
+    login_output=$(echo "" | docker login 2>&1 < /dev/null)
+    local login_exit_code=$?
+
+    # Check if output contains device confirmation code message
+    if echo "${login_output}" | grep -q "Your one-time device confirmation code is"; then
+        log_error "Docker Desktop requires browser-based authentication"
+        log_info ""
+        log_info "═══════════════════════════════════════════════════════════════"
+        log_info "  Docker Desktop Authentication Required"
+        log_info "═══════════════════════════════════════════════════════════════"
+        log_info ""
+        log_info "Please login to Docker Desktop:"
+        log_info "  1. Open Docker Desktop application"
+        log_info "  2. Click 'Sign in' and complete authentication in your browser"
+        log_info "  3. After successful login, re-run this installation script"
+        log_info ""
+        log_info "═══════════════════════════════════════════════════════════════"
+        return 1
+    fi
+
+    # Check if login was successful (already logged in)
+    if [[ ${login_exit_code} -eq 0 ]]; then
+        log_success "Docker Hub authentication verified"
+        return 0
+    else
+        # Not logged in - instruct user to login
+        log_error "Not authenticated with Docker Hub"
+        log_info ""
+        log_info "═══════════════════════════════════════════════════════════════"
+        log_info "  Docker Hub Authentication Required"
+        log_info "═══════════════════════════════════════════════════════════════"
+        log_info ""
+        log_info "Please login to Docker Desktop:"
+        log_info "  1. Open Docker Desktop application"
+        log_info "  2. Click 'Sign in' and complete authentication in your browser"
+        log_info "  3. After successful login, re-run this installation script"
+        log_info ""
+        log_info "═══════════════════════════════════════════════════════════════"
+        log_debug "Login output: ${login_output}"
+        return 1
+    fi
 }
 
 # Check and setup grpcurl
@@ -633,6 +716,19 @@ ensure_local_docker_registry() {
     local reg_port="50000"
 
     log_info "Ensuring local Docker registry '${reg_name}' on port ${reg_port}..."
+
+    # Check if 'kind' network exists, create if not
+    if ! docker network inspect kind >/dev/null 2>&1; then
+        log_info "Creating 'kind' Docker network..."
+        if docker network create kind 2>&1 | tee -a "${LOG_FILE}"; then
+            log_success "'kind' network created"
+        else
+            log_error "Failed to create 'kind' network"
+            return 1
+        fi
+    else
+        log_debug "'kind' network already exists"
+    fi
 
     local running
     running=$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)
@@ -1086,6 +1182,272 @@ EOF
     log_success "Kind cluster '${cluster_name}' is ready."
     log_info "kubectl context set to: kind-${cluster_name}"
     log_info "Your home directory is mounted at /local in the cluster."
+
+    return 0
+}
+
+# Get list of Docker images to preload
+get_odin_images() {
+    # Validate SCRIPT_DIR is set
+    if [[ -z "${SCRIPT_DIR}" ]]; then
+        log_error "SCRIPT_DIR not set - cannot locate preload-images.json"
+        log_error "This is a script configuration error. Please report this issue."
+        return 1
+    fi
+
+    local images_json="${SCRIPT_DIR}/preload-images.json"
+
+    # Check if the JSON file exists
+    if [[ ! -f "${images_json}" ]]; then
+        log_error "Image list file not found: ${images_json}"
+        return 1
+    fi
+
+    # Check if jq is available for parsing JSON
+    if command -v jq >/dev/null 2>&1; then
+        # Validate JSON syntax
+        if ! jq empty "${images_json}" 2>/dev/null; then
+            log_error "Invalid JSON in ${images_json}"
+            log_error "Please check the file for syntax errors"
+            return 1
+        fi
+
+        # Parse and return image list
+        local images
+        images=$(jq -r '.images[]' "${images_json}" 2>/dev/null)
+
+        if [[ -z "${images}" ]]; then
+            log_error "No images found in ${images_json}"
+            log_error "Expected JSON structure: {\"images\": [\"image1\", \"image2\", ...]}"
+            return 1
+        fi
+
+        echo "${images}"
+    else
+        # Fallback: use grep and sed for basic JSON parsing
+        log_debug "jq not available, using fallback JSON parser"
+        log_warning "Cannot validate JSON syntax without jq. Install jq for better error checking."
+
+        local images
+        images=$(grep -o '"docker\.io/[^"]*"' "${images_json}" | sed 's/"//g'; \
+                 grep -o '"quay\.io/[^"]*"' "${images_json}" | sed 's/"//g')
+
+        if [[ -z "${images}" ]]; then
+            log_error "No images found in ${images_json}"
+            return 1
+        fi
+
+        echo "${images}"
+    fi
+}
+
+# Preload Docker images to Kind cluster
+preload_images_to_kind() {
+    local cluster_name="$1"
+
+    log_step "Preloading Docker images to Kind cluster"
+
+    log_debug "Cluster name: ${cluster_name}"
+
+    # Check if Kind cluster exists
+    if ! kind get clusters 2>/dev/null | grep -q "^${cluster_name}$"; then
+        log_error "Kind cluster '${cluster_name}' does not exist"
+        log_info "Available Kind clusters:"
+        kind get clusters 2>/dev/null || log_info "  (none)"
+        return 1
+    fi
+
+    log_debug "Kind cluster '${cluster_name}' exists"
+
+    # Get list of images to preload
+    local images=()
+    while IFS= read -r line; do
+        images+=("${line}")
+    done < <(get_odin_images)
+
+    log_info "Pulling ${#images[@]} images in parallel (this may take several minutes)..."
+    log_info ""
+
+    # Pull all images in parallel
+    local pull_pids=()
+    local pull_failed=()
+    local total_images=${#images[@]}
+
+    for image in "${images[@]}"; do
+        (docker pull "${image}" > /dev/null 2>&1) &
+        pull_pids+=($!)
+    done
+
+    # Wait for all pulls to complete with progress indicator
+    local completed=0
+    for pid in "${pull_pids[@]}"; do
+        wait "${pid}"
+        completed=$((completed + 1))
+        # Show progress every 3 images or at the end
+        if [[ $((completed % 3)) -eq 0 ]] || [[ ${completed} -eq ${total_images} ]]; then
+            printf "\r\033[K%s[INFO]%s Progress: %s/%s images pulled" "${BLUE}" "${NC}" "${completed}" "${total_images}" >&2
+        fi
+    done
+    echo ""
+
+    # Check pull results
+    log_info ""
+    log_info "Verifying pulled images..."
+
+    local pull_success_count=0
+    for image in "${images[@]}"; do
+        if docker image inspect "${image}" >/dev/null 2>&1; then
+            pull_success_count=$((pull_success_count + 1))
+        else
+            log_error "✗ ${image} (pull failed)"
+            pull_failed+=("${image}")
+        fi
+    done
+
+    log_info ""
+    log_success "Successfully pulled: ${pull_success_count}/${#images[@]} images"
+    log_info ""
+
+    if [[ ${pull_success_count} -eq 0 ]]; then
+        log_error "No images were pulled successfully"
+        return 1
+    fi
+
+    # Now load images into Kind cluster (3 at a time in parallel)
+    log_info "Loading images into Kind cluster '${cluster_name}' (3 at a time)..."
+    log_info ""
+
+    # Setup cleanup trap for temporary files
+    trap 'rm -f /tmp/kind-load-$$-*.log /tmp/kind-load-$$-*.log.exit 2>/dev/null' RETURN EXIT INT TERM
+
+    local failed_images=()
+    local loaded_count=0
+    local images_to_load=()
+
+    # Create associative array for O(1) lookup of failed pulls
+    declare -A pull_failed_map
+    for failed in "${pull_failed[@]}"; do
+        pull_failed_map["${failed}"]=1
+    done
+
+    # Build list of images to load (exclude failed pulls)
+    for image in "${images[@]}"; do
+        if [[ -n "${pull_failed_map[${image}]}" ]]; then
+            failed_images+=("${image}")
+        else
+            images_to_load+=("${image}")
+        fi
+    done
+
+    # Process images in batches of 3
+    local batch_size=3
+    local total_to_load=${#images_to_load[@]}
+    local current_index=0
+
+    while [[ ${current_index} -lt ${total_to_load} ]]; do
+        local batch_pids=()
+        local batch_images=()
+        local batch_outputs=()
+
+        # Start loading up to 3 images in parallel
+        for ((i=0; i<batch_size && current_index<total_to_load; i++)); do
+            local image="${images_to_load[${current_index}]}"
+            batch_images+=("${image}")
+
+            # Use PID instead of RANDOM to avoid collisions
+            local output_file="/tmp/kind-load-$$-${current_index}.log"
+            batch_outputs+=("${output_file}")
+
+            log_info "Loading: ${image}"
+
+            # Load in background
+            (kind load docker-image "${image}" --name "${cluster_name}" > "${output_file}" 2>&1; echo $? > "${output_file}.exit") &
+            batch_pids+=($!)
+
+            current_index=$((current_index + 1))
+        done
+
+        # Wait for this batch to complete
+        for pid in "${batch_pids[@]}"; do
+            wait "${pid}"
+        done
+
+        # Check results for this batch
+        for ((i=0; i<${#batch_images[@]}; i++)); do
+            local image="${batch_images[${i}]}"
+            local output_file="${batch_outputs[${i}]}"
+            local exit_code_file="${output_file}.exit"
+            local load_exit_code
+
+            if [[ -f "${exit_code_file}" ]]; then
+                load_exit_code=$(cat "${exit_code_file}")
+            else
+                load_exit_code=1
+            fi
+
+            local load_output=""
+            if [[ -f "${output_file}" ]]; then
+                load_output=$(cat "${output_file}")
+            fi
+
+            # If direct load fails with containerd digest error, show helpful message
+            if [[ ${load_exit_code} -ne 0 ]] && echo "${load_output}" | grep -q "content digest.*not found"; then
+                log_warning "Failed to load ${image} due to Docker Desktop containerd issue"
+                log_info ""
+                log_info "══════════════════════════════════════════════════════════════"
+                log_info "  Docker Desktop Configuration Required"
+                log_info "══════════════════════════════════════════════════════════════"
+                log_info ""
+                log_info "To fix this issue:"
+                log_info "  1. Open Docker Desktop"
+                log_info "  2. Go to Settings → General"
+                log_info "  3. Uncheck 'Use containerd for pulling and storing images'"
+                log_info "  4. Click 'Apply & Restart'"
+                log_info "  5. Re-run this installation script"
+                log_info ""
+                log_info "This is a known issue with Docker Desktop 27+ and Kind."
+                log_info "See: https://github.com/kubernetes-sigs/kind/issues/3795"
+                log_info ""
+                log_info "══════════════════════════════════════════════════════════════"
+                log_info ""
+
+                # Mark all remaining images as failed and exit
+                # Trap will clean up temp files automatically
+                log_error "Cannot continue with image preloading until Docker Desktop is reconfigured"
+                return 1
+            fi
+
+            log_command_output "kind load docker-image ${image} --name ${cluster_name}" "${load_output}"
+
+            if [[ ${load_exit_code} -eq 0 ]]; then
+                log_success "Loaded ${image} into Kind cluster"
+                loaded_count=$((loaded_count + 1))
+            else
+                log_error "Failed to load ${image} into Kind cluster"
+                log_error "Load error output:"
+                echo "${load_output}" | while IFS= read -r line; do
+                    log_error "  ${line}"
+                done
+                failed_images+=("${image}")
+            fi
+        done
+
+        log_info ""
+    done
+
+    # Summary
+    log_info "Image preload summary:"
+    log_info "  Successfully loaded: ${loaded_count}/${#images[@]}"
+
+    if [[ ${#failed_images[@]} -gt 0 ]]; then
+        log_warning "Failed to load ${#failed_images[@]} image(s):"
+        for failed_image in "${failed_images[@]}"; do
+            log_warning "  - ${failed_image}"
+        done
+        return 1
+    else
+        log_success "All images successfully preloaded to Kind cluster"
+    fi
 
     return 0
 }
