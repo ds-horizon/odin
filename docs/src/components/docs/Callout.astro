@@ -1,0 +1,176 @@
+---
+/**
+ * Callout Component
+ * Replaces Starlight's :::note, :::tip, :::warning, :::caution syntax
+ */
+
+interface Props {
+  type?: 'note' | 'tip' | 'warning' | 'caution' | 'danger';
+  title?: string;
+}
+
+const { type = 'note', title } = Astro.props;
+
+const config = {
+  note: {
+    icon: 'ℹ️',
+    defaultTitle: 'Note',
+    className: 'callout-note',
+  },
+  tip: {
+    icon: '💡',
+    defaultTitle: 'Tip',
+    className: 'callout-tip',
+  },
+  warning: {
+    icon: '⚠️',
+    defaultTitle: 'Warning',
+    className: 'callout-warning',
+  },
+  caution: {
+    icon: '⚠️',
+    defaultTitle: 'Caution',
+    className: 'callout-caution',
+  },
+  danger: {
+    icon: '🚨',
+    defaultTitle: 'Danger',
+    className: 'callout-danger',
+  },
+};
+
+const calloutConfig = config[type];
+const displayTitle = title || calloutConfig.defaultTitle;
+---
+
+<aside class={`callout ${calloutConfig.className}`}>
+  <div class="callout-header">
+    <span class="callout-icon">{calloutConfig.icon}</span>
+    <strong class="callout-title">{displayTitle}</strong>
+  </div>
+  <div class="callout-content">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .callout {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border-left: 4px solid;
+    background: var(--bg-white);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .callout-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .callout-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .callout-title {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .callout-content {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: var(--line-height-relaxed);
+    color: var(--text-secondary);
+  }
+
+  .callout-content :global(p) {
+    margin: 0.5rem 0;
+  }
+
+  .callout-content :global(p:first-child) {
+    margin-top: 0;
+  }
+
+  .callout-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .callout-content :global(code) {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.875em;
+    font-family: var(--font-mono);
+  }
+
+  /* Note - Blue/Info */
+  .callout-note {
+    border-left-color: #3b82f6;
+    background: #eff6ff;
+  }
+
+  .callout-note .callout-title {
+    color: #1e40af;
+  }
+
+  /* Tip - Green */
+  .callout-tip {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+  }
+
+  .callout-tip .callout-title {
+    color: #065f46;
+  }
+
+  /* Warning - Yellow/Orange */
+  .callout-warning,
+  .callout-caution {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+  }
+
+  .callout-warning .callout-title,
+  .callout-caution .callout-title {
+    color: #92400e;
+  }
+
+  /* Danger - Red */
+  .callout-danger {
+    border-left-color: var(--primary-red);
+    background: #fef2f2;
+  }
+
+  .callout-danger .callout-title {
+    color: var(--primary-red-dark);
+  }
+
+  /* Dark mode adjustments */
+  :global([data-theme='dark']) .callout {
+    background: var(--bg-elevated);
+  }
+
+  :global([data-theme='dark']) .callout-note {
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  :global([data-theme='dark']) .callout-tip {
+    background: rgba(16, 185, 129, 0.1);
+  }
+
+  :global([data-theme='dark']) .callout-warning,
+  :global([data-theme='dark']) .callout-caution {
+    background: rgba(245, 158, 11, 0.1);
+  }
+
+  :global([data-theme='dark']) .callout-danger {
+    background: rgba(211, 47, 47, 0.1);
+  }
+</style>
+

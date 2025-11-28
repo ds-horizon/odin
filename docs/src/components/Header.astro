@@ -1,0 +1,425 @@
+---
+/**
+ * Header Component - horizonos.in inspired
+ * Features: {} logo, clean navigation, mobile menu
+ */
+
+const currentPath = Astro.url.pathname;
+
+const isActive = (path: string) => {
+  if (path === '/odin/') {
+    return currentPath === '/odin/' || currentPath === '/odin';
+  }
+  if (path === '/docs/') {
+    // Docs section - match all doc paths
+    return currentPath.includes('/docs/');
+  }
+  return currentPath.includes(path);
+};
+---
+
+<header class="site-header">
+  <nav class="container nav-container">
+    <!-- Logo: {O} + Odin -->
+    <a href="/odin/" class="logo-link">
+      <span class="logo-icon text-mono">{'{O}'}</span>
+      <span class="logo-text-small">Odin</span>
+    </a>
+    
+    <!-- Nav Links (Desktop) -->
+    <div class="nav-links" id="nav-links">
+      <a 
+        href="/odin/" 
+        class={`nav-link ${isActive('/odin/') ? 'active' : ''}`}
+      >
+        Home
+      </a>
+      <a 
+        href="/odin/docs/introduction/overview/" 
+        class={`nav-link ${isActive('/docs/') ? 'active' : ''}`}
+      >
+        Docs
+      </a>
+      <a 
+        href="/odin/docs/faq/" 
+        class={`nav-link ${isActive('/faq') ? 'active' : ''}`}
+      >
+        FAQ
+      </a>
+      <a 
+        href="/odin/docs/roadmap/" 
+        class={`nav-link ${isActive('/roadmap') ? 'active' : ''}`}
+      >
+        Roadmap
+      </a>
+      <a 
+        href="https://github.com/ds-horizon/odin" 
+        target="_blank"
+        rel="noopener noreferrer"
+        class="nav-link nav-link-external"
+      >
+        GitHub <span class="external-indicator">↗</span>
+      </a>
+    </div>
+    
+    <!-- Theme Toggle -->
+    <button 
+      class="theme-toggle" 
+      id="theme-toggle"
+      aria-label="Toggle dark mode"
+      title="Toggle theme"
+    >
+      <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+    
+    <!-- Mobile Menu Toggle -->
+    <button 
+      class="mobile-menu-toggle" 
+      aria-label="Toggle menu" 
+      id="menu-toggle"
+      aria-expanded="false"
+    >
+      <span class="hamburger"></span>
+      <span class="hamburger"></span>
+      <span class="hamburger"></span>
+    </button>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    background: var(--bg-overlay);
+    border-bottom: 1px solid var(--border-light);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-xs);
+    transition: box-shadow var(--transition-base), background var(--transition-base);
+  }
+  
+  .site-header.scrolled {
+    box-shadow: var(--shadow-md);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+  }
+  
+  :root[data-theme='dark'] .site-header {
+    background: rgba(44, 44, 44, 0.95);
+  }
+  
+  .nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  
+  /* Logo */
+  .logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--primary-red);
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+  }
+  
+  .logo-link:hover {
+    opacity: 0.8;
+  }
+  
+  .logo-icon {
+    font-size: 1.25rem;
+  }
+  
+  .logo-text-small {
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    color: var(--primary-red);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-normal);
+  }
+  
+  /* Theme Toggle */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    position: relative;
+    transition: background var(--transition-base);
+    margin-left: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .theme-toggle:hover {
+    background: var(--bg-card-hover);
+  }
+  
+  .theme-icon {
+    position: absolute;
+    color: var(--text-primary);
+    transition: transform var(--transition-slow), opacity var(--transition-slow);
+  }
+  
+  .sun-icon {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  
+  .moon-icon {
+    transform: rotate(90deg) scale(0);
+    opacity: 0;
+  }
+  
+  :global([data-theme='dark']) .sun-icon {
+    transform: rotate(-90deg) scale(0);
+    opacity: 0;
+  }
+  
+  :global([data-theme='dark']) .moon-icon {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  
+  /* Navigation Links */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    font-size: 0.9375rem;
+    transition: color var(--transition-base);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: var(--font-sans);
+  }
+  
+  .nav-link:hover {
+    color: var(--text-primary);
+  }
+  
+  .nav-link.active {
+    color: var(--primary-red);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-red);
+    border-radius: 2px;
+  }
+  
+  .external-indicator {
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+  
+  /* Mobile Menu Toggle */
+  .mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s ease;
+  }
+  
+  .mobile-menu-toggle:hover {
+    background: var(--bg-card-hover);
+  }
+  
+  .hamburger {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+  }
+  
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .mobile-menu-toggle {
+      display: flex;
+    }
+    
+    .nav-links {
+      position: fixed;
+      top: 73px;
+      left: 0;
+      right: 0;
+      background: var(--bg-white);
+      flex-direction: column;
+      align-items: stretch;
+      padding: 1rem;
+      gap: 0;
+      border-bottom: 1px solid var(--border-light);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    
+    .nav-links.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .nav-link {
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      width: 100%;
+    }
+    
+    .nav-link:hover {
+      background: var(--bg-card-hover);
+    }
+    
+    .nav-link.active {
+      background: rgba(211, 47, 47, 0.1);
+    }
+    
+    /* Hamburger animation when open */
+    .nav-links.open ~ .mobile-menu-toggle .hamburger:nth-child(1) {
+      transform: rotate(45deg) translateY(8px);
+    }
+    
+    .nav-links.open ~ .mobile-menu-toggle .hamburger:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .nav-links.open ~ .mobile-menu-toggle .hamburger:nth-child(3) {
+      transform: rotate(-45deg) translateY(-8px);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .site-header {
+      padding: 0.75rem 0;
+    }
+    
+    .nav-container {
+      gap: 1rem;
+    }
+    
+    .logo-text-small {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const navLinks = document.getElementById('nav-links');
+  
+  menuToggle?.addEventListener('click', () => {
+    const isOpen = navLinks?.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('.site-header') && navLinks?.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+    }
+  });
+  
+  // Close menu when clicking a link
+  navLinks?.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+    });
+  });
+  
+  // Theme toggle - delegate to ThemeScript which handles initialization
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+  
+  // Add scroll effect to header
+  const header = document.querySelector('.site-header');
+  let lastScroll = 0;
+  
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll > 50) {
+      header?.classList.add('scrolled');
+    } else {
+      header?.classList.remove('scrolled');
+    }
+    
+    lastScroll = currentScroll;
+  });
+  
+  // Mobile swipe gesture to close menu
+  let touchStartX = 0;
+  let touchStartY = 0;
+  
+  navLinks?.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  
+  navLinks?.addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Swipe up to close (vertical swipe > 50px)
+    if (deltaY < -50 && Math.abs(deltaY) > Math.abs(deltaX)) {
+      navLinks.classList.remove('open');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+    }
+  }, { passive: true });
+</script>
+

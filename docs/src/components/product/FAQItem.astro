@@ -1,0 +1,120 @@
+---
+/**
+ * FAQItem Component - Accordion style FAQ
+ * Uses <details> for native accordion behavior
+ */
+
+interface Props {
+  question: string;
+  answer: string;
+  id: string;
+}
+
+const { question, answer, id } = Astro.props;
+---
+
+<details class="faq-item animate-on-scroll" id={id}>
+  <summary class="faq-question">
+    <span class="question-text">{question}</span>
+    <span class="faq-icon">+</span>
+  </summary>
+  <div class="faq-answer">
+    <p>{answer}</p>
+  </div>
+</details>
+
+<style>
+  .faq-item {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-left: 3px solid transparent;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .faq-item:hover {
+    border-color: var(--border-medium);
+  }
+  
+  .faq-item[open] {
+    border-color: var(--border-light);
+    border-left-color: var(--primary-red);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-sans);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    user-select: none;
+    transition: color var(--transition-base);
+  }
+  
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+  
+  .faq-question:hover {
+    color: var(--primary-red);
+  }
+  
+  .question-text {
+    flex: 1;
+    line-height: var(--line-height-snug);
+  }
+  
+  .faq-icon {
+    font-size: 1.5rem;
+    color: var(--primary-red);
+    transition: transform var(--transition-slow);
+    font-weight: var(--font-weight-light);
+  }
+  
+  .faq-item[open] .faq-icon {
+    transform: rotate(45deg);
+  }
+  
+  .faq-answer {
+    padding: 0 1.5rem 1.5rem;
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    font-family: var(--font-sans);
+    animation: slideDown var(--transition-slow) ease;
+  }
+  
+  .faq-answer p {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .faq-question {
+      padding: 1.25rem;
+      font-size: 0.95rem;
+    }
+    
+    .faq-answer {
+      padding: 0 1.25rem 1.25rem;
+    }
+  }
+</style>
+

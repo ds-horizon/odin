@@ -1,36 +1,24 @@
 ---
-import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import { Card, CardGrid } from "@astrojs/starlight/components";
-import logo from "../assets/odin-logo.png";
+/**
+ * Odin Landing Page - horizonos.in inspired
+ * Clean, minimal design with red/white color scheme
+ */
+
+import ProductLayout from '../layouts/ProductLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/product/Hero.astro';
+import Section from '../components/product/Section.astro';
+import Card from '../components/product/Card.astro';
+import VideoEmbed from '../components/product/VideoEmbed.astro';
+import TerminalDemo from '../components/product/TerminalDemo.astro';
 ---
 
-<StarlightPage
-  frontmatter={{
-    title: "Odin",
-    template: "splash",
-    hero: {
-      title: "Accelerate Your Software Development Lifecycle",
-      tagline:
-        "A CLI-based platform to streamline deployment and distribution with versioning, environment parity, and guaranteed deployment across EC2 and Kubernetes.",
-      image: {
-        file: logo,
-      },
-      actions: [
-        {
-          text: "Get started",
-          link: "/odin/introduction/getting-started",
-          icon: "right-arrow",
-          variant: "primary",
-        },
-        {
-          text: "Read the overview",
-          link: "/odin/introduction/overview",
-          variant: "minimal",
-        },
-      ],
-    },
-  }}
+<ProductLayout
+  title="Production-Ready Deployment Platform"
+  description="Deploy anywhere, anytime with ephemeral environments on demand. One definition works everywhere—from development to production."
 >
+<<<<<<< HEAD
   <CardGrid>
     <Card title="Environment Parity" icon="puzzle">
       Minimal and easy-to-understand DSL to define services that works across EC2 and Kubernetes platforms seamlessly.
@@ -62,3 +50,563 @@ import logo from "../assets/odin-logo.png";
     </a>
   </footer>
 </StarlightPage>
+=======
+  <Header />
+  
+  <!-- Hero Section -->
+  <Hero
+    logoText="{odin}"
+    tagline="Empowering developers worldwide with production-grade,"
+    description="battle-tested software built for scale."
+    primaryCTA={{ text: 'Get Started', href: '/odin/docs/introduction/getting-started/' }}
+    secondaryCTA={{ text: 'View on GitHub', href: 'https://github.com/ds-horizon/odin' }}
+  />
+  
+  <!-- Video Demo Section -->
+  <Section variant="gray">
+    <div class="section-header-custom">
+      <span class="section-badge section-badge-blue">DEMO</span>
+      <h2 class="section-title-custom">See Odin in Action</h2>
+      <p class="section-subtitle-custom">Watch how Odin transforms deployment complexity into simple CLI commands</p>
+    </div>
+    <div style="max-width: 900px; margin: 0 auto;">
+      <VideoEmbed 
+        videoId="CI1SWkC9hW8"
+        title="What is Odin? - Introduction Video"
+      />
+    </div>
+  </Section>
+  
+  <!-- Features Grid -->
+  <Section variant="white">
+    <div class="section-header-custom">
+      <span class="section-badge">FEATURES</span>
+      <h2 class="section-title-custom">Why Teams Choose Odin</h2>
+      <p class="section-subtitle-custom">Everything you need to accelerate your software development lifecycle</p>
+    </div>
+    <div class="features-grid">
+      <Card
+        title="Ephemeral Environments"
+        description="Spin up isolated environments instantly for testing and development. Create one or five with a single command. No more waiting for shared staging."
+        icon="⚡"
+        href="/odin/docs/concepts/environment/"
+      />
+      <Card
+        title="Environment Parity"
+        description="The same Service Definition works consistently across development, staging, and production. Write once, deploy everywhere."
+        icon="🎯"
+        href="/odin/docs/concepts/overview/"
+      />
+      <Card
+        title="Zero Configuration"
+        description="Deploy services without needing to understand internal dependencies and wiring. Odin handles the complexity for you."
+        icon="🚀"
+        href="/odin/docs/howto/deploy-first-service/"
+      />
+      <Card
+        title="Guaranteed Deployment"
+        description="Built-in validation and rollback capabilities ensure reliable deployments. Safe guards for production workloads."
+        icon="🔒"
+        href="/odin/docs/concepts/overview/"
+      />
+      <Card
+        title="Immutable Versioning"
+        description="All services and components are versioned and immutable. Use SNAPSHOT for dev/QA, CONCRETE for production."
+        icon="📦"
+      />
+      <Card
+        title="Multi-Cloud Support"
+        description="Deploy across EC2 and Kubernetes with the same configuration. Cloud-agnostic by design."
+        icon="☁️"
+        href="/odin/concepts/provisioning/"
+      />
+    </div>
+  </Section>
+  
+  <!-- Stats Section -->
+  <Section variant="gray">
+    <div class="stats-grid">
+      <div class="stat-item animate-on-scroll">
+        <div class="stat-number glow-pulse" data-count-up data-target="100" data-suffix="x">0x</div>
+        <div class="stat-label">Faster Deployments</div>
+      </div>
+      <div class="stat-item animate-on-scroll">
+        <div class="stat-number glow-pulse" data-count-up data-target="99" data-suffix="%">0%</div>
+        <div class="stat-label">Environment Parity</div>
+      </div>
+      <div class="stat-item animate-on-scroll">
+        <div class="stat-number glow-pulse" data-count-up data-target="7" data-suffix="+">0+</div>
+        <div class="stat-label">Core Components</div>
+      </div>
+    </div>
+  </Section>
+  
+  <!-- Quick Start Section -->
+  <section class="quick-start-section">
+    <div class="container">
+      <div class="quick-start-grid">
+        <!-- Left Column: Content -->
+        <div class="quick-start-content">
+          <span class="quick-start-badge">QUICK START</span>
+          <h2 class="quick-start-title">Up and running in minutes</h2>
+          <p class="quick-start-description">
+            One command installs everything you need. No complex setup, no configuration headaches.
+          </p>
+          
+          <ul class="quick-start-features">
+            <li>
+              <svg class="check-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#10B981"/>
+                <path d="M6 10l2.5 2.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Automatic prerequisite detection</span>
+            </li>
+            <li>
+              <svg class="check-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#10B981"/>
+                <path d="M6 10l2.5 2.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Local Kind cluster creation</span>
+            </li>
+            <li>
+              <svg class="check-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#10B981"/>
+                <path d="M6 10l2.5 2.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Ready in under 15 minutes</span>
+            </li>
+          </ul>
+          
+          <a href="/odin/docs/introduction/getting-started/" class="quick-start-link">
+            Read the full guide →
+          </a>
+        </div>
+        
+        <!-- Right Column: Terminal -->
+        <div class="quick-start-terminal">
+          <TerminalDemo 
+            title="Terminal"
+            commands={[
+              "$ bash <(curl -fsSL https://raw.githubusercontent.com/ds-horizon/odin/master/install.sh)",
+              "",
+              "✓ Checking prerequisites...",
+              "✓ Creating Kind cluster...",
+              "✓ Installing Odin components...",
+              "✓ Configuring local development...",
+              "",
+              "🎉 Odin installed successfully!",
+              "",
+              "$ odin --version"
+            ]}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+  <!-- Community Section -->
+  <Section variant="gray">
+    <div class="section-header-custom">
+      <span class="section-badge section-badge-purple">COMMUNITY</span>
+      <h2 class="section-title-custom">Join Our Community</h2>
+      <p class="section-subtitle-custom">
+        Connect with us and stay updated on our latest projects, releases, and tech insights
+      </p>
+    </div>
+    <div class="community-grid">
+      <a href="https://github.com/ds-horizon/odin" class="community-card animate-on-scroll" target="_blank" rel="noopener noreferrer">
+        <div class="community-icon">📦</div>
+        <h3>GitHub</h3>
+        <p>Explore repositories and contribute</p>
+      </a>
+      <a href="https://discord.gg/horizon" class="community-card animate-on-scroll" target="_blank" rel="noopener noreferrer">
+        <div class="community-icon">💬</div>
+        <h3>Discord</h3>
+        <p>Chat and get real-time support</p>
+      </a>
+      <a href="https://twitter.com/horizonos" class="community-card animate-on-scroll" target="_blank" rel="noopener noreferrer">
+        <div class="community-icon">🐦</div>
+        <h3>Twitter</h3>
+        <p>Follow for latest updates</p>
+      </a>
+      <a href="https://linkedin.com/company/horizon" class="community-card animate-on-scroll" target="_blank" rel="noopener noreferrer">
+        <div class="community-icon">💼</div>
+        <h3>LinkedIn</h3>
+        <p>Connect with our team</p>
+      </a>
+    </div>
+  </Section>
+  
+  <!-- CTA Banner -->
+  <section class="cta-banner">
+    <div class="container cta-content">
+      <h2>Ready to Transform Your Deployments?</h2>
+      <p>Join teams who have eliminated shared environment conflicts and accelerated their development cycle.</p>
+      <div class="cta-buttons">
+        <a href="/odin/docs/introduction/getting-started/" class="btn btn-primary">
+          Get Started →
+        </a>
+        <a href="https://github.com/ds-horizon/odin" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+  
+  <Footer />
+</ProductLayout>
+
+<style>
+  /* Section Headers - Consistent Design */
+  .section-header-custom {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .section-badge {
+    display: inline-block;
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-family: var(--font-sans);
+  }
+  
+  .section-badge-blue {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+  }
+  
+  .section-badge-purple {
+    background: rgba(139, 92, 246, 0.1);
+    color: #7c3aed;
+  }
+  
+  .section-badge-red {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+  
+  .section-title-custom {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+  }
+  
+  .section-subtitle-custom {
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Features Grid */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 0;
+  }
+  
+  .stat-item {
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-white);
+    transition: all var(--transition-slow);
+  }
+  
+  .stat-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .stat-number {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 4rem);
+    font-weight: 800;
+    color: var(--primary-red);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+  
+  .stat-label {
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+  }
+  
+  /* Quick Start Section */
+  .quick-start-section {
+    background: var(--bg-page);
+    padding: var(--spacing-3xl) var(--spacing-lg);
+  }
+  
+  .quick-start-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  
+  .quick-start-content {
+    padding-right: 2rem;
+  }
+  
+  .quick-start-badge {
+    display: inline-block;
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-sans);
+  }
+  
+  .quick-start-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    line-height: var(--line-height-tight);
+  }
+  
+  .quick-start-description {
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: 2rem;
+  }
+  
+  .quick-start-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+  }
+  
+  .quick-start-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--text-primary);
+  }
+  
+  .check-icon {
+    flex-shrink: 0;
+  }
+  
+  .quick-start-link {
+    display: inline-flex;
+    align-items: center;
+    color: #059669;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: transform var(--transition-base);
+    font-family: var(--font-sans);
+  }
+  
+  .quick-start-link:hover {
+    transform: translateX(4px);
+  }
+  
+  .quick-start-terminal {
+    position: relative;
+  }
+  
+  /* Community Grid */
+  .community-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .community-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all var(--transition-slow);
+    color: inherit;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .community-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-color: rgba(139, 92, 246, 0.3);
+  }
+  
+  .community-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  
+  .community-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+  
+  .community-card p {
+    font-family: var(--font-sans);
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: var(--line-height-relaxed);
+  }
+  
+  /* CTA Banner */
+  .cta-banner {
+    background: linear-gradient(135deg, #D32F2F 0%, #C62828 100%);
+    color: white;
+    text-align: center;
+    padding: 5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 40%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  
+  .cta-content {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .cta-content h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 1rem;
+    color: white;
+    line-height: var(--line-height-tight);
+  }
+  
+  .cta-content p {
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    opacity: 0.95;
+    margin-bottom: 2rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: var(--line-height-relaxed);
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .cta-banner .btn-primary {
+    background: white;
+    color: var(--primary-red);
+    font-weight: 600;
+    font-family: var(--font-sans);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .cta-banner .btn-primary:hover {
+    background: var(--bg-page);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .cta-banner .btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    font-family: var(--font-sans);
+  }
+  
+  .cta-banner .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .features-grid,
+    .stats-grid,
+    .community-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .quick-start-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    .quick-start-content {
+      padding-right: 0;
+    }
+    
+    .cta-banner {
+      padding: 4rem 1rem;
+    }
+    
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .cta-buttons .btn {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+</style>
+>>>>>>> 53e01ba (odin landing page added with design)

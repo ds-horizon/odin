@@ -1,0 +1,68 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Sinks' },
+  { label: 'Overview' },
+];
+
+const headings = [
+  { depth: 2, slug: 'what-are-sinks', text: 'What are Sinks?' },
+  { depth: 2, slug: 'available-sinks', text: 'Available Sinks' },
+];
+---
+
+<DocsLayout
+  title="Data Sinks Overview"
+  description="Understanding data sinks in datagen"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="what-are-sinks">What are Sinks?</h2>
+
+  <p>
+    Sinks are output destinations for generated data. Instead of just printing to stdout, you can
+    send data directly to databases, files, or other systems.
+  </p>
+
+  <h2 id="available-sinks">Available Sinks</h2>
+
+  <h3>MySQL Sink</h3>
+
+  <p>Write data directly to MySQL databases.</p>
+
+  <pre><code>datagenc gen users.dg --sink mysql --count 1000</code></pre>
+
+  <p>
+    See <a href="/odin/docs/sinks/mysql">MySQL Sink Configuration</a> for details.
+  </p>
+
+  <h3>Stdout Sink</h3>
+
+  <p>Default sink that writes to standard output.</p>
+
+  <pre><code>datagenc gen users.dg --count 100</code></pre>
+
+  <h3>File Sink</h3>
+
+  <p>Write to files in various formats (JSON, CSV, SQL).</p>
+
+  <pre><code>datagenc gen users.dg --output users.json --count 1000</code></pre>
+
+  <h2>Sink Configuration</h2>
+
+  <p>
+    Each sink has its own configuration options. See individual sink documentation for specific
+    parameters.
+  </p>
+
+  <h2>Related Documentation</h2>
+
+  <ul>
+    <li><a href="/odin/docs/sinks/mysql">MySQL Sink</a></li>
+    <li><a href="/odin/docs/sinks/config">Sink Configuration</a></li>
+    <li><a href="/odin/docs/cli/datagenc-reference">Datagenc CLI</a></li>
+  </ul>
+</DocsLayout>
+

@@ -1,0 +1,101 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Key Concepts' },
+  { label: 'Overview' },
+];
+
+const headings = [
+  { depth: 2, slug: 'core-concepts', text: 'Core Concepts' },
+  { depth: 3, slug: 'environment', text: 'Environment' },
+  { depth: 3, slug: 'service', text: 'Service' },
+  { depth: 3, slug: 'component', text: 'Component' },
+  { depth: 3, slug: 'provisioning', text: 'Provisioning' },
+  { depth: 2, slug: 'workflow-overview', text: 'Workflow Overview' },
+  { depth: 2, slug: 'next-steps', text: 'Next Steps' },
+];
+---
+
+<DocsLayout
+  title="Key Concepts"
+  description="Understanding Odin's core concepts and terminology"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>
+    Welcome to Odin's key concepts guide. This section introduces the fundamental building blocks of
+    the Odin platform.
+  </p>
+
+  <h2 id="core-concepts">Core Concepts</h2>
+
+  <p>
+    Odin is built around several key concepts that work together to provide a consistent deployment
+    experience:
+  </p>
+
+  <h3 id="environment">
+    <a href="/odin/docs/concepts/environment">Environment</a>
+  </h3>
+
+  <p>
+    An isolated namespace for deploying services. Environments represent different stages of your
+    development lifecycle (dev, staging, production) and are tied to one or more cloud provider
+    accounts.
+  </p>
+
+  <h3 id="service">
+    <a href="/odin/docs/concepts/service">Service</a>
+  </h3>
+
+  <p>
+    A deployable application unit composed of one or more components. Services are versioned and
+    define the complete structure of your application including all its dependencies.
+  </p>
+
+  <h3 id="component">
+    <a href="/odin/docs/concepts/component">Component</a>
+  </h3>
+
+  <p>
+    A building block of a service (e.g., web server, database, cache). Components have types,
+    versions, configurations, and can depend on other components.
+  </p>
+
+  <h3 id="provisioning">
+    <a href="/odin/docs/concepts/provisioning">Provisioning</a>
+  </h3>
+
+  <p>
+    The configuration that defines <strong>how</strong> and <strong>where</strong> components are deployed.
+    Provisioning configs map components to cloud provider resources (Kubernetes deployments, RDS instances,
+    etc.).
+  </p>
+
+  <h2 id="workflow-overview">Workflow Overview</h2>
+
+  <p>Here's how these concepts work together in a typical Odin workflow:</p>
+
+  <ol>
+    <li><strong>Create Environment</strong>: Set up an isolated environment for your services</li>
+    <li><strong>Define Service</strong>: Describe your application and its components</li>
+    <li><strong>Configure Provisioning</strong>: Specify how components should be deployed</li>
+    <li><strong>Deploy Service</strong>: Execute the deployment</li>
+    <li><strong>Operate</strong>: Manage, scale, and update your services and components</li>
+    <li><strong>Monitor</strong>: Check status and health of your deployments</li>
+  </ol>
+
+  <h2 id="next-steps">Next Steps</h2>
+
+  <p>Dive deeper into each concept:</p>
+
+  <ul>
+    <li><a href="/odin/docs/concepts/environment">Environment →</a></li>
+    <li><a href="/odin/docs/concepts/service">Service →</a></li>
+    <li><a href="/odin/docs/concepts/component">Component →</a></li>
+    <li><a href="/odin/docs/concepts/provisioning">Provisioning →</a></li>
+  </ul>
+</DocsLayout>
+

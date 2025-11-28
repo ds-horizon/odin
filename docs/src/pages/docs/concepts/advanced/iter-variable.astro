@@ -1,0 +1,65 @@
+---
+import DocsLayout from '../../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Advanced', href: '/odin/docs/concepts/advanced/overview' },
+  { label: 'Iter Variable' },
+];
+
+const headings = [
+  { depth: 2, slug: 'overview', text: 'Overview' },
+  { depth: 2, slug: 'examples', text: 'Examples' },
+];
+---
+
+<DocsLayout
+  title="Iter Variable"
+  description="Using the iter variable for sequential data"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="overview">Overview</h2>
+
+  <p>
+    The <code>iter</code> variable represents the current iteration index (0-based) and is useful for creating sequential IDs or patterns:
+  </p>
+
+  <pre set:html={`<code>gens {
+  func id() {
+    return iter + 1  // Creates 1, 2, 3, 4...
+  }
+
+  func username() {
+    return "user" + String(iter)  // user0, user1, user2...
+  }
+}</code>`}></pre>
+
+  <h2 id="examples">Examples</h2>
+
+  <h3>Sequential IDs</h3>
+
+  <pre set:html={`<code>func userId() {
+  return iter + 1000  // Start from 1000
+}</code>`}></pre>
+
+  <h3>Pattern-based Generation</h3>
+
+  <pre set:html={`<code>func category() {
+  if iter % 3 == 0 {
+    return "Electronics"
+  } else if iter % 3 == 1 {
+    return "Clothing"
+  } else {
+    return "Food"
+  }
+}</code>`}></pre>
+
+  <h2>Related Documentation</h2>
+  <ul>
+    <li><a href="/odin/docs/concepts/advanced/function-calls">Function Calls</a></li>
+    <li><a href="/odin/docs/examples/4_iter/iter">Iter Examples</a></li>
+  </ul>
+</DocsLayout>
+

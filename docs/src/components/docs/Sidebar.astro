@@ -1,0 +1,184 @@
+---
+/**
+ * Sidebar Component
+ * Navigation sidebar for documentation pages
+ */
+
+import { navigation } from '../../config/navigation';
+
+const currentPath = Astro.url.pathname;
+
+const isActive = (href: string) => {
+  // Remove trailing slash for comparison
+  const normalizedCurrent = currentPath.replace(/\/$/, '');
+  const normalizedHref = href.replace(/\/$/, '');
+  return normalizedCurrent === normalizedHref;
+};
+
+const isExpanded = (sectionTitle: string) => {
+  // Expand section if any of its items is active
+  const section = navigation.find((s) => s.title === sectionTitle);
+  return section?.items.some((item) => isActive(item.href)) || false;
+};
+---
+
+<aside class="docs-sidebar">
+  <nav class="sidebar-nav" aria-label="Documentation navigation">
+    {
+      navigation.map((section) => (
+        <div class="nav-section">
+          <details class="nav-group" open={isExpanded(section.title)}>
+            <summary class="nav-group-title">{section.title}</summary>
+            <ul class="nav-items">
+              {section.items.map((item) => (
+                <li class="nav-item">
+                  <a
+                    href={item.href}
+                    class={`nav-link ${isActive(item.href) ? 'active' : ''}`}
+                    aria-current={isActive(item.href) ? 'page' : undefined}
+                  >
+                    {item.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
+      ))
+    }
+  </nav>
+</aside>
+
+<style>
+  .docs-sidebar {
+    position: sticky;
+    top: 73px;
+    height: calc(100vh - 73px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem 0;
+    background: var(--bg-white);
+    border-right: 1px solid var(--border-light);
+  }
+
+  .sidebar-nav {
+    padding: 0 1rem;
+  }
+
+  .nav-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-group {
+    margin: 0;
+  }
+
+  .nav-group-title {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+  }
+
+  .nav-group-title::-webkit-details-marker,
+  .nav-group-title::marker {
+    display: none;
+  }
+
+  .nav-group-title::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.75rem;
+    transition: transform var(--transition-base);
+    color: var(--text-tertiary);
+  }
+
+  .nav-group[open] .nav-group-title::before {
+    transform: rotate(90deg);
+  }
+
+  .nav-group-title:hover {
+    background: var(--bg-card-hover);
+  }
+
+  .nav-items {
+    list-style: none;
+    margin: 0.25rem 0 0.5rem 0;
+    padding: 0;
+  }
+
+  .nav-item {
+    margin: 0;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.5rem 0.75rem 0.5rem 1.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-regular);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+    line-height: 1.4;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+    background: var(--bg-card-hover);
+  }
+
+  .nav-link.active {
+    color: var(--primary-red);
+    background: rgba(211, 47, 47, 0.08);
+    font-weight: var(--font-weight-medium);
+    border-left: 3px solid var(--primary-red);
+    padding-left: calc(1.75rem - 3px);
+  }
+
+  /* Scrollbar styling */
+  .docs-sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .docs-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .docs-sidebar::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: 3px;
+  }
+
+  .docs-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .docs-sidebar {
+      position: fixed;
+      top: 73px;
+      left: 0;
+      width: 280px;
+      height: calc(100vh - 73px);
+      transform: translateX(-100%);
+      transition: transform var(--transition-slow);
+      z-index: var(--z-dropdown);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .docs-sidebar.open {
+      transform: translateX(0);
+    }
+  }
+</style>
+

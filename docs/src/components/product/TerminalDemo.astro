@@ -1,0 +1,313 @@
+---
+/**
+ * TerminalDemo Component - Interactive terminal with typing animation
+ * Features: Syntax highlighting, typing effect, copy-to-clipboard
+ */
+
+interface Props {
+  title?: string;
+  commands?: string[];
+}
+
+const { 
+  title = "Try Odin", 
+  commands = [
+    "$ curl -fsSL https://ds-horizon.github.io/odin/install.sh | bash",
+    "$ odin env create my-dev-env",
+    "$ odin service deploy my-app --env my-dev-env",
+    "✓ Service deployed successfully!"
+  ]
+} = Astro.props;
+---
+
+<div class="terminal-demo animate-on-scroll">
+  <div class="terminal-header">
+    <div class="terminal-buttons">
+      <span class="terminal-button terminal-red"></span>
+      <span class="terminal-button terminal-yellow"></span>
+      <span class="terminal-button terminal-green"></span>
+    </div>
+    <div class="terminal-title">{title}</div>
+    <button class="terminal-copy" id="copy-terminal" aria-label="Copy commands" title="Copy to clipboard">
+      <span class="copy-icon">📋</span>
+      <span class="copied-text">Copied!</span>
+    </button>
+  </div>
+  <div class="terminal-body">
+    <div class="terminal-content" id="terminal-content">
+      {commands.map((cmd, i) => (
+        <div class="terminal-line" data-line={i} data-command={cmd}>
+          <span class="terminal-prompt"></span>
+          <span class="terminal-text"></span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .terminal-demo {
+    background: #1a1a1a;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(211, 47, 47, 0.2);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .terminal-header {
+    background: #2a2a2a;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .terminal-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .terminal-button {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+  }
+  
+  .terminal-red {
+    background: #ff5f56;
+  }
+  
+  .terminal-yellow {
+    background: #ffbd2e;
+  }
+  
+  .terminal-green {
+    background: #27c93f;
+  }
+  
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+  
+  .terminal-copy {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+    position: relative;
+    font-size: 1.25rem;
+  }
+  
+  .terminal-copy:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary-red-light);
+  }
+  
+  .copied-text {
+    position: absolute;
+    top: -30px;
+    right: 0;
+    background: var(--primary-red);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-family: var(--font-sans);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-base);
+  }
+  
+  .terminal-copy.copied .copied-text {
+    opacity: 1;
+  }
+  
+  .copy-icon {
+    display: inline-block;
+  }
+  
+  .terminal-body {
+    padding: 1.5rem;
+    height: 350px;
+    max-height: 350px;
+    overflow-y: auto;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    line-height: 1.8;
+  }
+  
+  /* Custom scrollbar for terminal */
+  .terminal-body::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .terminal-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .terminal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  
+  .terminal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  .terminal-line {
+    display: flex;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+  }
+  
+  .terminal-line.visible {
+    opacity: 1;
+  }
+  
+  .terminal-prompt {
+    color: var(--primary-red-light);
+    margin-right: 0.5rem;
+  }
+  
+  .terminal-text {
+    color: #4ade80;
+    flex: 1;
+  }
+  
+  .terminal-text.success {
+    color: #4ade80;
+  }
+  
+  .terminal-text.command {
+    color: #60a5fa;
+  }
+  
+  .terminal-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1em;
+    background: #4ade80;
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+  }
+  
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  
+  @media (max-width: 768px) {
+    .terminal-body {
+      padding: 1rem;
+      font-size: 0.8125rem;
+      height: 300px;
+      max-height: 300px;
+    }
+    
+    .terminal-title {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Typing animation
+  const terminalContent = document.getElementById('terminal-content');
+  const lines = terminalContent?.querySelectorAll('.terminal-line');
+  
+  if (lines) {
+    let currentLine = 0;
+    
+    const typeLine = (lineElement: Element, text: string, callback: () => void) => {
+      const textSpan = lineElement.querySelector('.terminal-text');
+      const promptSpan = lineElement.querySelector('.terminal-prompt');
+      
+      if (!textSpan || !promptSpan) return;
+      
+      lineElement.classList.add('visible');
+      
+      // Add prompt based on line type
+      if (text.startsWith('$')) {
+        promptSpan.textContent = '$';
+        text = text.substring(1).trim();
+        textSpan.classList.add('command');
+      } else if (text.startsWith('✓')) {
+        promptSpan.textContent = '';
+        textSpan.classList.add('success');
+      } else {
+        promptSpan.textContent = '';
+      }
+      
+      let i = 0;
+      const speed = text.startsWith('✓') ? 0 : 30; // Instant for success messages
+      
+      const typeChar = () => {
+        if (i < text.length) {
+          textSpan.textContent = text.substring(0, i + 1);
+          i++;
+          setTimeout(typeChar, speed);
+        } else {
+          setTimeout(callback, 500);
+        }
+      };
+      
+      if (speed === 0) {
+        textSpan.textContent = text;
+        setTimeout(callback, 500);
+      } else {
+        typeChar();
+      }
+    };
+    
+    const typeNextLine = () => {
+      if (currentLine < lines.length) {
+        const line = lines[currentLine];
+        const command = line.getAttribute('data-command') || '';
+        typeLine(line, command, () => {
+          currentLine++;
+          typeNextLine();
+        });
+      }
+    };
+    
+    // Start typing when terminal is visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && currentLine === 0) {
+          setTimeout(() => typeNextLine(), 500);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    
+    observer.observe(terminalContent);
+  }
+  
+  // Copy to clipboard
+  const copyBtn = document.getElementById('copy-terminal');
+  copyBtn?.addEventListener('click', () => {
+    const commands = Array.from(lines || [])
+      .map(line => line.getAttribute('data-command') || '')
+      .filter(cmd => cmd.startsWith('$'))
+      .map(cmd => cmd.substring(1).trim())
+      .join('\n');
+    
+    navigator.clipboard.writeText(commands).then(() => {
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    });
+  });
+</script>
+

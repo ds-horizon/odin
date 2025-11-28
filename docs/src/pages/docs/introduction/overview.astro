@@ -1,0 +1,169 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Introduction' },
+  { label: 'Overview' },
+];
+
+const headings = [
+  { depth: 2, slug: 'what-is-odin', text: 'What is Odin?' },
+  { depth: 2, slug: 'key-features', text: 'Key Features' },
+  { depth: 2, slug: 'architecture-components', text: 'Architecture Components' },
+  { depth: 2, slug: 'sdlc-with-odin', text: 'SDLC with Odin' },
+  { depth: 2, slug: 'when-to-use-odin', text: 'When to use Odin?' },
+];
+---
+
+<DocsLayout
+  title="Overview"
+  description="Odin - CLI-based platform to accelerate your software development lifecycle"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="what-is-odin">What is Odin?</h2>
+
+  <p>
+    Odin is a CLI-based platform designed to accelerate and streamline the software development
+    lifecycle, improving developer velocity and experience. It solves for deployment and
+    distribution, with a roadmap to provide end-to-end tooling including continuous integration,
+    scaling, and monitoring.
+  </p>
+
+  <p>
+    Odin wraps deployment APIs in an ergonomic CLI experience with simple configuration, rich status
+    output, and automation-friendly responses. It manages services, environments, and deployments
+    across cloud providers with guaranteed consistency.
+  </p>
+
+  <Callout type="note">
+    <p>
+      Odin currently focuses on deployment and distribution. The roadmap includes continuous
+      integration, scaling, and monitoring capabilities.
+    </p>
+  </Callout>
+
+  <h2 id="key-features">Key Features</h2>
+
+  <ul>
+    <li>
+      <strong>Environment Parity for EC2 and K8s</strong>: Minimal and easy-to-understand DSL to
+      define services that works across platforms
+    </li>
+    <li>
+      <strong>Service as Functional Unit</strong>: Defined boundaries with a set of components which
+      can be treated as blackbox
+    </li>
+    <li>
+      <strong>Versioning</strong>: All services/components are versioned in Odin and are immutable
+    </li>
+    <li>
+      <strong>Consistent and Guaranteed Deployment</strong>: Safe guards for production workloads
+      with validation and rollback
+    </li>
+    <li><strong>Multiple Profiles</strong>: Manage multiple backend environments and switch between them easily</li>
+    <li><strong>Rich Output Formats</strong>: Human-readable tables or JSON for automation</li>
+    <li>
+      <strong>Component Lifecycle Management</strong>: Deploy, undeploy, scale, and operate
+      components independently
+    </li>
+    <li>
+      <strong>Environment Management</strong>: Create, list, describe, and delete environments
+      across cloud provider accounts
+    </li>
+    <li>
+      <strong>Real-time Status</strong>: Inspect deployment status at service and component level
+    </li>
+  </ul>
+
+  <h2 id="architecture-components">Architecture Components</h2>
+
+  <p>Odin consists of several key components:</p>
+
+  <ul>
+    <li><strong>Odin CLI</strong>: Command-line interface for managing services and environments</li>
+    <li>
+      <strong>Deployer</strong>: Backend service that orchestrates deployment tasks using gRPC/REST
+      APIs
+    </li>
+    <li>
+      <strong>Orchestrator</strong>: Manages the lifecycle of deployment jobs and coordinates
+      workflow execution
+    </li>
+    <li>
+      <strong>Account Manager</strong>: Manages cloud provider credentials and access control
+    </li>
+    <li>
+      <strong>Discovery Service</strong>: Provides service registration and discovery for
+      distributed components
+    </li>
+  </ul>
+
+  <h2 id="sdlc-with-odin">SDLC with Odin</h2>
+
+  <p>Odin provides versioning to help you maintain immutable and mutable versions:</p>
+
+  <ul>
+    <li>
+      <strong>Mutable Versions (SNAPSHOT)</strong>: Suffixed with <code>SNAPSHOT</code> for faster
+      deployment during development and QA iterations
+    </li>
+    <li>
+      <strong>Immutable Versions (CONCRETE)</strong>: Released versions that create immutable
+      artifacts for production use
+    </li>
+  </ul>
+
+  <p><strong>Typical Workflow:</strong></p>
+
+  <ol>
+    <li><strong>Development</strong>: Deploy services with <code>SNAPSHOT</code> version using JSON files</li>
+    <li><strong>QA Iteration</strong>: Pass on to QA team for testing and iterate quickly</li>
+    <li><strong>Release</strong>: Once ready, release the service with <code>CONCRETE</code> version</li>
+    <li><strong>Production</strong>: Deploy the immutable artifact that can be used by others</li>
+  </ol>
+
+  <h2 id="when-to-use-odin">When to use Odin?</h2>
+
+  <p>Odin is ideal for:</p>
+
+  <ul>
+    <li>
+      <strong>Multi-Environment Deployments</strong>: Manage dev, staging, and production
+      environments consistently
+    </li>
+    <li>
+      <strong>Microservices Architecture</strong>: Deploy and manage services with multiple
+      components and dependencies
+    </li>
+    <li>
+      <strong>Cloud-Native Applications</strong>: Deploy across EC2 and Kubernetes seamlessly
+    </li>
+    <li><strong>DevOps Teams</strong>: Streamline deployment workflows with CLI automation</li>
+    <li>
+      <strong>Safe Production Deploys</strong>: Built-in validation and confirmation for critical
+      environments
+    </li>
+    <li>
+      <strong>Component Lifecycle Management</strong>: Add, remove, or update components dynamically
+    </li>
+    <li>
+      <strong>Audit and Compliance</strong>: Track all deployments with versioning and task history
+    </li>
+  </ul>
+
+  <p>
+    Odin is designed for teams that need consistent, reliable deployments across multiple
+    environments and platforms.
+  </p>
+
+  <Callout type="tip" title="Ready to get started?">
+    <p>
+      Check out the <a href="/odin/docs/introduction/getting-started">Getting Started guide</a> to install
+      Odin CLI and deploy your first service!
+    </p>
+  </Callout>
+</DocsLayout>
+

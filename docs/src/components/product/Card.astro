@@ -1,0 +1,39 @@
+---
+/**
+ * Card Component - horizonos.in style
+ * Clean card with hover effects
+ */
+
+interface Props {
+  href?: string;
+  title: string;
+  description: string;
+  icon?: string;
+  external?: boolean;
+  variant?: 'default' | 'glass' | 'gradient';
+}
+
+const { href, title, description, icon, external = false, variant = 'default' } = Astro.props;
+const Tag = href ? 'a' : 'div';
+const linkProps = href ? {
+  href,
+  ...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})
+} : {};
+---
+
+<Tag 
+  {...linkProps} 
+  class={`card animate-on-scroll tilt-3d ${variant === 'glass' ? 'glass-card' : ''} ${variant === 'gradient' ? 'gradient-border' : ''}`}
+  data-tilt
+  style={href ? 'text-decoration: none; color: inherit;' : ''}
+>
+  {icon && <div class="card-icon">{icon}</div>}
+  <h3 class="card-title">{title}</h3>
+  <p class="card-description">{description}</p>
+  {href && <span class="card-arrow">→</span>}
+</Tag>
+
+<style>
+  /* Styles are in product.css for consistency */
+</style>
+

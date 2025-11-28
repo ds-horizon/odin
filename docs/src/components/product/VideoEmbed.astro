@@ -1,0 +1,56 @@
+---
+/**
+ * VideoEmbed Component - YouTube embed
+ * Responsive 16:9 video container
+ */
+
+interface Props {
+  videoId: string;
+  title: string;
+}
+
+const { videoId, title } = Astro.props;
+---
+
+<div class="video-container animate-on-scroll">
+  <iframe
+    src={`https://www.youtube.com/embed/${videoId}`}
+    title={title}
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    loading="lazy"
+    importance="low"
+    fetchpriority="low"
+  ></iframe>
+</div>
+
+<style>
+  .video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    background: var(--bg-white);
+    border: 2px solid transparent;
+    transition: all var(--transition-slow);
+  }
+  
+  .video-container:hover {
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-red-light);
+    transform: translateY(-4px);
+  }
+  
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+</style>
+

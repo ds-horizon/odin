@@ -1,0 +1,155 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Key Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Data Model' },
+];
+
+const headings = [
+  { depth: 2, slug: 'what-is-datagen', text: 'What is datagen?' },
+  { depth: 2, slug: 'what-is-a-model', text: 'What is a Model?' },
+  { depth: 2, slug: 'a-simple-example', text: 'A Simple Example' },
+  { depth: 2, slug: 'understanding-the-sections', text: 'Understanding the Sections' },
+];
+---
+
+<DocsLayout
+  title="Data Model"
+  description="Understanding the datagen data model and DSL syntax"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="what-is-datagen">What is datagen?</h2>
+
+  <p>
+    datagen is a <strong>Domain Specific Language (DSL)</strong> that helps you generate realistic
+    test data. You write simple model files that describe what your data should look like, and
+    datagen creates realistic records for you.
+  </p>
+
+  <Callout type="tip">
+    <p>
+      Think of it like this: instead of manually creating test data or writing complex scripts, you
+      just describe the structure and rules, and datagen does the heavy lifting.
+    </p>
+  </Callout>
+
+  <h2 id="what-is-a-model">What is a Model?</h2>
+
+  <p>
+    A <strong>model</strong> is a blueprint that tells datagen how to create your data. Think of it
+    as a recipe with 2 main ingredients:
+  </p>
+
+  <h3>1. fields</h3>
+  <p>
+    Define what fields your data should have (like columns in a database table, keys in a document
+    etc).
+  </p>
+
+  <h3>2. generator functions</h3>
+  <p>Specify how to create each field (using built-in functions or custom logic).</p>
+
+  <Callout type="caution" title="Important: File Naming Convention">
+    <p>
+      The filename (without extension) must match the model name exactly (case-sensitive).
+      Example: file <code>User.dg</code> must contain <code>model User</code>.
+    </p>
+  </Callout>
+
+  <h3>Optional Configuration</h3>
+  <ul>
+    <li><strong>Metadata</strong>: Set default record counts, add tags for organization</li>
+    <li><strong>Misc</strong>: Define constants and custom types for reuse</li>
+  </ul>
+
+  <h2 id="a-simple-example">A Simple Example</h2>
+
+  <p>Let's start with a basic user model to understand the core concepts:</p>
+
+  <pre set:html={`<code>model users {
+  fields {
+    name() string
+    age() int
+  }
+
+  gens {
+    func name() {
+      return Name()
+    }
+
+    func age() {
+      return IntBetween(18, 65)
+    }
+  }
+}</code>`}></pre>
+
+  <p>This model creates user records with:</p>
+
+  <ul>
+    <li>A <code>name</code> field (string) that gets random names</li>
+    <li>An <code>age</code> field (int) that gets random ages between 18-65</li>
+  </ul>
+
+  <p>When you run <code>datagenc gen users.dg</code>, it creates records like:</p>
+
+  <p><strong>Output:</strong></p>
+  <pre set:html={`<code>user{name:Rosemarie Wiza age:34}</code>`}></pre>
+
+  <h2 id="understanding-the-sections">Understanding the Sections</h2>
+
+  <p>Every datagen model has two required sections:</p>
+
+  <h3>1. Fields Section - What Data to Create</h3>
+
+  <p>
+    The <code>fields</code> section defines the structure of your data. It's like creating a table
+    with column names and types.
+  </p>
+
+  <pre set:html={`<code>fields {
+  name() string
+  email() string
+  age() int
+  active() bool
+}</code>`}></pre>
+
+  <h3>2. Gens Section - How to Create It</h3>
+
+  <p>
+    The <code>gens</code> section defines generator functions for each field. This is where you
+    specify the actual data generation logic.
+  </p>
+
+  <pre set:html={`<code>gens {
+  func name() {
+    return Name()  // Uses built-in Name() function
+  }
+
+  func email() {
+    return Email()  // Uses built-in Email() function
+  }
+
+  func age() {
+    return IntBetween(18, 65)  // Random int between 18-65
+  }
+
+  func active() {
+    return Bool()  // Random true/false
+  }
+}</code>`}></pre>
+
+  <h2>Next Steps</h2>
+
+  <p>To learn more about the datagen DSL:</p>
+
+  <ul>
+    <li><a href="/odin/docs/language/dsl-specification">DSL Specification</a> - Complete language reference</li>
+    <li><a href="/odin/docs/language/built-in-functions">Built-in Functions</a> - All available functions</li>
+    <li><a href="/odin/docs/examples/1_fields/fields-overview">Examples</a> - Practical examples</li>
+  </ul>
+</DocsLayout>
+

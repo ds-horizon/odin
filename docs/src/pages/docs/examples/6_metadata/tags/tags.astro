@@ -1,0 +1,51 @@
+---
+import DocsLayout from '../../../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Examples', href: '/odin/docs/examples/6_metadata/metadata-overview' },
+  { label: 'Tags' },
+];
+
+const headings = [
+  { depth: 2, slug: 'example', text: 'Example' },
+];
+---
+
+<DocsLayout
+  title="Tags Metadata Example"
+  description="Organizing models with tags"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="example">Example</h2>
+
+  <pre set:html={`<code>model User {
+  metadata {
+    tags = ["users", "authentication", "core"]
+  }
+
+  fields {
+    id() int
+    name() string
+  }
+
+  gens {
+    func id() {
+      return iter + 1
+    }
+
+    func name() {
+      return Name()
+    }
+  }
+}</code>`}></pre>
+
+  <p>Tags help organize and filter models in large projects.</p>
+
+  <h2>Related Documentation</h2>
+  <ul>
+    <li><a href="/odin/docs/examples/6_metadata/metadata-overview">Metadata Overview</a></li>
+  </ul>
+</DocsLayout>
+

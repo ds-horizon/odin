@@ -1,0 +1,269 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import Callout from '../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Roadmap' },
+];
+
+const headings = [
+  { depth: 2, slug: 'completed', text: 'Completed' },
+  { depth: 2, slug: 'in-progress', text: 'In Progress' },
+  { depth: 2, slug: 'planned', text: 'Planned' },
+  { depth: 2, slug: 'future', text: 'Future' },
+];
+---
+
+<DocsLayout
+  title="Product Roadmap"
+  description="Transparent development, continuous innovation. Track our progress and see what's coming next for Odin."
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p class="page-description">
+    Track our progress and see what's coming next. We're building Odin for teams like yours—share your feedback and help influence the roadmap.
+  </p>
+
+  <Callout type="tip" title="Want to Contribute?">
+    <p>
+      We welcome feature requests and contributions! 
+      <a href="https://github.com/ds-horizon/odin/issues/new" target="_blank" rel="noopener noreferrer">Request a feature</a> or 
+      join the <a href="https://github.com/ds-horizon/odin/discussions" target="_blank" rel="noopener noreferrer">discussion</a>.
+    </p>
+  </Callout>
+
+  <h2 id="completed">✅ Completed</h2>
+
+  <h3>Core CLI & Deployment Engine <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q1-Q2</span></h3>
+  <p>
+    Fundamental CLI interface with deployment orchestration, service management, and environment operations. The core engine provides 
+    robust deployment workflows with validation, rollback, and status tracking capabilities.
+  </p>
+
+  <h3>Kubernetes Support <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q2</span></h3>
+  <p>
+    Native Kubernetes deployment with Helm charts, service discovery, and resource management. Full support for K8s primitives including 
+    deployments, services, config maps, and persistent volumes.
+  </p>
+
+  <h3>EC2 Support <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q3</span></h3>
+  <p>
+    Direct EC2 instance deployment with same service definitions as Kubernetes. Enables true environment parity across cloud-native and 
+    traditional infrastructure.
+  </p>
+
+  <h3>Service Versioning <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q3</span></h3>
+  <p>
+    Immutable SNAPSHOT and CONCRETE versioning system for safe deployments. SNAPSHOT versions enable rapid development iterations while 
+    CONCRETE versions provide production-grade immutability and rollback capabilities.
+  </p>
+
+  <h3>Component Lifecycle Management <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q4</span></h3>
+  <p>
+    Deploy, undeploy, scale, and operate individual components within services. Fine-grained control over component lifecycle without 
+    affecting the entire service.
+  </p>
+
+  <h2 id="in-progress">🚧 In Progress</h2>
+
+  <h3>Enhanced Monitoring & Observability <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
+  <p>
+    Built-in metrics collection, log aggregation, and real-time status dashboards. Integration with Prometheus, Grafana, and popular 
+    observability platforms for comprehensive monitoring.
+  </p>
+
+  <h3>Web UI Dashboard <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1-Q2</span></h3>
+  <p>
+    Visual interface for managing environments, services, and deployments alongside CLI. Provides intuitive views for teams who prefer 
+    graphical interfaces while maintaining CLI power for automation.
+  </p>
+
+  <h3>Advanced Health Checks <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
+  <p>
+    Configurable health check strategies with automatic healing and alerting. Support for custom health check endpoints, readiness probes, 
+    and liveness checks with intelligent failure detection.
+  </p>
+
+  <h2 id="planned">📋 Planned</h2>
+
+  <h3>Auto-Scaling <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q2</span></h3>
+  <p>
+    Automatic horizontal and vertical scaling based on metrics and policies. Define scaling rules and let Odin automatically adjust 
+    resources based on CPU, memory, request rate, or custom metrics.
+  </p>
+
+  <h3>GitOps Integration <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q2</span></h3>
+  <p>
+    Declarative GitOps workflows with automatic reconciliation and drift detection. Store service definitions in Git and let Odin 
+    continuously sync your infrastructure state with the repository.
+  </p>
+
+  <h3>Cost Optimization <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q3</span></h3>
+  <p>
+    Automated resource optimization, idle environment detection, and cost tracking. Get insights into resource usage and automatic 
+    recommendations for reducing cloud spend without sacrificing performance.
+  </p>
+
+  <h3>Blue-Green & Canary Deployments <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q3</span></h3>
+  <p>
+    Zero-downtime deployment strategies with automated traffic shifting. Deploy new versions safely with gradual rollout, automatic 
+    health monitoring, and instant rollback if issues are detected.
+  </p>
+
+  <h3>Secrets Management <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q3</span></h3>
+  <p>
+    Integrated secrets management with vault support and encryption. Securely manage sensitive configuration with rotation policies, 
+    audit logging, and integration with HashiCorp Vault, AWS Secrets Manager, and Azure Key Vault.
+  </p>
+
+  <h2 id="future">🔮 Future</h2>
+
+  <h3>Multi-Region Deployments</h3>
+  <p>
+    Deploy and manage services across multiple regions with global load balancing. Automatic DNS management, traffic routing, and 
+    region failover for truly global applications.
+  </p>
+
+  <h3>Disaster Recovery</h3>
+  <p>
+    Automated backup, recovery, and failover capabilities for critical services. Define recovery time objectives (RTO) and recovery 
+    point objectives (RPO) with automated testing of disaster recovery procedures.
+  </p>
+
+  <h3>Service Mesh Integration</h3>
+  <p>
+    Native integration with Istio, Linkerd for advanced traffic management. Leverage service mesh capabilities for advanced routing, 
+    observability, and security without complex configuration.
+  </p>
+
+  <h3>AI-Powered Insights</h3>
+  <p>
+    Intelligent recommendations for optimization, cost reduction, and performance. Machine learning models analyze your deployment 
+    patterns and provide actionable insights for improving reliability and reducing costs.
+  </p>
+
+  <Callout type="note" title="Roadmap is Subject to Change">
+    <p>
+      Our roadmap is based on community feedback and evolving needs. Timelines are estimates and features may be adjusted based on 
+      priorities. Have a feature request? <a href="https://github.com/ds-horizon/odin/issues/new" target="_blank" rel="noopener noreferrer">Let us know!</a>
+    </p>
+  </Callout>
+
+  <hr />
+
+  <div class="cta-section">
+    <h2>Want to Influence the Roadmap?</h2>
+    <p>
+      We're building Odin for teams like yours. Share your feedback, request features, or contribute to development.
+    </p>
+    <div class="cta-buttons">
+      <a href="https://github.com/ds-horizon/odin/issues/new" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+        Request a Feature
+      </a>
+      <a href="https://github.com/ds-horizon/odin/discussions" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+        Join Discussion
+      </a>
+    </div>
+  </div>
+</DocsLayout>
+
+<style>
+  .cta-section {
+    text-align: center;
+    padding: 3rem 2rem;
+    margin-top: 2rem;
+    background: var(--bg-card-hover);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+  }
+
+  .cta-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    line-height: var(--line-height-snug);
+  }
+
+  .cta-section p {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: var(--line-height-relaxed);
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    font-family: var(--font-sans);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--primary-red);
+    color: var(--text-white);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid transparent;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-red-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background: var(--bg-white);
+    color: var(--text-primary);
+    border: 1px solid var(--border-medium);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .cta-section {
+      padding: 2rem 1rem;
+    }
+
+    .cta-section h2 {
+      font-size: 1.5rem;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .btn {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+</style>
+

@@ -1,0 +1,65 @@
+---
+import DocsLayout from '../../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Advanced', href: '/odin/docs/concepts/advanced/overview' },
+  { label: 'Function Calls' },
+];
+
+const headings = [
+  { depth: 2, slug: 'overview', text: 'Overview' },
+  { depth: 2, slug: 'examples', text: 'Examples' },
+];
+---
+
+<DocsLayout
+  title="Function Calls"
+  description="Using function calls in datagen models"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="overview">Overview</h2>
+
+  <p>You can call functions within generator functions to create complex logic:</p>
+
+  <pre set:html={`<code>gens {
+  func fullName() {
+    return FirstName() + " " + LastName()
+  }
+
+  func email() {
+    name = FirstName()
+    domain = Domain()
+    return name + "@" + domain
+  }
+}</code>`}></pre>
+
+  <h2 id="examples">Examples</h2>
+
+  <h3>Chaining Functions</h3>
+
+  <pre set:html={`<code>func displayName() {
+  first = FirstName()
+  last = LastName()
+  return first + " " + last
+}</code>`}></pre>
+
+  <h3>Conditional Logic</h3>
+
+  <pre set:html={`<code>func age() {
+  if iter % 2 == 0 {
+    return IntBetween(18, 30)
+  } else {
+    return IntBetween(31, 65)
+  }
+}</code>`}></pre>
+
+  <h2>Related Documentation</h2>
+  <ul>
+    <li><a href="/odin/docs/language/built-in-functions">Built-in Functions</a></li>
+    <li><a href="/odin/docs/concepts/advanced/iter-variable">Iter Variable</a></li>
+  </ul>
+</DocsLayout>
+

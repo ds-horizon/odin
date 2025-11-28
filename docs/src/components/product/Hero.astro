@@ -1,0 +1,155 @@
+---
+/**
+ * Hero Component - horizonos.in style
+ * Large centered hero with {braces} logo style
+ */
+
+interface Props {
+  logoText: string;
+  tagline: string;
+  description: string;
+  primaryCTA?: { text: string; href: string; };
+  secondaryCTA?: { text: string; href: string; };
+  showCornerBrackets?: boolean;
+}
+
+const { 
+  logoText, 
+  tagline, 
+  description, 
+  primaryCTA, 
+  secondaryCTA,
+  showCornerBrackets = true 
+} = Astro.props;
+---
+
+<section class="hero mesh-gradient">
+  <div class="container hero-content">
+    <h1 class="hero-logo text-mono">{logoText}</h1>
+    <p class="hero-tagline">{tagline}</p>
+    <p class="hero-description">{description}</p>
+    
+    {(primaryCTA || secondaryCTA) && (
+      <div class="hero-buttons">
+        {primaryCTA && (
+          <a href={primaryCTA.href} class="btn btn-primary">
+            {primaryCTA.text} →
+          </a>
+        )}
+        {secondaryCTA && (
+          <a href={secondaryCTA.href} class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+            {secondaryCTA.text}
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem;
+    position: relative;
+    background: var(--bg-page);
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-light);
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 40%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(211, 47, 47, 0.08) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 35%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(211, 47, 47, 0.05) 0%, transparent 70%);
+    animation: float 8s ease-in-out infinite reverse;
+    pointer-events: none;
+  }
+  
+  .hero-content {
+    max-width: 900px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .hero-logo {
+    font-family: var(--font-mono);
+    font-size: clamp(3rem, 8vw, 6rem);
+    color: var(--primary-red);
+    margin-bottom: 2rem;
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+  }
+  
+  .hero-tagline {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    line-height: var(--line-height-snug);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .hero-description {
+    font-family: var(--font-sans);
+    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    line-height: var(--line-height-relaxed);
+    font-weight: var(--font-weight-regular);
+  }
+  
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .hero-buttons .btn {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .hero-buttons .btn:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  
+  @media (max-width: 768px) {
+    .hero {
+      min-height: 60vh;
+      padding: 5rem 1rem;
+    }
+    
+    .hero-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .hero-buttons .btn {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+</style>
+

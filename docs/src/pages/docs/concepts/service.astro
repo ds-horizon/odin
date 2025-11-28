@@ -1,0 +1,282 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Key Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Service' },
+];
+
+const headings = [
+  { depth: 2, slug: 'what-is-a-service', text: 'What is a Service?' },
+  { depth: 2, slug: 'service-definition', text: 'Service Definition' },
+  { depth: 2, slug: 'service-lifecycle', text: 'Service Lifecycle' },
+  { depth: 2, slug: 'service-operations', text: 'Service Operations' },
+  { depth: 2, slug: 'service-versioning', text: 'Service Versioning' },
+  { depth: 2, slug: 'service-best-practices', text: 'Service Best Practices' },
+  { depth: 2, slug: 'examples', text: 'Examples' },
+];
+---
+
+<DocsLayout
+  title="Service"
+  description="Understanding Odin services and how to define them"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>
+    A <strong>Service</strong> in Odin represents a deployable application unit composed of one or
+    more components. Services are the primary abstraction for managing your applications in Odin.
+  </p>
+
+  <h2 id="what-is-a-service">What is a Service?</h2>
+
+  <p>A service is a functional unit with defined boundaries that:</p>
+
+  <ul>
+    <li>Consists of one or more components (web servers, databases, caches, etc.)</li>
+    <li>Can be treated as a blackbox from the outside</li>
+    <li>Is versioned and can be deployed independently</li>
+    <li>Has lifecycle states and can be operated as a unit</li>
+  </ul>
+
+  <h2 id="service-definition">Service Definition</h2>
+
+  <p>Services are defined using JSON files with the following structure:</p>
+
+  <pre set:html={`<code>{ "name": "user-api",
+  "version": "1.0.0",
+  "team": "backend-team",
+  "components": [
+    {"name": "api-server",
+      "type": "webservice",
+      "version": "2.1.0",
+      "depends_on": ["database", "cache"],
+      "config": {  "port": 8080,
+        "replicas": 3
+      
+    ,
+    {"name": "database",
+      "type": "postgres",
+      "version": "14.5",
+      "config": {  "storage": "100Gi"
+      
+    ,
+    {"name": "cache",
+      "type": "redis",
+      "version": "7.0",
+      "config": {  "memory": "2Gi"
+      
+    
+  ]
+</code>`}></pre>
+
+  <h3>Service Properties</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td>Unique identifier for the service</td>
+      </tr>
+      <tr>
+        <td><code>version</code></td>
+        <td>Semantic version (e.g., <code>1.0.0</code>, <code>1.2.0-SNAPSHOT</code>)</td>
+      </tr>
+      <tr>
+        <td><code>team</code></td>
+        <td>Owning team or organization</td>
+      </tr>
+      <tr>
+        <td><code>components</code></td>
+        <td>Array of component definitions</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="service-lifecycle">Service Lifecycle</h2>
+
+  <h3>Deploying a Service</h3>
+
+  <p>Deploy a service to an environment:</p>
+
+  <pre><code>odin deploy service --env &lt;env-name&gt; \
+  --file service.json \
+  --provisioning provisioning.json</code></pre>
+
+  <p>The deployment process:</p>
+  <ol>
+    <li>Validates the service definition</li>
+    <li>Validates provisioning configuration</li>
+    <li>Creates deployment tasks for each component</li>
+    <li>Deploys components according to dependency order</li>
+    <li>Monitors deployment status and reports progress</li>
+  </ol>
+
+  <h3>Service States</h3>
+
+  <p>Services transition through several states during their lifecycle:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>DEPLOYING</code></td>
+        <td>Deployment in progress</td>
+      </tr>
+      <tr>
+        <td><code>DEPLOYED</code></td>
+        <td>All components successfully deployed</td>
+      </tr>
+      <tr>
+        <td><code>FAILED</code></td>
+        <td>One or more components failed</td>
+      </tr>
+      <tr>
+        <td><code>UNDEPLOYING</code></td>
+        <td>Teardown in progress</td>
+      </tr>
+      <tr>
+        <td><code>UNDEPLOYED</code></td>
+        <td>Service removed from environment</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Checking Service Status</h3>
+
+  <p>Check the status of a deployed service:</p>
+
+  <pre><code>odin status env &lt;env-name&gt; --service &lt;service-name&gt;</code></pre>
+
+  <p>Get detailed component-level information:</p>
+
+  <pre><code>odin describe env &lt;env-name&gt; --service &lt;service-name&gt;</code></pre>
+
+  <h3>Undeploying a Service</h3>
+
+  <p>Remove a service from an environment:</p>
+
+  <pre><code>odin undeploy service &lt;service-name&gt; --env &lt;env-name&gt;</code></pre>
+
+  <Callout type="caution" title="Production Safety">
+    <p>
+      When undeploying from an environment named <code>prod</code> or <code>production</code>, Odin
+      requires you to type <code>PROD</code> to confirm the operation.
+    </p>
+  </Callout>
+
+  <h2 id="service-operations">Service Operations</h2>
+
+  <h3>Operating a Service</h3>
+
+  <p>Execute lifecycle operations on a service:</p>
+
+  <pre set:html={`<code>odin operate service --name &lt;service-name&gt; \
+  --env &lt;env-name&gt; \
+  --operation &lt;operation-type&gt; \
+  --options '{"key": "value"}'</code>`}></pre>
+
+  <h3>Redeploying a Service</h3>
+
+  <p>Update a service with new configuration:</p>
+
+  <pre><code>odin operate service --name user-api \
+  --env staging \
+  --operation redeploy \
+  --file updated-service.json</code></pre>
+
+  <p>When redeploying, Odin shows a diff of pending changes and asks for confirmation.</p>
+
+  <h2 id="service-versioning">Service Versioning</h2>
+
+  <p>Odin supports two versioning strategies:</p>
+
+  <h3>SNAPSHOT Versions</h3>
+
+  <p>Mutable versions for development and QA:</p>
+
+  <pre set:html={`<code>{ "name": "user-api",
+  "version": "1.2.0-SNAPSHOT",
+  ...
+</code>`}></pre>
+
+  <ul>
+    <li>Can be redeployed with changes</li>
+    <li>Ideal for fast iteration</li>
+    <li>Not suitable for production</li>
+  </ul>
+
+  <h3>CONCRETE Versions</h3>
+
+  <p>Immutable versions for production:</p>
+
+  <pre set:html={`<code>{ "name": "user-api",
+  "version": "1.2.0",
+  ...
+</code>`}></pre>
+
+  <ul>
+    <li>Cannot be modified once released</li>
+    <li>Guarantees reproducibility</li>
+    <li>Suitable for production deployments</li>
+  </ul>
+
+  <h2 id="service-best-practices">Service Best Practices</h2>
+
+  <h3>Service Definition</h3>
+
+  <ol>
+    <li><strong>Use Semantic Versioning</strong>: Follow <code>major.minor.patch</code> format</li>
+    <li><strong>Document Dependencies</strong>: Clearly specify <code>depends_on</code> relationships</li>
+    <li><strong>Modular Components</strong>: Break services into logical components</li>
+    <li><strong>Team Ownership</strong>: Assign clear team ownership</li>
+  </ol>
+
+  <h3>Development Workflow</h3>
+
+  <ol>
+    <li><strong>Develop with SNAPSHOT</strong>: Deploy <code>1.0.0-SNAPSHOT</code> to dev environment</li>
+    <li><strong>Iterate with QA</strong>: Test and refine in staging environment</li>
+    <li><strong>Release CONCRETE</strong>: Create <code>1.0.0</code> release for production</li>
+    <li><strong>Deploy to Production</strong>: Deploy immutable version to prod</li>
+  </ol>
+
+  <h2 id="examples">Examples</h2>
+
+  <h3>Simple Web Service</h3>
+
+  <pre set:html={`<code>{ "name": "hello-world",
+  "version": "1.0.0-SNAPSHOT",
+  "team": "platform",
+  "components": [
+    {"name": "web",
+      "type": "webservice",
+      "version": "1.0.0",
+      "config": {  "port": 8080
+      
+    
+  ]
+</code>`}></pre>
+
+  <h2>Related Concepts</h2>
+
+  <ul>
+    <li><a href="/odin/docs/concepts/component">Component</a>: Building blocks of services</li>
+    <li><a href="/odin/docs/concepts/provisioning">Provisioning</a>: Define how services are deployed</li>
+    <li><a href="/odin/docs/concepts/environment">Environment</a>: Where services are deployed</li>
+  </ul>
+</DocsLayout>
+

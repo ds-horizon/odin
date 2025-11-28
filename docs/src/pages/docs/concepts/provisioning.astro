@@ -1,0 +1,218 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Key Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Provisioning' },
+];
+
+const headings = [
+  { depth: 2, slug: 'what-is-provisioning', text: 'What is Provisioning?' },
+  { depth: 2, slug: 'provisioning-configuration-structure', text: 'Provisioning Configuration Structure' },
+  { depth: 2, slug: 'deployment-types', text: 'Deployment Types' },
+];
+---
+
+<DocsLayout
+  title="Provisioning"
+  description="Understanding provisioning configurations in Odin"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>
+    <strong>Provisioning</strong> in Odin defines <strong>how</strong> and <strong>where</strong> components
+    are deployed. While service definitions describe <strong>what</strong> to deploy, provisioning
+    configurations specify the deployment details for each cloud provider and platform.
+  </p>
+
+  <h2 id="what-is-provisioning">What is Provisioning?</h2>
+
+  <p>Provisioning configuration maps components to actual cloud resources:</p>
+
+  <ul>
+    <li><strong>Kubernetes deployments</strong>: Pods, services, ingress</li>
+    <li><strong>AWS resources</strong>: EC2 instances, RDS databases, ElastiCache</li>
+    <li><strong>GCP resources</strong>: Compute Engine, Cloud SQL, Memorystore</li>
+    <li><strong>Azure resources</strong>: VMs, Azure Database, Cache for Redis</li>
+  </ul>
+
+  <h2 id="provisioning-configuration-structure">Provisioning Configuration Structure</h2>
+
+  <p>
+    Provisioning configs are JSON files that specify deployment parameters for each component:
+  </p>
+
+  <pre set:html={`<code>[
+  { "component_name": "api-server",
+    "deployment_type": "kubernetes-deployment",
+    "params": {"namespace": "production",
+      "cpu": "2",
+      "memory": "4Gi",
+      "image": "myregistry/user-api:1.0.0"
+    ,
+    "env_variables": {"DB_HOST": "postgres.prod.svc.cluster.local",
+      "CACHE_URL": "redis://cache:6379"
+    
+  ,
+  { "component_name": "database",
+    "deployment_type": "rds-postgres",
+    "params": {"instance_class": "db.t3.medium",
+      "storage": "100",
+      "multi_az": true
+    
+  
+]</code>`}></pre>
+
+  <h3>Provisioning Properties</h3>
+
+  <p>Each provisioning entry contains:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>component_name</code></td>
+        <td>Yes</td>
+        <td>Must match a component in the service definition</td>
+      </tr>
+      <tr>
+        <td><code>deployment_type</code></td>
+        <td>Yes</td>
+        <td>Provider-specific deployment type</td>
+      </tr>
+      <tr>
+        <td><code>params</code></td>
+        <td>Yes</td>
+        <td>Deployment-specific parameters (varies by type)</td>
+      </tr>
+      <tr>
+        <td><code>env_variables</code></td>
+        <td>No</td>
+        <td>Environment variables to inject</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="deployment-types">Deployment Types</h2>
+
+  <p>Different deployment types are available for different platforms:</p>
+
+  <h3>Kubernetes Deployment Types</h3>
+
+  <h4>kubernetes-deployment</h4>
+
+  <p>Deploy a containerized application:</p>
+
+  <pre set:html={`<code>{ "component_name": "api",
+  "deployment_type": "kubernetes-deployment",
+  "params": { "namespace": "staging",
+    "cpu": "500m",
+    "memory": "1Gi",
+    "replicas": 3,
+    "image": "myregistry/api:1.0.0",
+    "port": 8080,
+    "service_type": "LoadBalancer"
+  ,
+  "env_variables": { "LOG_LEVEL": "info",
+    "DB_CONNECTION_STRING": "postgres://db:5432/myapp"
+  
+</code>`}></pre>
+
+  <h4>kubernetes-statefulset</h4>
+
+  <p>Deploy a stateful application (databases, caches with persistent storage):</p>
+
+  <pre set:html={`<code>{ "component_name": "cache",
+  "deployment_type": "kubernetes-statefulset",
+  "params": { "namespace": "staging",
+    "cpu": "1",
+    "memory": "2Gi",
+    "replicas": 3,
+    "image": "redis:7.0",
+    "storage_class": "fast-ssd",
+    "volume_size": "10Gi"
+  
+</code>`}></pre>
+
+  <h3>AWS Deployment Types</h3>
+
+  <h4>rds-postgres / rds-mysql</h4>
+
+  <p>Deploy RDS database instances:</p>
+
+  <pre set:html={`<code>{ "component_name": "database",
+  "deployment_type": "rds-postgres",
+  "params": { "instance_class": "db.r5.large",
+    "storage": "200",
+    "multi_az": true,
+    "backup_retention_days": 7,
+    "vpc_security_groups": ["sg-abc123"]
+  
+</code>`}></pre>
+
+  <h4>elasticache-redis</h4>
+
+  <p>Deploy ElastiCache Redis cluster:</p>
+
+  <pre set:html={`<code>{ "component_name": "cache",
+  "deployment_type": "elasticache-redis",
+  "params": { "node_type": "cache.r5.large",
+    "num_nodes": 3,
+    "engine_version": "7.0",
+    "subnet_group": "my-subnet-group"
+  
+</code>`}></pre>
+
+  <h3>Environment-Specific Provisioning</h3>
+
+  <p>Create separate provisioning files for different environments:</p>
+
+  <ul>
+    <li><code>provisioning-dev.json</code> - Smaller instances, less redundancy</li>
+    <li><code>provisioning-staging.json</code> - Production-like but smaller scale</li>
+    <li><code>provisioning-prod.json</code> - Full production configuration</li>
+  </ul>
+
+  <p>Deploy with environment-specific configs:</p>
+
+  <pre><code>odin deploy service --env production \
+  --file service.json \
+  --provisioning provisioning-prod.json</code></pre>
+
+  <h2>Best Practices</h2>
+
+  <ol>
+    <li>
+      <strong>Separate Configs by Environment</strong>: Use different provisioning files for dev,
+      staging, prod
+    </li>
+    <li>
+      <strong>Version Control</strong>: Keep provisioning configs in git alongside service
+      definitions
+    </li>
+    <li>
+      <strong>Resource Limits</strong>: Always specify CPU and memory limits to prevent resource
+      exhaustion
+    </li>
+    <li>
+      <strong>Security Groups</strong>: Properly configure network security for cloud resources
+    </li>
+    <li><strong>High Availability</strong>: Use <code>multi_az</code> for production databases</li>
+  </ol>
+
+  <h2>Related Concepts</h2>
+
+  <ul>
+    <li><a href="/odin/docs/concepts/service">Service</a>: What to deploy</li>
+    <li><a href="/odin/docs/concepts/component">Component</a>: Components need provisioning</li>
+    <li><a href="/odin/docs/concepts/environment">Environment</a>: Where to deploy</li>
+  </ul>
+</DocsLayout>
+

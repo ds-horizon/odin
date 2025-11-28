@@ -1,0 +1,116 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'CLI Reference' },
+  { label: 'Datagenc Reference' },
+];
+
+const headings = [
+  { depth: 2, slug: 'overview', text: 'Overview' },
+  { depth: 2, slug: 'commands', text: 'Commands' },
+];
+---
+
+<DocsLayout
+  title="Datagenc CLI Reference"
+  description="Complete reference for datagenc compiler CLI commands"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="overview">Overview</h2>
+
+  <p>
+    The <code>datagenc</code> CLI is the compiler for datagen model files. It compiles
+    <code>.dg</code> model files into executable data generators.
+  </p>
+
+  <Callout type="tip">
+    <p>
+      <code>datagenc</code> is the compiler, while <code>datagen</code> is the runtime. See <a
+        href="/odin/docs/reference/datagenc-vs-datagen">Datagenc vs Datagen</a
+      > for details.
+    </p>
+  </Callout>
+
+  <h2 id="commands">Commands</h2>
+
+  <h3>datagenc gen</h3>
+
+  <p>Generate data by compiling and executing model files.</p>
+
+  <pre><code>datagenc gen &lt;model-file&gt; [flags]</code></pre>
+
+  <h4>Flags</h4>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Short</th>
+        <th>Default</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--count</code></td>
+        <td><code>-c</code></td>
+        <td><code>10</code></td>
+        <td>Number of records to generate</td>
+      </tr>
+      <tr>
+        <td><code>--output</code></td>
+        <td><code>-o</code></td>
+        <td><code>stdout</code></td>
+        <td>Output destination</td>
+      </tr>
+      <tr>
+        <td><code>--sink</code></td>
+        <td><code>-s</code></td>
+        <td>-</td>
+        <td>Data sink (mysql, postgres, stdout)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Examples</h4>
+
+  <pre><code># Generate 100 records
+datagenc gen users.dg --count 100
+
+# Output to MySQL
+datagenc gen users.dg --sink mysql --count 1000
+
+# Output to file
+datagenc gen users.dg --output users.json --count 500</code></pre>
+
+  <h3>datagenc compile</h3>
+
+  <p>Compile model file without executing.</p>
+
+  <pre><code>datagenc compile &lt;model-file&gt;</code></pre>
+
+  <h3>datagenc validate</h3>
+
+  <p>Validate model file syntax.</p>
+
+  <pre><code>datagenc validate &lt;model-file&gt;</code></pre>
+
+  <h3>datagenc version</h3>
+
+  <p>Show datagenc version.</p>
+
+  <pre><code>datagenc version</code></pre>
+
+  <h2>Related Documentation</h2>
+
+  <ul>
+    <li><a href="/odin/docs/cli/datagen-reference">Datagen CLI Reference</a></li>
+    <li><a href="/odin/docs/reference/datagenc-vs-datagen">Datagenc vs Datagen</a></li>
+    <li><a href="/odin/docs/sinks/overview">Data Sinks</a></li>
+  </ul>
+</DocsLayout>
+

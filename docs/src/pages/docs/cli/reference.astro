@@ -1,0 +1,328 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'CLI Reference' },
+  { label: 'Command Reference' },
+];
+
+const headings = [
+  { depth: 2, slug: 'global-flags', text: 'Global Flags' },
+  { depth: 2, slug: 'odin-configure', text: 'odin configure' },
+  { depth: 2, slug: 'odin-create-env', text: 'odin create env' },
+  { depth: 2, slug: 'odin-delete-env', text: 'odin delete env' },
+  { depth: 2, slug: 'odin-list-env', text: 'odin list env' },
+  { depth: 2, slug: 'odin-describe-env', text: 'odin describe env' },
+  { depth: 2, slug: 'odin-status-env', text: 'odin status env' },
+  { depth: 2, slug: 'odin-deploy-service', text: 'odin deploy service' },
+  { depth: 2, slug: 'odin-undeploy-service', text: 'odin undeploy service' },
+  { depth: 2, slug: 'odin-operate-service', text: 'odin operate service' },
+  { depth: 2, slug: 'odin-operate-component', text: 'odin operate component' },
+];
+---
+
+<DocsLayout
+  title="CLI Reference"
+  description="Complete reference for all Odin CLI commands"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>Complete reference for all Odin CLI commands and flags.</p>
+
+  <h2 id="global-flags">Global Flags</h2>
+
+  <p>All commands inherit these flags:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Short</th>
+        <th>Default</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--profile</code></td>
+        <td><code>-p</code></td>
+        <td><code>default</code></td>
+        <td>Profile to use from <code>~/.odin/config</code></td>
+      </tr>
+      <tr>
+        <td><code>--output</code></td>
+        <td><code>-o</code></td>
+        <td><code>text</code></td>
+        <td>Output format (<code>text</code> or <code>json</code>)</td>
+      </tr>
+      <tr>
+        <td><code>--verbose</code></td>
+        <td><code>-v</code></td>
+        <td><code>false</code></td>
+        <td>Enable verbose logging</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="odin-configure">odin configure</h2>
+
+  <p>Configure Odin locally and authenticate with the backend.</p>
+
+  <pre><code>odin configure [flags]</code></pre>
+
+  <h3>Flags</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--backend-address</code></td>
+        <td>Yes*</td>
+        <td>Host:port of the Odin backend</td>
+      </tr>
+      <tr>
+        <td><code>--org-id</code></td>
+        <td>Yes*</td>
+        <td>Organization identifier</td>
+      </tr>
+      <tr>
+        <td><code>--insecure</code> / <code>-I</code></td>
+        <td>No</td>
+        <td>Skip TLS host verification</td>
+      </tr>
+      <tr>
+        <td><code>--plaintext</code> / <code>-P</code></td>
+        <td>No</td>
+        <td>Use plaintext gRPC (no TLS)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>*Required if not set via environment variables or config file</p>
+
+  <h3>Examples</h3>
+
+  <pre><code># Basic configuration
+odin configure --backend-address api.odin.example.com:443 --org-id 12345
+
+# Local development (plaintext)
+odin configure --backend-address localhost:8080 --org-id 1 --plaintext
+
+# Configure different profile
+odin configure --profile staging \
+  --backend-address staging.odin.example.com:443 \
+  --org-id 12345</code></pre>
+
+  <h2 id="odin-create-env">odin create env</h2>
+
+  <p>Create a new environment.</p>
+
+  <pre><code>odin create env &lt;name&gt; [flags]</code></pre>
+
+  <h3>Arguments</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Argument</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td>Yes</td>
+        <td>Environment name</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Flags</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--accounts</code></td>
+        <td>Yes</td>
+        <td>Comma-separated list of provider accounts</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Examples</h3>
+
+  <pre><code># Create development environment
+odin create env dev --accounts aws/dev
+
+# Create staging with multiple accounts
+odin create env staging --accounts aws/dev,aws/shared
+
+# Create production environment
+odin create env production --accounts aws/prod,aws/shared-services</code></pre>
+
+  <h2 id="odin-delete-env">odin delete env</h2>
+
+  <p>Delete an existing environment.</p>
+
+  <pre><code>odin delete env &lt;name&gt;</code></pre>
+
+  <Callout type="caution">
+    <p>
+      Deleting an environment will undeploy all services within it. This cannot be undone.
+    </p>
+  </Callout>
+
+  <h2 id="odin-list-env">odin list env</h2>
+
+  <p>List all environments you have access to.</p>
+
+  <pre><code>odin list env [flags]</code></pre>
+
+  <h3>Flags</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--account</code></td>
+        <td>Filter by provider account</td>
+      </tr>
+      <tr>
+        <td><code>--all</code></td>
+        <td>Include environments from other users</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="odin-describe-env">odin describe env</h2>
+
+  <p>Get detailed information about an environment.</p>
+
+  <pre><code>odin describe env &lt;name&gt; [flags]</code></pre>
+
+  <h3>Flags</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--service</code></td>
+        <td>Filter by service name</td>
+      </tr>
+      <tr>
+        <td><code>--component</code></td>
+        <td>Filter by component name (requires --service)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="odin-status-env">odin status env</h2>
+
+  <p>Check the deployment status of an environment.</p>
+
+  <pre><code>odin status env &lt;name&gt; [flags]</code></pre>
+
+  <h2 id="odin-deploy-service">odin deploy service</h2>
+
+  <p>Deploy a service to an environment.</p>
+
+  <pre><code>odin deploy service [flags]</code></pre>
+
+  <h3>Flags</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--env</code></td>
+        <td>Yes</td>
+        <td>Environment name</td>
+      </tr>
+      <tr>
+        <td><code>--file</code></td>
+        <td>Yes</td>
+        <td>Service definition JSON file</td>
+      </tr>
+      <tr>
+        <td><code>--provisioning</code></td>
+        <td>Yes</td>
+        <td>Provisioning configuration JSON file</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="odin-undeploy-service">odin undeploy service</h2>
+
+  <p>Remove a service from an environment.</p>
+
+  <pre><code>odin undeploy service &lt;name&gt; --env &lt;env-name&gt;</code></pre>
+
+  <h2 id="odin-operate-service">odin operate service</h2>
+
+  <p>Execute operations on a service.</p>
+
+  <pre><code>odin operate service --name &lt;name&gt; --env &lt;env&gt; --operation &lt;op&gt; [flags]</code></pre>
+
+  <h3>Operations</h3>
+
+  <ul>
+    <li><code>redeploy</code> - Redeploy with new configuration</li>
+    <li><code>ADD_COMPONENT</code> - Add a new component</li>
+    <li><code>REMOVE_COMPONENT</code> - Remove an existing component</li>
+  </ul>
+
+  <h2 id="odin-operate-component">odin operate component</h2>
+
+  <p>Execute operations on a specific component.</p>
+
+  <pre><code>odin operate component --name &lt;name&gt; --service &lt;svc&gt; --env &lt;env&gt; --operation &lt;op&gt;</code></pre>
+
+  <h3>Operations</h3>
+
+  <ul>
+    <li><code>scale</code> - Scale component replicas</li>
+    <li><code>restart</code> - Rolling restart</li>
+    <li><code>update-config</code> - Update configuration</li>
+  </ul>
+
+  <h2>Related Documentation</h2>
+
+  <ul>
+    <li><a href="/odin/docs/introduction/getting-started">Getting Started</a></li>
+    <li><a href="/odin/docs/howto/deploy-first-service">Deploy Your First Service</a></li>
+    <li><a href="/odin/docs/cli/datagen-reference">Datagen CLI Reference</a></li>
+  </ul>
+</DocsLayout>
+

@@ -1,0 +1,248 @@
+/**
+ * Odin Design Tokens
+ * Single source of truth for all design system variables
+ * Used by both product pages and Starlight documentation
+ */
+
+:root {
+  /* ============================================
+     BRAND COLORS - horizonos.in inspired
+     ============================================ */
+  --primary-red: #D32F2F;
+  --primary-red-hover: #C62828;
+  --primary-red-light: #EF5350;
+  --primary-red-dark: #B71C1C;
+  --primary-red-alpha-10: rgba(211, 47, 47, 0.1);
+  --primary-red-alpha-20: rgba(211, 47, 47, 0.2);
+
+  /* ============================================
+     BACKGROUNDS - Enhanced layering
+     ============================================ */
+  --bg-page: #FAFAFA;
+  --bg-white: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-card-hover: #F5F5F9;
+  --bg-section-gray: #F5F5F5;
+  --bg-overlay: rgba(255, 255, 255, 0.95);
+
+  /* ============================================
+     TEXT COLORS - Improved contrast
+     ============================================ */
+  --text-primary: #1A1A1A;
+  --text-secondary: #5A5A5A;
+  --text-tertiary: #8A8A8A;
+  --text-white: #FFFFFF;
+  --text-muted: #B0B0B0;
+
+  /* ============================================
+     BORDERS - Refined
+     ============================================ */
+  --border-light: #E5E5E5;
+  --border-medium: #BDBDBD;
+  --border-dark: #9E9E9E;
+  --border-focus: rgba(211, 47, 47, 0.3);
+
+  /* ============================================
+     SHADOWS - Layered depth system
+     ============================================ */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.12), 0 10px 10px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  /* ============================================
+     TYPOGRAPHY - Professional font stack
+     ============================================ */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, 'Courier New', monospace;
+
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Line heights */
+  --line-height-tight: 1.2;
+  --line-height-snug: 1.4;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.7;
+
+  /* Letter spacing */
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.02em;
+
+  /* ============================================
+     SPACING - 8px base grid
+     ============================================ */
+  --spacing-xs: 0.5rem;    /* 8px */
+  --spacing-sm: 1rem;      /* 16px */
+  --spacing-md: 1.5rem;    /* 24px */
+  --spacing-lg: 2rem;      /* 32px */
+  --spacing-xl: 3rem;      /* 48px */
+  --spacing-2xl: 4rem;     /* 64px */
+  --spacing-3xl: 6rem;     /* 96px */
+  --spacing-4xl: 8rem;     /* 128px */
+  --spacing-5xl: 10rem;    /* 160px */
+  --spacing-6xl: 12rem;    /* 192px */
+
+  /* ============================================
+     BORDER RADIUS - Refined
+     ============================================ */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* ============================================
+     CONTAINER
+     ============================================ */
+  --container-max-width: 1200px;
+  --container-padding: 2rem;
+
+  /* ============================================
+     TRANSITIONS
+     ============================================ */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-instant: 100ms;
+  --duration-quick: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 700ms;
+  --spring-curve: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ============================================
+     GRADIENTS
+     ============================================ */
+  --gradient-red-subtle: linear-gradient(135deg, #FAFAFA 0%, #FFF5F5 50%, #FFF0F0 100%);
+  --gradient-red-bold: linear-gradient(135deg, #D32F2F 0%, #EF5350 100%);
+  --gradient-red-mesh: radial-gradient(at 0% 0%, #FAFAFA 0%, #FFF5F5 40%, #FAFAFA 100%);
+  --gradient-shine: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+
+  /* ============================================
+     GLASS-MORPHISM
+     ============================================ */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-blur: 12px;
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+
+  /* ============================================
+     BORDER EFFECTS
+     ============================================ */
+  --border-glow-red: 0 0 20px rgba(211, 47, 47, 0.3);
+  --border-glow-subtle: 0 0 10px rgba(211, 47, 47, 0.15);
+  --border-gradient: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+
+  /* ============================================
+     Z-INDEX SCALE
+     ============================================ */
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 100;
+  --z-fixed: 500;
+  --z-modal-backdrop: 1000;
+  --z-modal: 1010;
+  --z-popover: 1020;
+  --z-tooltip: 1030;
+  --z-notification: 1040;
+
+  /* ============================================
+     STARLIGHT VARIABLE MAPPING
+     Map our design tokens to Starlight's CSS variables
+     ============================================ */
+  --sl-color-accent: var(--primary-red);
+  --sl-color-accent-low: #FFF5F5;
+  --sl-color-accent-high: var(--primary-red-dark);
+  --sl-color-bg: var(--bg-page);
+  --sl-color-bg-nav: var(--bg-white);
+  --sl-color-bg-sidebar: var(--bg-white);
+  --sl-font: var(--font-sans);
+  --sl-font-mono: var(--font-mono);
+  --sl-line-height: var(--line-height-relaxed);
+  --sl-line-height-headings: var(--line-height-snug);
+  --sl-content-width: 60rem;
+  --sl-sidebar-width: 15rem;
+  --sl-nav-height: 73px;
+
+  /* Starlight gray scale (light mode) */
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #edeeed;
+  --sl-color-gray-2: #c1c2c2;
+  --sl-color-gray-3: #8a8c8b;
+  --sl-color-gray-4: #575858;
+  --sl-color-gray-5: #373938;
+  --sl-color-gray-6: #252727;
+  --sl-color-black: #181818;
+}
+
+/* ============================================
+   DARK MODE OVERRIDES
+   ============================================ */
+:root[data-theme='dark'] {
+  /* Dark mode backgrounds */
+  --bg-page: #0F0F0F;
+  --bg-white: #1A1A1A;
+  --bg-elevated: #242424;
+  --bg-card-hover: #2A2A2A;
+  --bg-section-gray: #151515;
+  --bg-overlay: rgba(26, 26, 26, 0.95);
+
+  /* Dark mode text */
+  --text-primary: #F5F5F5;
+  --text-secondary: #B0B0B0;
+  --text-tertiary: #808080;
+  --text-muted: #606060;
+
+  /* Dark mode borders */
+  --border-light: #2A2A2A;
+  --border-medium: #404040;
+  --border-dark: #505050;
+
+  /* Dark mode shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.7), 0 2px 4px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.8), 0 4px 6px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.9), 0 10px 10px rgba(0, 0, 0, 0.8);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.6), 0 1px 4px rgba(0, 0, 0, 0.5);
+
+  /* Dark mode gradients */
+  --gradient-red-subtle: linear-gradient(135deg, #0F0F0F 0%, #1A1212 50%, #150F0F 100%);
+  --gradient-red-mesh: radial-gradient(at 0% 0%, #0F0F0F 0%, #1A1212 40%, #0F0F0F 100%);
+
+  /* Dark mode glass */
+  --glass-bg: rgba(26, 26, 26, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  /* Starlight dark mode mapping */
+  --sl-color-accent: #EF5350;
+  --sl-color-accent-low: #2A1515;
+  --sl-color-accent-high: #FFCDD2;
+  --sl-color-bg: #0F0F0F;
+  --sl-color-bg-nav: #1A1A1A;
+  --sl-color-bg-sidebar: #1A1A1A;
+
+  /* Starlight gray scale (dark mode - inverted) */
+  --sl-color-white: #181818;
+  --sl-color-gray-1: #252727;
+  --sl-color-gray-2: #373938;
+  --sl-color-gray-3: #575858;
+  --sl-color-gray-4: #8a8c8b;
+  --sl-color-gray-5: #c1c2c2;
+  --sl-color-gray-6: #edeeed;
+  --sl-color-gray-7: #f6f6f6;
+  --sl-color-black: #ffffff;
+}
+
