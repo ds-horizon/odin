@@ -5,6 +5,9 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
   site: 'https://ds-horizon.github.io/odin/',
   base: '/odin/',
+  build: {
+    format: 'directory', // Ensures clean URLs
+  },
   integrations: [
     starlight({
       title: 'Odin',
@@ -13,6 +16,20 @@ export default defineConfig({
       logo: {
         src: './src/assets/odin-logo.png',
       },
+      components: {
+        Head: './src/components/starlight/Head.astro',
+        Header: './src/components/starlight/Header.astro',
+        PageFrame: './src/components/starlight/PageFrame.astro',
+      },
+      head: [
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'stylesheet',
+            href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap',
+          },
+        },
+      ],
       social: [
         {
           icon: 'github',
