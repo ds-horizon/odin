@@ -11,8 +11,11 @@ const isActive = (path: string) => {
     return currentPath === '/odin/' || currentPath === '/odin';
   }
   if (path === '/docs/') {
-    // Docs section - match all doc paths
-    return currentPath.includes('/docs/');
+    // Docs section - match doc paths but exclude roadmap and faq
+    return currentPath.includes('/docs/') && !currentPath.includes('/roadmap') && !currentPath.includes('/faq');
+  }
+  if (path === '/roadmap/') {
+    return currentPath.includes('/roadmap');
   }
   return currentPath.includes(path);
 };
@@ -41,14 +44,8 @@ const isActive = (path: string) => {
         Docs
       </a>
       <a 
-        href="/odin/docs/faq/" 
-        class={`nav-link ${isActive('/faq') ? 'active' : ''}`}
-      >
-        FAQ
-      </a>
-      <a 
         href="/odin/docs/roadmap/" 
-        class={`nav-link ${isActive('/roadmap') ? 'active' : ''}`}
+        class={`nav-link ${isActive('/roadmap/') ? 'active' : ''}`}
       >
         Roadmap
       </a>
@@ -215,32 +212,30 @@ const isActive = (path: string) => {
     text-decoration: none;
     font-weight: var(--font-weight-medium);
     font-size: 0.9375rem;
-    transition: color var(--transition-base);
+    transition: color var(--transition-base), background-color var(--transition-base);
     position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
     font-family: var(--font-sans);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
   }
   
   .nav-link:hover {
     color: var(--text-primary);
+    background-color: rgba(211, 47, 47, 0.08);
+  }
+  
+  .nav-link:active {
+    background-color: rgba(211, 47, 47, 0.15);
+    transform: scale(0.98);
   }
   
   .nav-link.active {
     color: var(--primary-red);
     font-weight: var(--font-weight-semibold);
-  }
-  
-  .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--primary-red);
-    border-radius: 2px;
+    background-color: rgba(211, 47, 47, 0.1);
   }
   
   .external-indicator {
