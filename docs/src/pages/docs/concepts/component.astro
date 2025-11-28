@@ -48,19 +48,19 @@ const headings = [
 
   <p>Components are defined within a service definition:</p>
 
-  <pre set:html={`<code>{
-  "name": "api-server",
-  "type": "webservice",
-  "version": "2.1.0",
-  "depends_on": ["database", "cache"],
-  "config": {
-    "port": 8080,
-    "replicas": 3,
-    "env": {
-      "LOG_LEVEL": "info"
-    }
-  }
-}</code>`}></pre>
+  <pre><code>&lbrace;
+  &quot;name&quot;: &quot;api-server&quot;,
+  &quot;type&quot;: &quot;webservice&quot;,
+  &quot;version&quot;: &quot;2.1.0&quot;,
+  &quot;depends_on&quot;: [&quot;database&quot;, &quot;cache&quot;],
+  &quot;config&quot;: &lbrace;
+    &quot;port&quot;: 8080,
+    &quot;replicas&quot;: 3,
+    &quot;env&quot;: &lbrace;
+      &quot;LOG_LEVEL&quot;: &quot;info&quot;
+    &rbrace;
+  &rbrace;
+&rbrace;</code></pre>
 
   <h3>Component Properties</h3>
 
@@ -140,30 +140,30 @@ const headings = [
 
   <p>Use the <code>depends_on</code> field to specify dependencies:</p>
 
-  <pre set:html={`<code>{
-  "components": [
-    {
-      "name": "api",
-      "depends_on": ["database", "cache", "queue"]
-    },
-    {
-      "name": "worker",
-      "depends_on": ["database", "queue"]
-    },
-    {
-      "name": "database",
-      "depends_on": []
-    },
-    {
-      "name": "cache",
-      "depends_on": []
-    },
-    {
-      "name": "queue",
-      "depends_on": []
-    }
+  <pre><code>&lbrace;
+  &quot;components&quot;: [
+    &lbrace;
+      &quot;name&quot;: &quot;api&quot;,
+      &quot;depends_on&quot;: [&quot;database&quot;, &quot;cache&quot;, &quot;queue&quot;]
+    &rbrace;,
+    &lbrace;
+      &quot;name&quot;: &quot;worker&quot;,
+      &quot;depends_on&quot;: [&quot;database&quot;, &quot;queue&quot;]
+    &rbrace;,
+    &lbrace;
+      &quot;name&quot;: &quot;database&quot;,
+      &quot;depends_on&quot;: []
+    &rbrace;,
+    &lbrace;
+      &quot;name&quot;: &quot;cache&quot;,
+      &quot;depends_on&quot;: []
+    &rbrace;,
+    &lbrace;
+      &quot;name&quot;: &quot;queue&quot;,
+      &quot;depends_on&quot;: []
+    &rbrace;
   ]
-}</code>`}></pre>
+&rbrace;</code></pre>
 
   <p><strong>Deployment Order:</strong></p>
   <ol>
@@ -232,7 +232,7 @@ const headings = [
   --service &lt;service-name&gt; \
   --env &lt;env-name&gt; \
   --operation &lt;operation-type&gt; \
-  --options '{"key": "value"}'</code></pre>
+  --options '&lbrace;&quot;key&quot;: &quot;value&quot;&rbrace;'</code></pre>
 
   <h3>Common Component Operations</h3>
 
@@ -244,7 +244,7 @@ const headings = [
   --service user-api \
   --env production \
   --operation scale \
-  --options '{"replicas": 5}'</code></pre>
+  --options '&lbrace;&quot;replicas&quot;: 5&rbrace;'</code></pre>
 
   <h4>Restart a Component</h4>
 
@@ -261,42 +261,42 @@ const headings = [
 
   <h3>Web Service Configuration</h3>
 
-  <pre set:html={`<code>{
-  "name": "api",
-  "type": "webservice",
-  "config": {
-    "port": 8080,
-    "replicas": 3,
-    "cpu": "500m",
-    "memory": "1Gi",
-    "env": {
-      "LOG_LEVEL": "info",
-      "DB_HOST": "database:5432",
-      "CACHE_URL": "redis://cache:6379"
-    },
-    "healthcheck": {
-      "path": "/health",
-      "interval": 30
-    }
-  }
-}</code>`}></pre>
+  <pre><code>&lbrace;
+  &quot;name&quot;: &quot;api&quot;,
+  &quot;type&quot;: &quot;webservice&quot;,
+  &quot;config&quot;: &lbrace;
+    &quot;port&quot;: 8080,
+    &quot;replicas&quot;: 3,
+    &quot;cpu&quot;: &quot;500m&quot;,
+    &quot;memory&quot;: &quot;1Gi&quot;,
+    &quot;env&quot;: &lbrace;
+      &quot;LOG_LEVEL&quot;: &quot;info&quot;,
+      &quot;DB_HOST&quot;: &quot;database:5432&quot;,
+      &quot;CACHE_URL&quot;: &quot;redis://cache:6379&quot;
+    &rbrace;,
+    &quot;healthcheck&quot;: &lbrace;
+      &quot;path&quot;: &quot;/health&quot;,
+      &quot;interval&quot;: 30
+    &rbrace;
+  &rbrace;
+&rbrace;</code></pre>
 
   <h3>Database Configuration</h3>
 
-  <pre set:html={`<code>{
-  "name": "database",
-  "type": "postgres",
-  "config": {
-    "storage": "100Gi",
-    "instance_class": "db.r5.large",
-    "multi_az": true,
-    "backup_retention_days": 7,
-    "parameters": {
-      "max_connections": "200",
-      "shared_buffers": "256MB"
-    }
-  }
-}</code>`}></pre>
+  <pre><code>&lbrace;
+  &quot;name&quot;: &quot;database&quot;,
+  &quot;type&quot;: &quot;postgres&quot;,
+  &quot;config&quot;: &lbrace;
+    &quot;storage&quot;: &quot;100Gi&quot;,
+    &quot;instance_class&quot;: &quot;db.r5.large&quot;,
+    &quot;multi_az&quot;: true,
+    &quot;backup_retention_days&quot;: 7,
+    &quot;parameters&quot;: &lbrace;
+      &quot;max_connections&quot;: &quot;200&quot;,
+      &quot;shared_buffers&quot;: &quot;256MB&quot;
+    &rbrace;
+  &rbrace;
+&rbrace;</code></pre>
 
   <Callout type="caution" title="Stateful Components">
     <p>
@@ -351,4 +351,3 @@ const headings = [
     <li><a href="/odin/docs/concepts/environment">Environment</a>: Where components run</li>
   </ul>
 </DocsLayout>
-
