@@ -1,0 +1,213 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import Callout from '../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'FAQ' },
+];
+
+const headings = [
+  { depth: 2, slug: 'getting-started', text: 'Getting Started' },
+  { depth: 2, slug: 'installation-setup', text: 'Installation & Setup' },
+  { depth: 2, slug: 'deployment-operations', text: 'Deployment & Operations' },
+  { depth: 2, slug: 'troubleshooting', text: 'Troubleshooting' },
+  { depth: 2, slug: 'enterprise-scaling', text: 'Enterprise & Scaling' },
+];
+---
+
+<DocsLayout
+  title="Frequently Asked Questions"
+  description="Find answers to common questions about Odin deployment platform. Installation, deployment, troubleshooting, and more."
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p class="page-description">
+    Everything you need to know about Odin. Can't find what you're looking for? Reach out on GitHub Discussions.
+  </p>
+
+  <h2 id="getting-started">Getting Started</h2>
+
+  <h3>What is Odin?</h3>
+  <p>
+    Odin is a CLI-based deployment platform that enables you to define software once and deploy it anywhere, any number of times. 
+    It moves software operations from engineers to machines, eliminating the bottleneck of managing shared environments.
+  </p>
+
+  <h3>Who should use Odin?</h3>
+  <p>
+    Odin is ideal for development teams, DevOps engineers, and organizations that need consistent deployments across multiple environments. 
+    It's particularly valuable for teams struggling with shared environment conflicts, those running microservices, or companies deploying 
+    across multiple cloud providers.
+  </p>
+
+  <h3>How is Odin different from other deployment tools?</h3>
+  <p>
+    Odin focuses on environment parity and ephemeral environments. Unlike traditional tools, you write one service definition that works 
+    identically across EC2 and Kubernetes, development and production. It's designed for speed and simplicity without sacrificing 
+    production-grade features.
+  </p>
+
+  <h3>Is Odin open source?</h3>
+  <p>
+    Yes! Odin is open source and available on <a href="https://github.com/ds-horizon/odin" target="_blank" rel="noopener noreferrer">GitHub</a>. 
+    We welcome contributions from the community and actively maintain multiple repositories for different components.
+  </p>
+
+  <h3>What does "ephemeral environments" mean?</h3>
+  <p>
+    Ephemeral environments are temporary, isolated environments that can be created on-demand and destroyed when no longer needed. 
+    With Odin, you can spin up a complete environment for a feature branch, test it, and tear it down—all with simple commands.
+  </p>
+
+  <h2 id="installation-setup">Installation & Setup</h2>
+
+  <h3>What are the prerequisites for installing Odin?</h3>
+  <p>
+    Odin requires a Kubernetes cluster (for K8s deployments) or access to EC2 instances. You'll also need <code>kubectl</code>, 
+    <code>helm</code>, and basic cloud provider credentials. Full system requirements are available in our 
+    <a href="/odin/docs/introduction/getting-started">installation guide</a>.
+  </p>
+
+  <h3>How do I install Odin?</h3>
+  <p>
+    Installation is simple:
+  </p>
+
+  <pre><code>curl -fsSL https://ds-horizon.github.io/odin/install.sh | bash</code></pre>
+
+  <p>
+    For production deployments, use our Helm charts. Detailed instructions are in the 
+    <a href="/odin/docs/introduction/getting-started">Getting Started guide</a>.
+  </p>
+
+  <h3>Can I use Odin with my existing infrastructure?</h3>
+  <p>
+    Yes! Odin is designed to work with existing Kubernetes clusters and EC2 infrastructure. It doesn't require infrastructure 
+    changes—just configuration of your cloud provider credentials.
+  </p>
+
+  <h3>How do I configure multiple environments?</h3>
+  <p>
+    Odin supports multiple profiles. You can configure different backend environments (dev, staging, production) and switch between 
+    them using the <code>odin profile</code> commands.
+  </p>
+
+  <h3>Do I need to install Odin on every machine?</h3>
+  <p>
+    Only the Odin CLI needs to be installed on machines where you'll run deployment commands. The backend services (deployer, orchestrator) 
+    run in your cluster or on dedicated infrastructure.
+  </p>
+
+  <h2 id="deployment-operations">Deployment & Operations</h2>
+
+  <h3>What is a Service Definition?</h3>
+  <p>
+    A Service Definition is a JSON file that describes your application's components, dependencies, and deployment requirements. 
+    It's the blueprint that Odin uses to provision environments and deploy services consistently across platforms. 
+    Learn more in the <a href="/odin/docs/concepts/service">Service Concepts</a> documentation.
+  </p>
+
+  <h3>What's the difference between SNAPSHOT and CONCRETE versions?</h3>
+  <p>
+    <strong>SNAPSHOT</strong> versions are mutable and used for rapid development and QA iteration—they can be updated without changing 
+    the version number. <strong>CONCRETE</strong> versions are immutable releases for production, ensuring consistency and enabling safe rollbacks.
+  </p>
+
+  <Callout type="tip" title="Version Strategy">
+    <p>
+      Use SNAPSHOT versions during development for fast iterations, then release a CONCRETE version when ready for production deployment.
+    </p>
+  </Callout>
+
+  <h3>How do I deploy to production safely?</h3>
+  <p>
+    Odin includes built-in validation, confirmation prompts for production environments, health checks, and automatic rollback capabilities. 
+    Use CONCRETE versions in production and leverage the <code>--confirm</code> flag for critical operations.
+  </p>
+
+  <h3>Can I deploy to multiple cloud providers?</h3>
+  <p>
+    Yes! The same Service Definition works across different cloud providers. You can deploy to AWS EC2, Kubernetes on GKE, AKS, or EKS—all 
+    with consistent configuration. See <a href="/odin/docs/concepts/provisioning">Provisioning</a> for details.
+  </p>
+
+  <h3>How do I scale services?</h3>
+  <p>
+    Use the <code>odin component scale</code> command to adjust the number of instances for a component. Odin handles the orchestration 
+    and ensures proper service discovery updates.
+  </p>
+
+  <h2 id="troubleshooting">Troubleshooting</h2>
+
+  <h3>My deployment is stuck. What should I do?</h3>
+  <p>
+    First, check the deployment status with <code>odin service status</code>. Review logs with <code>odin task history</code> to see 
+    detailed execution logs. Common causes include:
+  </p>
+  <ul>
+    <li>Resource constraints (CPU, memory, disk)</li>
+    <li>Networking issues (security groups, firewall rules)</li>
+    <li>Misconfigured service definitions</li>
+    <li>Missing dependencies or prerequisites</li>
+  </ul>
+
+  <h3>How do I debug a failed deployment?</h3>
+  <p>
+    Use <code>odin task history</code> to view detailed logs of the failed deployment. Check component health with 
+    <code>odin component status</code>. Verify your service definition syntax and ensure all required resources are available.
+  </p>
+
+  <h3>Where can I find logs?</h3>
+  <p>
+    Deployment logs are available through <code>odin task history</code>. Application logs depend on your logging setup 
+    (Fluent Bit, Elasticsearch, etc.). Odin integrates with common logging solutions.
+  </p>
+
+  <h3>How do I rollback a deployment?</h3>
+  <p>
+    Deploy a previous CONCRETE version using <code>odin service deploy</code> with the desired version number. Odin maintains 
+    version history, making rollbacks simple and safe.
+  </p>
+
+  <Callout type="note">
+    <p>
+      For more troubleshooting guidance, see the <a href="/odin/docs/reference/troubleshooting">Troubleshooting Guide</a>.
+    </p>
+  </Callout>
+
+  <h2 id="enterprise-scaling">Enterprise & Scaling</h2>
+
+  <h3>Is Odin suitable for enterprise use?</h3>
+  <p>
+    Yes! Odin is production-ready and used by teams managing critical infrastructure. It includes enterprise features like audit trails, 
+    RBAC support, and multi-tenancy capabilities.
+  </p>
+
+  <h3>How does Odin handle secrets and sensitive data?</h3>
+  <p>
+    Odin integrates with your existing secrets management solutions. You can reference secrets in service definitions, and Odin securely 
+    injects them at deployment time without exposing sensitive data.
+  </p>
+
+  <h3>Can multiple teams use Odin independently?</h3>
+  <p>
+    Yes! Odin supports multiple organizations, accounts, and environments. Teams can work in isolation with their own environments while 
+    sharing the same infrastructure.
+  </p>
+
+  <h3>How do I get support?</h3>
+  <p>
+    Community support is available through <a href="https://github.com/ds-horizon/odin/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a> 
+    and <a href="https://github.com/ds-horizon/odin/discussions" target="_blank" rel="noopener noreferrer">Discussions</a>. 
+    For enterprise support, consulting, and training, contact the DS Horizon team.
+  </p>
+
+  <Callout type="tip" title="Still Have Questions?">
+    <p>
+      Join our community on <a href="https://github.com/ds-horizon/odin/discussions" target="_blank" rel="noopener noreferrer">GitHub Discussions</a> 
+      or open an issue if you've found a bug.
+    </p>
+  </Callout>
+</DocsLayout>
+

@@ -1,0 +1,91 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Reference' },
+  { label: 'Datagenc vs Datagen' },
+];
+
+const headings = [
+  { depth: 2, slug: 'key-differences', text: 'Key Differences' },
+  { depth: 2, slug: 'when-to-use', text: 'When to Use Each' },
+];
+---
+
+<DocsLayout
+  title="Datagenc vs Datagen"
+  description="Understanding the difference between datagenc and datagen"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="key-differences">Key Differences</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Aspect</th>
+        <th>datagenc</th>
+        <th>datagen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Role</strong></td>
+        <td>Compiler + Runtime</td>
+        <td>Runtime only</td>
+      </tr>
+      <tr>
+        <td><strong>Input</strong></td>
+        <td><code>.dg</code> model files</td>
+        <td>Pre-compiled generators</td>
+      </tr>
+      <tr>
+        <td><strong>Performance</strong></td>
+        <td>Compiles on-the-fly</td>
+        <td>Faster (pre-compiled)</td>
+      </tr>
+      <tr>
+        <td><strong>Use Case</strong></td>
+        <td>Development, iteration</td>
+        <td>Production, CI/CD</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="when-to-use">When to Use Each</h2>
+
+  <h3>Use datagenc when:</h3>
+  <ul>
+    <li>Developing and testing models</li>
+    <li>Quick iterations and prototyping</li>
+    <li>You have <code>.dg</code> source files</li>
+  </ul>
+
+  <h3>Use datagen when:</h3>
+  <ul>
+    <li>Running in production</li>
+    <li>Using pre-compiled generators</li>
+    <li>Maximum performance is required</li>
+    <li>Integrating with CI/CD pipelines</li>
+  </ul>
+
+  <h2>Examples</h2>
+
+  <h3>Development with datagenc</h3>
+  <pre><code>datagenc gen users.dg --count 1000</code></pre>
+
+  <h3>Production with datagen</h3>
+  <pre><code># First compile
+datagenc compile users.dg -o users.generator
+
+# Then run
+datagen run users.generator --count 1000000</code></pre>
+
+  <h2>Related Documentation</h2>
+  <ul>
+    <li><a href="/odin/docs/cli/datagenc-reference">Datagenc CLI</a></li>
+    <li><a href="/odin/docs/cli/datagen-reference">Datagen CLI</a></li>
+  </ul>
+</DocsLayout>
+

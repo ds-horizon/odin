@@ -1,0 +1,174 @@
+---
+/**
+ * Testimonial Component - User testimonial card
+ * Features: Quote, avatar, name, role, company, rating
+ */
+
+interface Props {
+  quote: string;
+  name: string;
+  role: string;
+  company: string;
+  avatar?: string;
+  rating?: number;
+}
+
+const { quote, name, role, company, avatar, rating } = Astro.props;
+---
+
+<div class="testimonial-card glass-card animate-on-scroll">
+  {rating && (
+    <div class="testimonial-rating">
+      {Array.from({ length: rating }, (_, i) => (
+        <span key={i} class="star">⭐</span>
+      ))}
+    </div>
+  )}
+  
+  <blockquote class="testimonial-quote">
+    <span class="quote-mark">"</span>
+    {quote}
+    <span class="quote-mark">"</span>
+  </blockquote>
+  
+  <div class="testimonial-author">
+    {avatar && (
+      <div class="author-avatar">
+        <img src={avatar} alt={name} loading="lazy" />
+      </div>
+    )}
+    {!avatar && (
+      <div class="author-avatar-placeholder">
+        {name.charAt(0)}
+      </div>
+    )}
+    <div class="author-info">
+      <div class="author-name">{name}</div>
+      <div class="author-role">{role} at {company}</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .testimonial-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
+    transition: all var(--transition-slow);
+  }
+  
+  .testimonial-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .testimonial-rating {
+    display: flex;
+    gap: 0.25rem;
+    font-size: 1.25rem;
+  }
+  
+  .star {
+    display: inline-block;
+    animation: scale-in 0.3s ease-out backwards;
+  }
+  
+  .star:nth-child(1) { animation-delay: 0ms; }
+  .star:nth-child(2) { animation-delay: 50ms; }
+  .star:nth-child(3) { animation-delay: 100ms; }
+  .star:nth-child(4) { animation-delay: 150ms; }
+  .star:nth-child(5) { animation-delay: 200ms; }
+  
+  @keyframes scale-in {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .testimonial-quote {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: var(--line-height-relaxed);
+    color: var(--text-primary);
+    margin: 0;
+    flex: 1;
+    position: relative;
+  }
+  
+  .quote-mark {
+    font-size: 2rem;
+    color: var(--primary-red);
+    font-family: Georgia, serif;
+    line-height: 1;
+    opacity: 0.3;
+  }
+  
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+  }
+  
+  .author-avatar,
+  .author-avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+  }
+  
+  .author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-full);
+  }
+  
+  .author-avatar-placeholder {
+    background: var(--gradient-red-bold);
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    font-size: 1.25rem;
+  }
+  
+  .author-info {
+    flex: 1;
+  }
+  
+  .author-name {
+    font-family: var(--font-sans);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .author-role {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+  
+  @media (max-width: 768px) {
+    .testimonial-card {
+      padding: 1.5rem;
+    }
+    
+    .testimonial-quote {
+      font-size: 1rem;
+    }
+  }
+</style>
+

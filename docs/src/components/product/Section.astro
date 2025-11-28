@@ -1,0 +1,32 @@
+---
+/**
+ * Section Component - Reusable section wrapper
+ * Provides consistent spacing and header styling
+ */
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  centered?: boolean;
+  variant?: 'default' | 'gray' | 'white';
+}
+
+const { title, subtitle, centered = true, variant = 'default' } = Astro.props;
+---
+
+<section class={`section ${variant === 'gray' ? 'section-gray' : variant === 'white' ? 'section-white' : ''}`}>
+  <div class="container section-content">
+    {(title || subtitle) && (
+      <div class={`section-header ${centered ? 'section-header-centered' : ''}`}>
+        {title && <h2 class="section-title">{title}</h2>}
+        {subtitle && <p class="section-subtitle">{subtitle}</p>}
+      </div>
+    )}
+    <slot />
+  </div>
+</section>
+
+<style>
+  /* Styles are in product.css for consistency */
+</style>
+

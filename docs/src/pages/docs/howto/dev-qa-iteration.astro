@@ -1,0 +1,191 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'How-To Guides', href: '/odin/docs/howto/overview' },
+  { label: 'Dev/QA Iteration' },
+];
+
+const headings = [
+  { depth: 2, slug: 'workflow-overview', text: 'Workflow Overview' },
+  { depth: 2, slug: 'snapshot-versions', text: 'SNAPSHOT Versions' },
+  { depth: 2, slug: 'rapid-iteration', text: 'Rapid Iteration' },
+  { depth: 2, slug: 'qa-testing', text: 'QA Testing' },
+  { depth: 2, slug: 'releasing-concrete-versions', text: 'Releasing CONCRETE Versions' },
+];
+---
+
+<DocsLayout
+  title="Dev/QA Iteration Workflow"
+  description="Learn the recommended workflow for rapid development and QA iteration using SNAPSHOT versions"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>
+    This guide explains the recommended workflow for rapid development and QA iteration using
+    Odin's versioning system.
+  </p>
+
+  <h2 id="workflow-overview">Workflow Overview</h2>
+
+  <p>Odin supports two versioning strategies:</p>
+
+  <ul>
+    <li>
+      <strong>SNAPSHOT</strong> - Mutable versions for dev/QA (e.g., <code>1.0.0-SNAPSHOT</code>)
+    </li>
+    <li><strong>CONCRETE</strong> - Immutable versions for production (e.g., <code>1.0.0</code>)</li>
+  </ul>
+
+  <p>The typical workflow:</p>
+
+  <ol>
+    <li><strong>Develop</strong>: Create and deploy SNAPSHOT version</li>
+    <li><strong>Iterate</strong>: Make changes and redeploy same SNAPSHOT version</li>
+    <li><strong>Test in QA</strong>: QA team tests the SNAPSHOT version</li>
+    <li><strong>Release</strong>: Create CONCRETE version when ready</li>
+    <li><strong>Deploy to Production</strong>: Deploy the immutable CONCRETE version</li>
+  </ol>
+
+  <h2 id="snapshot-versions">SNAPSHOT Versions</h2>
+
+  <p>SNAPSHOT versions are mutable and designed for fast iteration:</p>
+
+  <pre set:html={`<code>{
+  "name": "user-api",
+  "version": "1.2.0-SNAPSHOT",
+  "team": "backend",
+  "components": [...]
+}</code>`}></pre>
+
+  <p><strong>Characteristics:</strong></p>
+  <ul>
+    <li>Can be redeployed with changes</li>
+    <li>No versioning history kept</li>
+    <li>Perfect for development and QA</li>
+    <li>Not allowed in production environments</li>
+  </ul>
+
+  <h2 id="rapid-iteration">Rapid Iteration</h2>
+
+  <p><strong>Initial deployment:</strong></p>
+
+  <pre><code>odin deploy service --env dev \
+  --file service.json \
+  --provisioning provisioning-dev.json</code></pre>
+
+  <p><strong>Make changes and redeploy:</strong></p>
+
+  <pre><code># Edit service.json
+# Then redeploy with same version
+
+odin deploy service --env dev \
+  --file service.json \
+  --provisioning provisioning-dev.json</code></pre>
+
+  <Callout type="note">
+    <p>
+      Odin automatically detects you're redeploying a SNAPSHOT version and updates the existing
+      deployment.
+    </p>
+  </Callout>
+
+  <h2 id="qa-testing">QA Testing</h2>
+
+  <p><strong>Deploy to QA environment:</strong></p>
+
+  <pre><code>odin deploy service --env qa \
+  --file service.json \
+  --provisioning provisioning-qa.json</code></pre>
+
+  <p>QA team can test the SNAPSHOT version. If issues are found:</p>
+
+  <ol>
+    <li>Fix issues in dev environment</li>
+    <li>Redeploy same SNAPSHOT to QA</li>
+    <li>Repeat until stable</li>
+  </ol>
+
+  <h2 id="releasing-concrete-versions">Releasing CONCRETE Versions</h2>
+
+  <p>Once testing is complete, release a CONCRETE version:</p>
+
+  <pre set:html={`<code># Update version in service.json
+# Remove -SNAPSHOT suffix
+
+{
+  "name": "user-api",
+  "version": "1.2.0",
+  ...
+}</code>`}></pre>
+
+  <p>Deploy to production:</p>
+
+  <pre><code>odin deploy service --env production \
+  --file service.json \
+  --provisioning provisioning-prod.json</code></pre>
+
+  <Callout type="caution" title="Immutability">
+    <p>
+      CONCRETE versions cannot be modified once deployed. To make changes, create a new version
+      (e.g., <code>1.2.1</code> or <code>1.3.0-SNAPSHOT</code>).
+    </p>
+  </Callout>
+
+  <h2>Best Practices</h2>
+
+  <ol>
+    <li><strong>Use SNAPSHOT for development</strong>: Fast iteration without version bumps</li>
+    <li><strong>Test thoroughly in QA</strong>: Multiple SNAPSHOT redeployments are fine</li>
+    <li><strong>Release CONCRETE for production</strong>: Guarantees reproducibility</li>
+    <li><strong>Semantic versioning</strong>: Follow <code>major.minor.patch</code> format</li>
+    <li>
+      <strong>Environment-specific provisioning</strong>: Different configs for dev, QA, prod
+    </li>
+  </ol>
+
+  <h2>Example Workflow</h2>
+
+  <h3>1. Develop (dev environment)</h3>
+  <pre><code># Create service with SNAPSHOT version
+odin deploy service --env dev \
+  --file service.json \
+  --provisioning provisioning-dev.json
+
+# Make changes, redeploy
+odin deploy service --env dev \
+  --file service.json \
+  --provisioning provisioning-dev.json</code></pre>
+
+  <h3>2. Test (QA environment)</h3>
+  <pre><code># Deploy same SNAPSHOT to QA
+odin deploy service --env qa \
+  --file service.json \
+  --provisioning provisioning-qa.json
+
+# If bugs found, fix and redeploy to QA
+odin deploy service --env qa \
+  --file service.json \
+  --provisioning provisioning-qa.json</code></pre>
+
+  <h3>3. Release (production)</h3>
+  <pre><code># Change version to CONCRETE in service.json
+# "version": "1.2.0-SNAPSHOT" -> "version": "1.2.0"
+
+# Deploy to production
+odin deploy service --env production \
+  --file service.json \
+  --provisioning provisioning-prod.json</code></pre>
+
+  <h2>Related Guides</h2>
+
+  <ul>
+    <li><a href="/odin/docs/concepts/service">Service Concepts</a></li>
+    <li><a href="/odin/docs/concepts/provisioning">Provisioning Configuration</a></li>
+    <li><a href="/odin/docs/cli/reference">CLI Commands</a></li>
+    <li><a href="/odin/docs/howto/deploy-first-service">Deploy Your First Service</a></li>
+  </ul>
+</DocsLayout>
+

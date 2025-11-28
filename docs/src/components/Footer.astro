@@ -1,0 +1,180 @@
+---
+/**
+ * Footer Component - horizonos.in inspired
+ * Features: Multi-column links, copyright, clean design
+ */
+---
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <!-- Footer Grid -->
+    <div class="footer-grid">
+      <!-- Learn Column -->
+      <div class="footer-column">
+        <h3>Learn</h3>
+        <ul class="footer-links">
+          <li><a href="/odin/docs/introduction/overview">Overview</a></li>
+          <li><a href="/odin/docs/introduction/getting-started">Getting Started</a></li>
+          <li><a href="/odin/docs/concepts/overview">Concepts</a></li>
+          <li><a href="/odin/docs/cli/reference">CLI Reference</a></li>
+        </ul>
+      </div>
+      
+      <!-- Resources Column -->
+      <div class="footer-column">
+        <h3>Resources</h3>
+        <ul class="footer-links">
+          <li><a href="https://github.com/ds-horizon/odin" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="/odin/docs/examples/1_fields/fields-overview">Examples</a></li>
+          <li><a href="/odin/docs/howto/overview">How-To Guides</a></li>
+          <li><a href="/odin/docs/reference/troubleshooting">Troubleshooting</a></li>
+        </ul>
+      </div>
+      
+      <!-- Community Column -->
+      <div class="footer-column">
+        <h3>Community</h3>
+        <ul class="footer-links">
+          <li><a href="https://github.com/ds-horizon/odin/issues" target="_blank" rel="noopener noreferrer">Issues</a></li>
+          <li><a href="https://github.com/ds-horizon/odin/discussions" target="_blank" rel="noopener noreferrer">Discussions</a></li>
+          <li><a href="https://discord.gg/horizon" target="_blank" rel="noopener noreferrer">Discord</a></li>
+          <li><a href="https://twitter.com/horizonos" target="_blank" rel="noopener noreferrer">Twitter</a></li>
+        </ul>
+      </div>
+      
+      <!-- About Column -->
+      <div class="footer-column">
+        <h3>About</h3>
+        <ul class="footer-links">
+          <li><a href="https://github.com/ds-horizon" target="_blank" rel="noopener noreferrer">DS Horizon</a></li>
+          <li><a href="https://github.com/ds-horizon/odin/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></li>
+          <li><a href="https://github.com/ds-horizon/odin/releases" target="_blank" rel="noopener noreferrer">Releases</a></li>
+          <li><a href="https://linkedin.com/company/horizon" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Copyright -->
+    <div class="footer-bottom">
+      <p>Copyright © 2025 Horizon</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-section-gray) 100%);
+    border-top: 1px solid var(--border-light);
+    padding: 4rem 2rem 2rem;
+    position: relative;
+  }
+  
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-gradient);
+    opacity: 0.5;
+  }
+  
+  .footer-content {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+  }
+  
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .footer-column h3 {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    letter-spacing: var(--letter-spacing-normal);
+  }
+  
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footer-links li {
+    margin-bottom: 0.75rem;
+  }
+  
+  .footer-links a {
+    font-family: var(--font-sans);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-regular);
+    transition: color var(--transition-base);
+    display: inline-block;
+  }
+  
+  .footer-links a:hover {
+    color: var(--primary-red);
+    transform: translateX(2px);
+  }
+  
+  .footer-links a {
+    position: relative;
+  }
+  
+  .footer-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--primary-red);
+    transition: width var(--transition-base);
+  }
+  
+  .footer-links a:hover::after {
+    width: 100%;
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    font-family: var(--font-sans);
+  }
+  
+  .footer-bottom p {
+    margin: 0;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .site-footer {
+      padding: 3rem 1rem 2rem;
+    }
+    
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem 1.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>
+

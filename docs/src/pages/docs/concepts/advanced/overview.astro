@@ -1,0 +1,37 @@
+---
+import DocsLayout from '../../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Advanced' },
+  { label: 'Overview' },
+];
+
+const headings = [
+  { depth: 2, slug: 'overview', text: 'Overview' },
+  { depth: 2, slug: 'topics', text: 'Advanced Topics' },
+];
+---
+
+<DocsLayout
+  title="Advanced Concepts Overview"
+  description="Explore advanced features of datagen"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="overview">Overview</h2>
+
+  <p>This section covers advanced datagen features for complex use cases.</p>
+
+  <h2 id="topics">Advanced Topics</h2>
+
+  <ul>
+    <li><a href="/odin/docs/concepts/advanced/function-calls">Function Calls</a> - Call custom functions</li>
+    <li><a href="/odin/docs/concepts/advanced/iter-variable">Iter Variable</a> - Use iteration index</li>
+    <li><a href="/odin/docs/concepts/advanced/model-references">Model References</a> - Reference other models</li>
+    <li><a href="/odin/docs/concepts/advanced/nesting">Nesting</a> - Create nested structures</li>
+    <li><a href="/odin/docs/concepts/advanced/optional-sections">Optional Sections</a> - Conditional fields</li>
+  </ul>
+</DocsLayout>
+

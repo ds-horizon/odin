@@ -1,0 +1,200 @@
+---
+/**
+ * ProductLayout - Base layout for Odin product pages
+ * Used by: Landing page, Roadmap, FAQ
+ * Design: horizonos.in inspired with clean red/white theme
+ */
+
+// Import CSS styles
+import '../styles/product.css';
+import ThemeScript from '../components/ThemeScript.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+}
+
+const { title, description, ogImage } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const defaultOgImage = '/odin/odin-logo.png';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <ThemeScript />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title} | Odin</title>
+    <meta name="title" content={`${title} | Odin`} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | Odin`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage || defaultOgImage} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={`${title} | Odin`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImage || defaultOgImage} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/odin/odin-logo.png" />
+    
+    <!-- Performance hints -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://www.youtube.com" />
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Odin",
+      "applicationCategory": "DeveloperApplication",
+      "description": "CLI-based deployment platform for accelerating software development lifecycle",
+      "operatingSystem": "Linux, macOS",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "DS Horizon",
+        "url": "https://github.com/ds-horizon"
+      }
+    }
+    </script>
+    
+    <!-- Google Fonts - Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Preload critical font -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" as="style">
+    <!-- Load all fonts with optimal loading strategy -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  
+  <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    
+    <!-- Main content slot -->
+    <div id="main-content">
+      <slot />
+    </div>
+    
+    <!-- Scroll animations script -->
+    <script>
+      // Intersection Observer for scroll animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observe all elements with .animate-on-scroll class
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+          observer.observe(el);
+        });
+        
+        // Magnetic button effect
+        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+          btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            const moveX = x * 0.15;
+            const moveY = y * 0.15;
+            
+            btn.style.transform = `translate(${moveX}px, ${moveY}px) translateY(-2px)`;
+          });
+          
+          btn.addEventListener('mouseleave', () => {
+            btn.style.transform = '';
+          });
+        });
+        
+        // 3D tilt effect for cards
+        document.querySelectorAll('[data-tilt]').forEach(el => {
+          el.addEventListener('mousemove', (e) => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            
+            el.style.setProperty('--rx', `${rotateX}deg`);
+            el.style.setProperty('--ry', `${rotateY}deg`);
+          });
+          
+          el.addEventListener('mouseleave', () => {
+            el.style.setProperty('--rx', '0deg');
+            el.style.setProperty('--ry', '0deg');
+          });
+        });
+        
+        // Animated counter
+        const animateCounter = (el, target, suffix = '') => {
+          const duration = 2000;
+          const start = 0;
+          const increment = target / (duration / 16);
+          let current = 0;
+          
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              el.textContent = target + suffix;
+              clearInterval(timer);
+            } else {
+              el.textContent = Math.floor(current) + suffix;
+            }
+          }, 16);
+        };
+
+        // Trigger counter on scroll
+        const counterObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.dataset.counted) {
+              const el = entry.target;
+              const target = parseInt(el.dataset.target);
+              const suffix = el.dataset.suffix || '';
+              animateCounter(el, target, suffix);
+              el.dataset.counted = 'true';
+            }
+          });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('[data-count-up]').forEach(el => {
+          counterObserver.observe(el);
+        });
+      });
+    </script>
+  </body>
+</html>
+

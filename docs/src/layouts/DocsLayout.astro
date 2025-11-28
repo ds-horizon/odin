@@ -1,0 +1,166 @@
+---
+/**
+ * DocsLayout - Documentation pages layout
+ * Reuses Header, Footer, and design system from ProductLayout
+ * Three-column layout: Sidebar | Content | TOC
+ */
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/docs/Sidebar.astro';
+import TOC from '../components/docs/TOC.astro';
+import Breadcrumbs from '../components/docs/Breadcrumbs.astro';
+import DocsPagination from '../components/docs/DocsPagination.astro';
+import ThemeScript from '../components/ThemeScript.astro';
+import '../styles/custom.css';
+import '../styles/docs.css';
+
+interface Props {
+  title: string;
+  description: string;
+  breadcrumbs?: { label: string; href?: string }[];
+  headings?: { depth: number; slug: string; text: string }[];
+}
+
+const { title, description, breadcrumbs, headings = [] } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const defaultOgImage = '/odin/odin-logo.png';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <ThemeScript />
+
+    <!-- Primary Meta Tags -->
+    <title>{title} | Odin Documentation</title>
+    <meta name="title" content={`${title} | Odin Documentation`} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | Odin Documentation`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={defaultOgImage} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={`${title} | Odin Documentation`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={defaultOgImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/odin/odin-logo.png" />
+
+    <!-- Performance hints -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+    <!-- Google Fonts - Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap"
+      as="style"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+    <!-- Header -->
+    <Header />
+
+    <!-- Documentation Layout -->
+    <div class="docs-layout">
+      <!-- Sidebar Navigation -->
+      <div class="docs-sidebar-wrapper">
+        <Sidebar />
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="docs-content-wrapper">
+        <main id="main-content" class="docs-content">
+          <!-- Breadcrumbs -->
+          {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
+
+          <!-- Page Title -->
+          <h1>{title}</h1>
+          {description && <p class="page-description">{description}</p>}
+
+          <!-- Content Slot -->
+          <slot />
+
+          <!-- Previous/Next Page Navigation -->
+          <DocsPagination />
+        </main>
+      </div>
+
+      <!-- Table of Contents -->
+      <div class="docs-toc-wrapper">
+        <TOC headings={headings} />
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <Footer />
+
+    <!-- Mobile Sidebar Toggle -->
+    <button
+      class="docs-sidebar-toggle"
+      id="mobile-sidebar-toggle"
+      aria-label="Toggle sidebar"
+      aria-expanded="false"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <!-- Mobile Sidebar Script -->
+    <script>
+      const mobileToggle = document.getElementById('mobile-sidebar-toggle');
+      const sidebar = document.querySelector('.docs-sidebar');
+
+      mobileToggle?.addEventListener('click', () => {
+        const isOpen = sidebar?.classList.toggle('open');
+        mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      // Close sidebar when clicking outside
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (
+          !target.closest('.docs-sidebar') &&
+          !target.closest('.docs-sidebar-toggle') &&
+          sidebar?.classList.contains('open')
+        ) {
+          sidebar.classList.remove('open');
+          mobileToggle?.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Close sidebar when clicking a link
+      sidebar?.querySelectorAll('.nav-link').forEach((link) => {
+        link.addEventListener('click', () => {
+          sidebar.classList.remove('open');
+          mobileToggle?.setAttribute('aria-expanded', 'false');
+        });
+      });
+    </script>
+  </body>
+</html>
+

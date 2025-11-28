@@ -1,0 +1,233 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Introduction' },
+  { label: 'Helm Parameters' },
+];
+
+const headings = [
+  { depth: 2, slug: 'overview', text: 'Overview' },
+  { depth: 2, slug: 'deployer', text: 'Deployer Configuration' },
+  { depth: 2, slug: 'orchestrator', text: 'Orchestrator Configuration' },
+  { depth: 2, slug: 'database', text: 'Database Configuration' },
+  { depth: 2, slug: 'redis', text: 'Redis Configuration' },
+];
+---
+
+<DocsLayout
+  title="Helm Parameters"
+  description="Configuration parameters for Odin Helm chart"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="overview">Overview</h2>
+
+  <p>
+    The Odin Helm chart provides numerous configuration parameters to customize your installation.
+    This guide covers the most commonly used parameters.
+  </p>
+
+  <h2 id="deployer">Deployer Configuration</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>deployer.replicaCount</code></td>
+        <td>Number of deployer replicas</td>
+        <td><code>1</code></td>
+      </tr>
+      <tr>
+        <td><code>deployer.image.repository</code></td>
+        <td>Deployer image repository</td>
+        <td><code>dshorizon/odin-deployer</code></td>
+      </tr>
+      <tr>
+        <td><code>deployer.image.tag</code></td>
+        <td>Deployer image tag</td>
+        <td><code>latest</code></td>
+      </tr>
+      <tr>
+        <td><code>deployer.resources.limits.cpu</code></td>
+        <td>CPU limit</td>
+        <td><code>1000m</code></td>
+      </tr>
+      <tr>
+        <td><code>deployer.resources.limits.memory</code></td>
+        <td>Memory limit</td>
+        <td><code>2Gi</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="orchestrator">Orchestrator Configuration</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>orchestrator.replicaCount</code></td>
+        <td>Number of orchestrator replicas</td>
+        <td><code>1</code></td>
+      </tr>
+      <tr>
+        <td><code>orchestrator.image.repository</code></td>
+        <td>Orchestrator image repository</td>
+        <td><code>dshorizon/odin-orchestrator</code></td>
+      </tr>
+      <tr>
+        <td><code>orchestrator.keda.enabled</code></td>
+        <td>Enable KEDA autoscaling</td>
+        <td><code>true</code></td>
+      </tr>
+      <tr>
+        <td><code>orchestrator.keda.minReplicaCount</code></td>
+        <td>Minimum replicas for autoscaling</td>
+        <td><code>1</code></td>
+      </tr>
+      <tr>
+        <td><code>orchestrator.keda.maxReplicaCount</code></td>
+        <td>Maximum replicas for autoscaling</td>
+        <td><code>10</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="database">Database Configuration</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>mysql.enabled</code></td>
+        <td>Enable MySQL deployment</td>
+        <td><code>true</code></td>
+      </tr>
+      <tr>
+        <td><code>mysql.mysql.size</code></td>
+        <td>MySQL cluster size</td>
+        <td><code>3</code></td>
+      </tr>
+      <tr>
+        <td><code>mysql.mysql.storage</code></td>
+        <td>Storage size per MySQL instance</td>
+        <td><code>10Gi</code></td>
+      </tr>
+      <tr>
+        <td><code>mysql.mysql.resources.limits.cpu</code></td>
+        <td>CPU limit per instance</td>
+        <td><code>500m</code></td>
+      </tr>
+      <tr>
+        <td><code>mysql.mysql.resources.limits.memory</code></td>
+        <td>Memory limit per instance</td>
+        <td><code>1Gi</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="redis">Redis Configuration</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>redis.enabled</code></td>
+        <td>Enable Redis deployment</td>
+        <td><code>true</code></td>
+      </tr>
+      <tr>
+        <td><code>redis.architecture</code></td>
+        <td>Redis architecture (standalone/replication)</td>
+        <td><code>standalone</code></td>
+      </tr>
+      <tr>
+        <td><code>redis.master.persistence.size</code></td>
+        <td>Redis storage size</td>
+        <td><code>8Gi</code></td>
+      </tr>
+      <tr>
+        <td><code>redis.replica.replicaCount</code></td>
+        <td>Number of Redis replicas</td>
+        <td><code>1</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Custom Values Example</h2>
+
+  <p>Create a <code>values.yaml</code> file to override defaults:</p>
+
+  <pre set:html={`<code>deployer:
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+
+orchestrator:
+  keda:
+    minReplicaCount: 2
+    maxReplicaCount: 20
+
+mysql:
+  mysql:
+    size: 5
+    storage: 50Gi
+
+redis:
+  architecture: replication
+  replica:
+    replicaCount: 2</code>`}></pre>
+
+  <p>Install with custom values:</p>
+
+  <pre><code>helm install odin ./charts/odin \
+  --namespace odin \
+  --create-namespace \
+  --values values.yaml</code></pre>
+
+  <Callout type="tip">
+    <p>
+      For a complete list of all available parameters, see the
+      <a href="https://github.com/ds-horizon/odin/tree/master/charts/odin">Helm chart README</a>
+      on GitHub.
+    </p>
+  </Callout>
+
+  <h2>Related Documentation</h2>
+
+  <ul>
+    <li><a href="/odin/docs/introduction/getting-started">Getting Started</a></li>
+    <li><a href="/odin/docs/introduction/installation-faq">Installation FAQ</a></li>
+    <li><a href="/odin/docs/reference/troubleshooting">Troubleshooting</a></li>
+  </ul>
+</DocsLayout>
+

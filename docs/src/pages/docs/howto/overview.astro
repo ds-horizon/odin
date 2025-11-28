@@ -1,0 +1,58 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'How-To Guides' },
+  { label: 'Overview' },
+];
+
+const headings = [
+  { depth: 2, slug: 'available-guides', text: 'Available Guides' },
+];
+---
+
+<DocsLayout
+  title="How-To Guides Overview"
+  description="Practical guides for common Odin workflows and tasks"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>
+    This section contains practical, step-by-step guides for common tasks and workflows with Odin.
+    Each guide is designed to help you accomplish a specific goal.
+  </p>
+
+  <h2 id="available-guides">Available Guides</h2>
+
+  <h3>
+    <a href="/odin/docs/howto/deploy-first-service">Deploy Your First Service</a>
+  </h3>
+  <p>
+    Complete walkthrough for deploying your first service with Odin, from environment creation to
+    verification.
+  </p>
+
+  <h3>
+    <a href="/odin/docs/howto/dev-qa-iteration">Dev/QA Iteration Workflow</a>
+  </h3>
+  <p>
+    Learn the recommended workflow for rapid development and QA iteration using SNAPSHOT versions.
+  </p>
+
+  <h2>Coming Soon</h2>
+
+  <ul>
+    <li>Scaling Components</li>
+    <li>Rolling Updates and Rollbacks</li>
+    <li>Managing Secrets</li>
+    <li>Multi-Environment Deployments</li>
+    <li>CI/CD Integration</li>
+  </ul>
+
+  <p>
+    For conceptual information, see <a href="/odin/docs/concepts/overview">Key Concepts</a>.
+    For command reference, see <a href="/odin/docs/cli/reference">CLI Reference</a>.
+  </p>
+</DocsLayout>
+

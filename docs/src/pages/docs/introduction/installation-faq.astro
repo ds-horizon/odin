@@ -1,0 +1,106 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Introduction' },
+  { label: 'Installation FAQ' },
+];
+
+const headings = [
+  { depth: 2, slug: 'general-questions', text: 'General Questions' },
+  { depth: 2, slug: 'installation-questions', text: 'Installation Questions' },
+  { depth: 2, slug: 'configuration-questions', text: 'Configuration Questions' },
+];
+---
+
+<DocsLayout
+  title="Installation FAQ"
+  description="Common questions about Odin installation, configuration, and operations"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="general-questions">General Questions</h2>
+
+  <p><strong>Q: What is the minimum Kubernetes version required?</strong></p>
+  <p>
+    A: Kubernetes v1.30 or later. Versions 1.30-1.34 are tested and recommended.
+  </p>
+
+  <p><strong>Q: Can I install Odin on Minikube?</strong></p>
+  <p>
+    A: Yes, but Kind is recommended for local development. Minikube may require additional memory
+    configuration.
+  </p>
+
+  <p><strong>Q: How much does Odin cost?</strong></p>
+  <p>
+    A: Odin is open-source and free to use under the MIT License. You only pay for the
+    infrastructure it runs on.
+  </p>
+
+  <h2 id="installation-questions">Installation Questions</h2>
+
+  <p><strong>Q: Can I use external databases instead of internal ones?</strong></p>
+  <p>A: Yes! You can configure external MySQL, Redis, and Elasticsearch:</p>
+
+  <pre><code>mysql:
+  external:
+    enabled: true
+    master:
+      host: "your-rds-endpoint.com"
+redis:
+  external:
+    enabled: true
+    host: "your-redis-endpoint.com"
+elasticsearch:
+  external:
+    enabled: true
+    host: "your-es-endpoint.com"</code></pre>
+
+  <p><strong>Q: How do I customize resource allocations?</strong></p>
+  <p>A: Create a custom values file:</p>
+
+  <pre><code>deployer:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 4Gi</code></pre>
+
+  <p>Then install with: <code>./install.sh --values custom-values.yaml</code></p>
+
+  <h2 id="configuration-questions">Configuration Questions</h2>
+
+  <p><strong>Q: What are ES256 keys and why are they required?</strong></p>
+  <p>
+    A: ES256 (ECDSA with P-256 curve and SHA-256) keys are used for secure authentication between
+    components. They're automatically generated during installation or you can provide your own.
+  </p>
+
+  <p><strong>Q: How do I enable high availability?</strong></p>
+  <p>A: Increase replica counts in your values file:</p>
+
+  <pre><code>deployer:
+  replicaCount: 3
+accountManager:
+  replicaCount: 2
+mysql:
+  mysql:
+    size: 3
+redis:
+  architecture: replication
+  master:
+    count: 1
+  replica:
+    replicaCount: 2</code></pre>
+
+  <p>
+    For complete installation documentation, see the <a href="/odin/docs/introduction/getting-started"
+      >Getting Started Guide</a
+    >.
+  </p>
+</DocsLayout>
+

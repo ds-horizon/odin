@@ -1,0 +1,147 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'How-To Guides', href: '/odin/docs/howto/overview' },
+  { label: 'Deploy Your First Service' },
+];
+
+const headings = [
+  { depth: 2, slug: 'prerequisites', text: 'Prerequisites' },
+  { depth: 2, slug: 'step-1-configure-odin', text: 'Step 1: Configure Odin' },
+  { depth: 2, slug: 'step-2-create-an-environment', text: 'Step 2: Create an Environment' },
+  { depth: 2, slug: 'step-3-create-service-definition', text: 'Step 3: Create Service Definition' },
+  { depth: 2, slug: 'step-4-create-provisioning-config', text: 'Step 4: Create Provisioning Config' },
+  { depth: 2, slug: 'step-5-deploy-the-service', text: 'Step 5: Deploy the Service' },
+  { depth: 2, slug: 'step-6-verify-deployment', text: 'Step 6: Verify Deployment' },
+];
+---
+
+<DocsLayout
+  title="Deploy Your First Service"
+  description="Step-by-step guide to deploying your first service with Odin"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>
+    This guide walks you through deploying your first service with Odin, from installation to
+    verification.
+  </p>
+
+  <h2 id="prerequisites">Prerequisites</h2>
+
+  <ul>
+    <li>Odin CLI installed (<a href="/odin/docs/introduction/getting-started">Installation Guide</a>)</li>
+    <li>Access to an Odin backend</li>
+    <li>Cloud provider account configured</li>
+  </ul>
+
+  <h2 id="step-1-configure-odin">Step 1: Configure Odin</h2>
+
+  <p>First, configure Odin with your backend:</p>
+
+  <pre><code>odin configure \
+  --backend-address api.odin.example.com:443 \
+  --org-id 12345</code></pre>
+
+  <p>This will:</p>
+  <ol>
+    <li>Prompt for authentication</li>
+    <li>Store credentials in <code>~/.odin/config</code></li>
+    <li>Set up the default profile</li>
+  </ol>
+
+  <h2 id="step-2-create-an-environment">Step 2: Create an Environment</h2>
+
+  <p>Create a development environment:</p>
+
+  <pre><code>odin create env dev --accounts aws/dev-account</code></pre>
+
+  <p>Verify the environment was created:</p>
+
+  <pre><code>odin list env</code></pre>
+
+  <h2 id="step-3-create-service-definition">Step 3: Create Service Definition</h2>
+
+  <p>Create a file named <code>service.json</code>:</p>
+
+  <pre set:html={`<code>{
+  "name": "hello-world",
+  "version": "1.0.0-SNAPSHOT",
+  "team": "platform",
+  "components": [
+    {
+      "name": "web",
+      "type": "webservice",
+      "version": "1.0.0",
+      "config": {
+        "port": 8080,
+        "replicas": 2
+      }
+    }
+  ]
+}</code>`}></pre>
+
+  <p>This defines a simple web service with 2 replicas.</p>
+
+  <h2 id="step-4-create-provisioning-config">Step 4: Create Provisioning Config</h2>
+
+  <p>Create a file named <code>provisioning.json</code>:</p>
+
+  <pre set:html={`<code>[
+  {
+    "component_name": "web",
+    "deployment_type": "kubernetes-deployment",
+    "params": {
+      "namespace": "dev",
+      "cpu": "100m",
+      "memory": "256Mi",
+      "image": "nginx:latest"
+    }
+  }
+]</code>`}></pre>
+
+  <h2 id="step-5-deploy-the-service">Step 5: Deploy the Service</h2>
+
+  <p>Deploy the service:</p>
+
+  <pre><code>odin deploy service --env dev \
+  --file service.json \
+  --provisioning provisioning.json</code></pre>
+
+  <p>Odin will:</p>
+  <ol>
+    <li>Validate both files</li>
+    <li>Create deployment tasks</li>
+    <li>Deploy components</li>
+    <li>Monitor and report status</li>
+  </ol>
+
+  <h2 id="step-6-verify-deployment">Step 6: Verify Deployment</h2>
+
+  <p>Check the deployment status:</p>
+
+  <pre><code>odin status env dev --service hello-world</code></pre>
+
+  <p>Get detailed information:</p>
+
+  <pre><code>odin describe env dev --service hello-world</code></pre>
+
+  <Callout type="tip" title="Success!">
+    <p>
+      Congratulations! You've deployed your first service with Odin. Next, try deploying a more
+      complex service with multiple components.
+    </p>
+  </Callout>
+
+  <h2>Next Steps</h2>
+
+  <ul>
+    <li><a href="/odin/docs/howto/dev-qa-iteration">Dev/QA Iteration Workflow</a></li>
+    <li><a href="/odin/docs/concepts/service">Learn more about Services</a></li>
+    <li><a href="/odin/docs/cli/reference">CLI Command Reference</a></li>
+  </ul>
+</DocsLayout>
+

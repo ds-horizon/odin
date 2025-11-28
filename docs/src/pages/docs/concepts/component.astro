@@ -1,0 +1,354 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Key Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Component' },
+];
+
+const headings = [
+  { depth: 2, slug: 'what-is-a-component', text: 'What is a Component?' },
+  { depth: 2, slug: 'component-definition', text: 'Component Definition' },
+  { depth: 2, slug: 'component-types', text: 'Component Types' },
+  { depth: 2, slug: 'component-dependencies', text: 'Component Dependencies' },
+  { depth: 2, slug: 'component-lifecycle', text: 'Component Lifecycle' },
+  { depth: 2, slug: 'component-operations', text: 'Component Operations' },
+  { depth: 2, slug: 'component-configuration', text: 'Component Configuration' },
+];
+---
+
+<DocsLayout
+  title="Component"
+  description="Understanding Odin components and their lifecycle"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="what-is-a-component">What is a Component?</h2>
+
+  <p>
+    A <strong>Component</strong> is a building block of a service in Odin. Components represent
+    individual pieces of infrastructure or application logic that work together to form a complete
+    service.
+  </p>
+
+  <p>Components are the fundamental deployment units in Odin. They can represent:</p>
+
+  <ul>
+    <li><strong>Web Services</strong>: API servers, web applications, microservices</li>
+    <li><strong>Databases</strong>: PostgreSQL, MySQL, MongoDB</li>
+    <li><strong>Caches</strong>: Redis, Memcached</li>
+    <li><strong>Message Queues</strong>: RabbitMQ, Kafka, SQS</li>
+    <li><strong>Storage</strong>: S3 buckets, file systems</li>
+    <li><strong>Any other infrastructure</strong>: Load balancers, DNS records, etc.</li>
+  </ul>
+
+  <h2 id="component-definition">Component Definition</h2>
+
+  <p>Components are defined within a service definition:</p>
+
+  <pre set:html={`<code>{
+  "name": "api-server",
+  "type": "webservice",
+  "version": "2.1.0",
+  "depends_on": ["database", "cache"],
+  "config": {
+    "port": 8080,
+    "replicas": 3,
+    "env": {
+      "LOG_LEVEL": "info"
+    }
+  }
+}</code>`}></pre>
+
+  <h3>Component Properties</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td>Yes</td>
+        <td>Unique identifier within the service</td>
+      </tr>
+      <tr>
+        <td><code>type</code></td>
+        <td>Yes</td>
+        <td>Component type (registered in Odin)</td>
+      </tr>
+      <tr>
+        <td><code>version</code></td>
+        <td>Yes</td>
+        <td>Component version</td>
+      </tr>
+      <tr>
+        <td><code>depends_on</code></td>
+        <td>No</td>
+        <td>Array of component names this depends on</td>
+      </tr>
+      <tr>
+        <td><code>config</code></td>
+        <td>No</td>
+        <td>Component-specific configuration (JSON object)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="component-types">Component Types</h2>
+
+  <p>Components have types that determine how they're deployed and managed. Common types include:</p>
+
+  <ul>
+    <li><code>webservice</code>: HTTP/gRPC services</li>
+    <li><code>postgres</code>: PostgreSQL database</li>
+    <li><code>mysql</code>: MySQL database</li>
+    <li><code>redis</code>: Redis cache</li>
+    <li><code>mongodb</code>: MongoDB database</li>
+    <li><code>rabbitmq</code>: RabbitMQ message broker</li>
+    <li><code>kafka</code>: Apache Kafka</li>
+    <li><code>s3</code>: S3 bucket</li>
+    <li><code>lambda</code>: AWS Lambda function</li>
+  </ul>
+
+  <Callout type="note">
+    <p>
+      Component types are registered in the Odin backend. Contact your Odin administrator to add
+      new component types.
+    </p>
+  </Callout>
+
+  <h2 id="component-dependencies">Component Dependencies</h2>
+
+  <p>Components can depend on other components. Odin uses these dependencies to:</p>
+
+  <ol>
+    <li><strong>Determine deployment order</strong>: Deploy dependencies first</li>
+    <li><strong>Validate configurations</strong>: Ensure all dependencies exist</li>
+    <li>
+      <strong>Prevent unsafe operations</strong>: Can't remove a component if others depend on it
+    </li>
+  </ol>
+
+  <h3>Defining Dependencies</h3>
+
+  <p>Use the <code>depends_on</code> field to specify dependencies:</p>
+
+  <pre set:html={`<code>{
+  "components": [
+    {
+      "name": "api",
+      "depends_on": ["database", "cache", "queue"]
+    },
+    {
+      "name": "worker",
+      "depends_on": ["database", "queue"]
+    },
+    {
+      "name": "database",
+      "depends_on": []
+    },
+    {
+      "name": "cache",
+      "depends_on": []
+    },
+    {
+      "name": "queue",
+      "depends_on": []
+    }
+  ]
+}</code>`}></pre>
+
+  <p><strong>Deployment Order:</strong></p>
+  <ol>
+    <li><code>database</code>, <code>cache</code>, <code>queue</code> (parallel, no dependencies)</li>
+    <li><code>api</code>, <code>worker</code> (parallel, after dependencies are ready)</li>
+  </ol>
+
+  <h2 id="component-lifecycle">Component Lifecycle</h2>
+
+  <h3>Component States</h3>
+
+  <p>Components transition through several states:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>DEPLOYING</code></td>
+        <td>Component is being deployed</td>
+      </tr>
+      <tr>
+        <td><code>DEPLOYED</code></td>
+        <td>Component successfully deployed</td>
+      </tr>
+      <tr>
+        <td><code>FAILED</code></td>
+        <td>Deployment failed</td>
+      </tr>
+      <tr>
+        <td><code>UPDATING</code></td>
+        <td>Component is being updated</td>
+      </tr>
+      <tr>
+        <td><code>UNDEPLOYING</code></td>
+        <td>Component is being removed</td>
+      </tr>
+      <tr>
+        <td><code>UNDEPLOYED</code></td>
+        <td>Component has been removed</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Checking Component Status</h3>
+
+  <p>Check component status within a service:</p>
+
+  <pre><code>odin status env staging --service my-service</code></pre>
+
+  <p>Get detailed information about a specific component:</p>
+
+  <pre><code>odin describe env staging --service my-service --component database</code></pre>
+
+  <h2 id="component-operations">Component Operations</h2>
+
+  <h3>Operating a Component</h3>
+
+  <p>Execute operations on individual components:</p>
+
+  <pre><code>odin operate component --name &lt;component-name&gt; \
+  --service &lt;service-name&gt; \
+  --env &lt;env-name&gt; \
+  --operation &lt;operation-type&gt; \
+  --options '{"key": "value"}'</code></pre>
+
+  <h3>Common Component Operations</h3>
+
+  <h4>Scale a Component</h4>
+
+  <p>Scale up/down replicas:</p>
+
+  <pre><code>odin operate component --name api \
+  --service user-api \
+  --env production \
+  --operation scale \
+  --options '{"replicas": 5}'</code></pre>
+
+  <h4>Restart a Component</h4>
+
+  <p>Restart a component (rolling restart):</p>
+
+  <pre><code>odin operate component --name api \
+  --service user-api \
+  --env staging \
+  --operation restart</code></pre>
+
+  <h2 id="component-configuration">Component Configuration</h2>
+
+  <p>Components have a flexible <code>config</code> field for component-specific settings:</p>
+
+  <h3>Web Service Configuration</h3>
+
+  <pre set:html={`<code>{
+  "name": "api",
+  "type": "webservice",
+  "config": {
+    "port": 8080,
+    "replicas": 3,
+    "cpu": "500m",
+    "memory": "1Gi",
+    "env": {
+      "LOG_LEVEL": "info",
+      "DB_HOST": "database:5432",
+      "CACHE_URL": "redis://cache:6379"
+    },
+    "healthcheck": {
+      "path": "/health",
+      "interval": 30
+    }
+  }
+}</code>`}></pre>
+
+  <h3>Database Configuration</h3>
+
+  <pre set:html={`<code>{
+  "name": "database",
+  "type": "postgres",
+  "config": {
+    "storage": "100Gi",
+    "instance_class": "db.r5.large",
+    "multi_az": true,
+    "backup_retention_days": 7,
+    "parameters": {
+      "max_connections": "200",
+      "shared_buffers": "256MB"
+    }
+  }
+}</code>`}></pre>
+
+  <Callout type="caution" title="Stateful Components">
+    <p>
+      Removing stateful components (databases, storage) may result in data loss. Ensure you have
+      backups before removal.
+    </p>
+  </Callout>
+
+  <h2>Component Best Practices</h2>
+
+  <h3>Naming</h3>
+
+  <p>Use clear, descriptive names:</p>
+
+  <ul>
+    <li><code>api</code>, <code>web</code>, <code>server</code>: For web services</li>
+    <li><code>database</code>, <code>db</code>, <code>postgres</code>: For databases</li>
+    <li><code>cache</code>, <code>redis</code>: For caches</li>
+    <li><code>queue</code>, <code>mq</code>, <code>broker</code>: For message queues</li>
+  </ul>
+
+  <h3>Dependencies</h3>
+
+  <ol>
+    <li><strong>Minimal Dependencies</strong>: Only depend on what you actually need</li>
+    <li><strong>Order Matters</strong>: List dependencies in the order they're needed</li>
+    <li><strong>Avoid Cycles</strong>: Circular dependencies are not allowed</li>
+  </ol>
+
+  <h3>Configuration</h3>
+
+  <ol>
+    <li>
+      <strong>Environment Variables</strong>: Use <code>env</code> for configuration that changes
+      between environments
+    </li>
+    <li><strong>Defaults</strong>: Provide sensible defaults in the service definition</li>
+    <li>
+      <strong>Secrets</strong>: Don't put secrets in the service definition; use provisioning
+      configs
+    </li>
+    <li><strong>Resource Limits</strong>: Always specify CPU and memory limits</li>
+  </ol>
+
+  <h2>Related Concepts</h2>
+
+  <ul>
+    <li><a href="/odin/docs/concepts/service">Service</a>: Components are part of services</li>
+    <li>
+      <a href="/odin/docs/concepts/provisioning">Provisioning</a>: How components are deployed
+    </li>
+    <li><a href="/odin/docs/concepts/environment">Environment</a>: Where components run</li>
+  </ul>
+</DocsLayout>
+

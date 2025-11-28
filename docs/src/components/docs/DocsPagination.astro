@@ -1,0 +1,40 @@
+---
+/**
+ * DocsPagination Component
+ * Shows previous and next page navigation at the bottom of docs pages
+ * Uses existing CSS from docs.css
+ */
+
+import { navigation } from '../../config/navigation';
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '');
+
+// Flatten all navigation items into a single array
+const allPages = navigation.flatMap((section) => section.items);
+
+// Find the current page index
+const currentIndex = allPages.findIndex((page) => page.href.replace(/\/$/, '') === currentPath);
+
+// Get previous and next pages
+const previousPage = currentIndex > 0 ? allPages[currentIndex - 1] : null;
+const nextPage = currentIndex < allPages.length - 1 ? allPages[currentIndex + 1] : null;
+---
+
+{(previousPage || nextPage) && (
+  <nav class="docs-pagination" aria-label="Page navigation">
+    {previousPage && (
+      <a href={previousPage.href} class="pagination-link">
+        <span class="pagination-link-label">Previous page</span>
+        <span class="pagination-link-title">{previousPage.title}</span>
+      </a>
+    )}
+
+    {nextPage && (
+      <a href={nextPage.href} class="pagination-link next">
+        <span class="pagination-link-label">Next page</span>
+        <span class="pagination-link-title">{nextPage.title}</span>
+      </a>
+    )}
+  </nav>
+)}
+

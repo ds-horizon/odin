@@ -1,0 +1,88 @@
+---
+import DocsLayout from '../../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Examples' },
+  { label: 'Fields Overview' },
+];
+
+const headings = [
+  { depth: 2, slug: 'overview', text: 'Overview' },
+  { depth: 2, slug: 'basic-fields', text: 'Basic Fields' },
+  { depth: 2, slug: 'related-examples', text: 'Related Examples' },
+];
+---
+
+<DocsLayout
+  title="Fields Overview"
+  description="Understanding fields in datagen models"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="overview">Overview</h2>
+
+  <p>
+    Fields define the structure of your data model. Each field has a name, type, and a generator
+    function that produces values.
+  </p>
+
+  <h2 id="basic-fields">Basic Fields</h2>
+
+  <p>Fields are declared in the <code>fields</code> section:</p>
+
+  <pre set:html={`<code>model User {
+  fields {
+    name() string
+    age() int
+    email() string
+    active() bool
+  }
+
+  gens {
+    func name() {
+      return Name()
+    }
+
+    func age() {
+      return IntBetween(18, 65)
+    }
+
+    func email() {
+      return Email()
+    }
+
+    func active() {
+      return Bool()
+    }
+  }
+}</code>`}></pre>
+
+  <h3>Supported Types</h3>
+
+  <ul>
+    <li><code>string</code> - Text values</li>
+    <li><code>int</code> - Integer numbers</li>
+    <li><code>float</code> - Decimal numbers</li>
+    <li><code>bool</code> - Boolean (true/false)</li>
+    <li><code>datetime</code> - Date and time values</li>
+  </ul>
+
+  <h2 id="related-examples">Related Examples</h2>
+
+  <ul>
+    <li>
+      <a href="/odin/docs/examples/1_fields/single_field_model/single-field-model"
+        >Single Field Model</a
+      >
+    </li>
+    <li>
+      <a href="/odin/docs/examples/1_fields/multi_field_model/multi-field-model"
+        >Multi Field Model</a
+      >
+    </li>
+    <li><a href="/odin/docs/language/dsl-specification">DSL Specification</a></li>
+    <li><a href="/odin/docs/language/built-in-functions">Built-in Functions</a></li>
+  </ul>
+</DocsLayout>
+

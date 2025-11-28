@@ -1,0 +1,338 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Introduction' },
+  { label: 'Getting Started' },
+];
+
+const headings = [
+  { depth: 2, slug: 'prerequisites', text: 'Prerequisites' },
+  { depth: 3, slug: 'hardware-requirements', text: 'Hardware Requirements' },
+  { depth: 3, slug: 'software-requirements', text: 'Software Requirements' },
+  { depth: 3, slug: 'kubernetes-version-compatibility', text: 'Kubernetes Version Compatibility' },
+  { depth: 2, slug: 'quick-start-one-command-installation', text: 'Quick Start: One-Command Installation' },
+  { depth: 2, slug: 'cli-setup', text: 'CLI Setup' },
+  { depth: 2, slug: 'next-steps-deploy-your-first-service', text: 'Next Steps: Deploy Your First Service' },
+  { depth: 2, slug: 'common-cli-commands', text: 'Common CLI Commands' },
+  { depth: 2, slug: 'troubleshooting', text: 'Troubleshooting' },
+  { depth: 2, slug: 'advanced-installation-options', text: 'Advanced Installation Options' },
+];
+---
+
+<DocsLayout
+  title="Getting Started"
+  description="Install Odin platform and CLI in under 15 minutes"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>
+    Get up and running with Odin on a local Kubernetes cluster. This guide will walk you through
+    installation, configuration, and deploying your first service.
+  </p>
+
+  <h2 id="prerequisites">Prerequisites</h2>
+
+  <h3 id="hardware-requirements">Hardware Requirements</h3>
+
+  <h4>Local Development (Kind Cluster)</h4>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Resource</th>
+        <th>Minimum</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>RAM</strong></td>
+        <td>8 GB</td>
+      </tr>
+      <tr>
+        <td><strong>CPU</strong></td>
+        <td>4 cores</td>
+      </tr>
+      <tr>
+        <td><strong>Disk Space</strong></td>
+        <td>20 GB free</td>
+      </tr>
+      <tr>
+        <td><strong>OS</strong></td>
+        <td>macOS 11+, Linux (Ubuntu 20.04+)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="software-requirements">Software Requirements</h3>
+
+  <p>The following tools must be installed on your system:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>Minimum Version</th>
+        <th>Installation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>kubectl</strong></td>
+        <td>v1.24+</td>
+        <td><a href="https://kubernetes.io/docs/tasks/tools/" target="_blank">Install Guide</a></td>
+      </tr>
+      <tr>
+        <td><strong>Helm</strong></td>
+        <td>v3.8+</td>
+        <td><a href="https://helm.sh/docs/intro/install/" target="_blank">Install Guide</a></td>
+      </tr>
+      <tr>
+        <td><strong>Docker</strong></td>
+        <td>v20.10+</td>
+        <td><a href="https://docs.docker.com/get-docker/" target="_blank">Install Guide</a></td>
+      </tr>
+      <tr>
+        <td><strong>curl</strong></td>
+        <td>v7.68+</td>
+        <td>Pre-installed on most systems</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <Callout type="note">
+    <p>
+      The installation script will automatically check for these prerequisites and guide you through
+      installing any missing tools.
+    </p>
+  </Callout>
+
+  <h3 id="kubernetes-version-compatibility">Kubernetes Version Compatibility</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Kubernetes Version</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1.30 - 1.34</strong></td>
+        <td>✅ Compatible</td>
+      </tr>
+      <tr>
+        <td><strong>&lt; 1.29</strong></td>
+        <td>⚠️ Not Tested</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="quick-start-one-command-installation">Quick Start: One-Command Installation</h2>
+
+  <p>Get Odin running on a local Kind cluster in under 15 minutes:</p>
+
+  <pre><code>bash &lt;(curl -fsSL https://raw.githubusercontent.com/ds-horizon/odin/master/install.sh)</code></pre>
+
+  <h3>What This Does</h3>
+
+  <p>The installation script automatically:</p>
+
+  <ol>
+    <li>✅ Clones the Odin repository</li>
+    <li>✅ Checks and installs prerequisites (kubectl, Helm, Docker, Kind)</li>
+    <li>✅ Creates a local Kind cluster named <code>odin-cluster</code></li>
+    <li>✅ Sets up local Docker registry</li>
+    <li>✅ Installs KEDA and Percona MySQL Operator</li>
+    <li>✅ Deploys Odin with all components</li>
+    <li>✅ Creates local development accounts</li>
+    <li>✅ Optionally installs Odin CLI</li>
+  </ol>
+
+  <p><strong>Expected Duration</strong>: 7-10 minutes (depending on internet speed and hardware)</p>
+
+  <h2 id="cli-setup">CLI Setup</h2>
+
+  <p>After installation completes, configure the Odin CLI:</p>
+
+  <h3>Step 1: Locate the CLI Binary</h3>
+
+  <p>If you installed the CLI during installation:</p>
+
+  <pre><code># CLI is installed in your home directory
+ls -la ~/odin
+
+# Move to PATH
+sudo mv ~/odin /usr/local/bin/odin
+chmod +x /usr/local/bin/odin</code></pre>
+
+  <h3>Step 2: Verify CLI Installation</h3>
+
+  <pre><code># Check version
+odin version</code></pre>
+
+  <h3>Step 3: Port-Forward to Deployer</h3>
+
+  <p>Open a terminal and forward the deployer service to localhost:</p>
+
+  <pre><code># Forward deployer service to localhost
+kubectl port-forward svc/odin-deployer -n odin 8080:80</code></pre>
+
+  <Callout type="note">
+    <p>Keep this terminal open. Open a new terminal for the next steps.</p>
+  </Callout>
+
+  <h3>Step 4: Configure Odin CLI</h3>
+
+  <p>In a new terminal, configure the CLI to connect to your local Odin backend:</p>
+
+  <pre><code># Configure Odin CLI for local development
+odin configure --org-id 0 --backend-address 127.0.0.1:8080 -I -P</code></pre>
+
+  <p><strong>Flags explained:</strong></p>
+  <ul>
+    <li><code>--org-id 0</code>: Use organization ID 0 (default for local development)</li>
+    <li><code>--backend-address 127.0.0.1:8080</code>: Connect to port-forwarded deployer</li>
+    <li><code>-I</code>: Skip TLS host verification (insecure mode for local dev)</li>
+    <li><code>-P</code>: Use plaintext gRPC without TLS</li>
+  </ul>
+
+  <h3>Step 5: Test the Installation</h3>
+
+  <pre><code># List environments (should be empty initially)
+odin list env</code></pre>
+
+  <p>
+    If you see the output without errors, congratulations! 🎉 Odin is successfully installed and
+    configured.
+  </p>
+
+  <h2 id="next-steps-deploy-your-first-service">Next Steps: Deploy Your First Service</h2>
+
+  <p>Now that Odin is installed and configured, you can deploy your first service:</p>
+
+  <ol>
+    <li><strong>Create an Environment</strong>: Set up an isolated namespace for your services</li>
+    <li><strong>Define Your Service</strong>: Create a service definition JSON</li>
+    <li><strong>Configure Provisioning</strong>: Specify how components should be deployed</li>
+    <li><strong>Deploy</strong>: Use the CLI to deploy your service</li>
+  </ol>
+
+  <p>For a complete walkthrough, see:</p>
+  <ul>
+    <li>
+      <a href="/odin/docs/howto/deploy-first-service">Deploy Your First Service</a> - Step-by-step
+      tutorial
+    </li>
+    <li>
+      <a href="/odin/docs/concepts/overview">Key Concepts</a> - Understand environments, services, and
+      components
+    </li>
+    <li><a href="/odin/docs/cli/reference">CLI Reference</a> - Complete command documentation</li>
+  </ul>
+
+  <h2 id="common-cli-commands">Common CLI Commands</h2>
+
+  <p>Here are some common commands you'll use:</p>
+
+  <pre><code># List all environments
+odin list env
+
+# Create an environment
+odin create env dev --accounts docker/local
+
+# Describe an environment
+odin describe env dev
+
+# Deploy a service
+odin deploy service --env dev --file service.json --provisioning provisioning.json
+
+# Check service status
+odin status env dev --service my-service
+
+# Undeploy a service
+odin undeploy service my-service --env dev
+
+# Get help
+odin --help
+odin deploy --help</code></pre>
+
+  <h2 id="troubleshooting">Troubleshooting</h2>
+
+  <Callout type="tip" title="Need help?">
+    <p>
+      For more installation and configuration questions, see the <a
+        href="/odin/docs/introduction/installation-faq">Installation FAQ</a
+      >.
+    </p>
+  </Callout>
+
+  <h3>Port-Forward Connection Issues</h3>
+
+  <p>If you can't connect to the backend:</p>
+
+  <pre><code># Check if port-forward is running
+ps aux | grep "port-forward"
+
+# Verify deployer pod is running
+kubectl get pods -n odin | grep deployer
+
+# Restart port-forward
+kubectl port-forward svc/odin-deployer -n odin 8080:80</code></pre>
+
+  <h3>CLI Configuration Issues</h3>
+
+  <p>If <code>odin list env</code> fails:</p>
+
+  <pre><code># Check CLI configuration
+cat ~/.odin/config
+
+# Reconfigure with verbose output
+odin configure --org-id 0 --backend-address 127.0.0.1:8080 -I -P --verbose</code></pre>
+
+  <h2 id="advanced-installation-options">Advanced Installation Options</h2>
+
+  <h3>Installing on Existing Kubernetes Cluster</h3>
+
+  <p>To install on an existing cluster instead of Kind:</p>
+
+  <pre><code># Clone the repository
+git clone https://github.com/ds-horizon/odin.git
+cd odin
+
+# Install with Helm directly
+helm install odin ./charts/odin --namespace odin --create-namespace</code></pre>
+
+  <h3>Uninstallation</h3>
+
+  <p>To remove Odin from your cluster:</p>
+
+  <pre><code># Using the uninstall script
+cd odin
+./uninstall.sh
+
+# Or manually with Helm
+helm uninstall odin -n odin
+kubectl delete namespace odin</code></pre>
+
+  <Callout type="tip" title="🎉 Success!">
+    <p>
+      Congratulations! You've successfully installed Odin and configured the CLI.
+    </p>
+    <p><strong>Next steps:</strong></p>
+    <ul>
+      <li>
+        <a href="/odin/docs/howto/deploy-first-service">Deploy Your First Service</a> - Complete
+        walkthrough
+      </li>
+      <li>
+        <a href="/odin/docs/concepts/overview">Key Concepts</a> - Understand services, components, and
+        environments
+      </li>
+      <li><a href="/odin/docs/cli/reference">CLI Reference</a> - All available commands</li>
+    </ul>
+  </Callout>
+</DocsLayout>
+

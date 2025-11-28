@@ -1,0 +1,83 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Reference' },
+  { label: 'Troubleshooting' },
+];
+
+const headings = [
+  { depth: 2, slug: 'common-issues', text: 'Common Issues' },
+  { depth: 2, slug: 'cli-issues', text: 'CLI Issues' },
+  { depth: 2, slug: 'deployment-issues', text: 'Deployment Issues' },
+];
+---
+
+<DocsLayout
+  title="Troubleshooting"
+  description="Common issues and solutions"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="common-issues">Common Issues</h2>
+
+  <h3>Connection Refused</h3>
+
+  <p>If you see connection errors:</p>
+
+  <pre><code>Error: failed to connect to backend: connection refused</code></pre>
+
+  <p><strong>Solutions:</strong></p>
+  <ol>
+    <li>Verify port-forward is running: <code>kubectl port-forward svc/odin-deployer -n odin 8080:80</code></li>
+    <li>Check backend address in config: <code>cat ~/.odin/config</code></li>
+    <li>Reconfigure CLI: <code>odin configure --backend-address 127.0.0.1:8080 -I -P</code></li>
+  </ol>
+
+  <h2 id="cli-issues">CLI Issues</h2>
+
+  <h3>Command Not Found</h3>
+
+  <pre><code>odin: command not found</code></pre>
+
+  <p><strong>Solution:</strong> Add odin to PATH:</p>
+
+  <pre><code>sudo mv ~/odin /usr/local/bin/odin
+chmod +x /usr/local/bin/odin</code></pre>
+
+  <h3>Authentication Failed</h3>
+
+  <p><strong>Solution:</strong> Reconfigure with correct credentials:</p>
+
+  <pre><code>odin configure --backend-address api.example.com:443 --org-id YOUR_ORG_ID</code></pre>
+
+  <h2 id="deployment-issues">Deployment Issues</h2>
+
+  <h3>Deployment Stuck in DEPLOYING State</h3>
+
+  <p><strong>Check pod status:</strong></p>
+
+  <pre><code>kubectl get pods -n &lt;namespace&gt;</code></pre>
+
+  <p><strong>Check logs:</strong></p>
+
+  <pre><code>kubectl logs -n &lt;namespace&gt; &lt;pod-name&gt;</code></pre>
+
+  <h3>Component Dependencies Not Met</h3>
+
+  <Callout type="caution">
+    <p>Ensure all components listed in <code>depends_on</code> are included in your service definition.</p>
+  </Callout>
+
+  <h2>Getting Help</h2>
+
+  <p>If issues persist:</p>
+  <ol>
+    <li>Check <a href="/odin/docs/introduction/installation-faq">Installation FAQ</a></li>
+    <li>Review <a href="/odin/docs/cli/reference">CLI Reference</a></li>
+    <li>Open an issue on <a href="https://github.com/ds-horizon/odin/issues">GitHub</a></li>
+  </ol>
+</DocsLayout>
+

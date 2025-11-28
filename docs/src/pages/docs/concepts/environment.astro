@@ -1,0 +1,247 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Key Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Environment' },
+];
+
+const headings = [
+  { depth: 2, slug: 'what-is-an-environment', text: 'What is an Environment?' },
+  { depth: 2, slug: 'environment-properties', text: 'Environment Properties' },
+  { depth: 2, slug: 'environment-lifecycle', text: 'Environment Lifecycle' },
+  { depth: 2, slug: 'environment-states', text: 'Environment States' },
+  { depth: 2, slug: 'environment-best-practices', text: 'Environment Best Practices' },
+  { depth: 2, slug: 'environment-isolation', text: 'Environment Isolation' },
+  { depth: 2, slug: 'examples', text: 'Examples' },
+];
+---
+
+<DocsLayout
+  title="Environment"
+  description="Understanding Odin environments and how to manage them"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <p>
+    An <strong>Environment</strong> in Odin is an isolated namespace for deploying services. It
+    represents a stage in your development lifecycle and provides logical separation between
+    different deployment contexts.
+  </p>
+
+  <h2 id="what-is-an-environment">What is an Environment?</h2>
+
+  <p>Environments allow you to:</p>
+
+  <ul>
+    <li>Deploy the same service to different stages (dev, staging, production)</li>
+    <li>Isolate deployments from each other</li>
+    <li>Associate services with specific cloud provider accounts</li>
+    <li>Manage service lifecycle independently per environment</li>
+  </ul>
+
+  <h2 id="environment-properties">Environment Properties</h2>
+
+  <p>Each environment has the following properties:</p>
+
+  <ul>
+    <li><strong>Name</strong>: Unique identifier (e.g., <code>dev</code>, <code>staging</code>, <code>production</code>)</li>
+    <li><strong>Organization ID</strong>: The organization that owns the environment</li>
+    <li>
+      <strong>Provider Accounts</strong>: One or more cloud provider accounts associated with the
+      environment
+    </li>
+    <li>
+      <strong>Provisioning Type</strong>: Default provisioning strategy (e.g., <code
+        >kubernetes</code
+      >, <code>ec2</code>)
+    </li>
+    <li><strong>Status</strong>: Current state (CREATING, READY, DELETING, DELETED)</li>
+    <li>
+      <strong>Auto-deletion Time</strong>: Optional scheduled cleanup for ephemeral environments
+    </li>
+  </ul>
+
+  <h2 id="environment-lifecycle">Environment Lifecycle</h2>
+
+  <h3>Creating an Environment</h3>
+
+  <p>Create a new environment using the CLI:</p>
+
+  <pre><code>odin create env &lt;env-name&gt; --accounts &lt;account1&gt;,&lt;account2&gt;</code></pre>
+
+  <p><strong>Example:</strong></p>
+  <pre><code>odin create env staging --accounts aws/dev,aws/shared</code></pre>
+
+  <p>This creates an environment named "staging" associated with two AWS accounts.</p>
+
+  <h3>Listing Environments</h3>
+
+  <p>List all environments you have access to:</p>
+
+  <pre><code>odin list env</code></pre>
+
+  <p>Filter by provider account:</p>
+
+  <pre><code>odin list env --account aws/production</code></pre>
+
+  <h3>Describing an Environment</h3>
+
+  <p>Get detailed information about an environment:</p>
+
+  <pre><code>odin describe env &lt;env-name&gt;</code></pre>
+
+  <p>Filter by service or component:</p>
+
+  <pre><code>odin describe env staging --service my-service
+odin describe env staging --service my-service --component database</code></pre>
+
+  <h3>Checking Environment Status</h3>
+
+  <p>Check the deployment status of an environment:</p>
+
+  <pre><code>odin status env &lt;env-name&gt;</code></pre>
+
+  <p>Get status for a specific service:</p>
+
+  <pre><code>odin status env staging --service my-service</code></pre>
+
+  <h3>Deleting an Environment</h3>
+
+  <p>Delete an environment and all its services:</p>
+
+  <pre><code>odin delete env &lt;env-name&gt;</code></pre>
+
+  <Callout type="caution" title="Warning">
+    <p>
+      Deleting an environment will undeploy all services within it. This operation cannot be
+      undone.
+    </p>
+  </Callout>
+
+  <h2 id="environment-states">Environment States</h2>
+
+  <p>Environments transition through several states:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>CREATING</code></td>
+        <td>Environment is being provisioned</td>
+      </tr>
+      <tr>
+        <td><code>READY</code></td>
+        <td>Environment is available for deployments</td>
+      </tr>
+      <tr>
+        <td><code>DELETING</code></td>
+        <td>Environment is being torn down</td>
+      </tr>
+      <tr>
+        <td><code>DELETED</code></td>
+        <td>Environment has been removed</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="environment-best-practices">Environment Best Practices</h2>
+
+  <h3>Naming Conventions</h3>
+
+  <p>Use clear, consistent names for environments:</p>
+
+  <ul>
+    <li><code>dev</code> or <code>development</code>: Developer environments</li>
+    <li><code>qa</code> or <code>staging</code>: Testing and QA environments</li>
+    <li><code>prod</code> or <code>production</code>: Production environments</li>
+    <li><code>feature-&lt;name&gt;</code>: Feature-specific ephemeral environments</li>
+  </ul>
+
+  <h3>Multi-Account Strategy</h3>
+
+  <p>Separate environments by purpose:</p>
+
+  <pre><code># Development environment
+odin create env dev --accounts aws/dev-account
+
+# Staging environment (dev + shared services)
+odin create env staging --accounts aws/dev-account,aws/shared-services
+
+# Production environment
+odin create env prod --accounts aws/prod-account,aws/shared-services</code></pre>
+
+  <h3>Ephemeral Environments</h3>
+
+  <p>Create temporary environments for feature branches:</p>
+
+  <pre><code>odin create env feature-auth-v2 --accounts aws/dev-account
+# ... deploy and test ...
+odin delete env feature-auth-v2</code></pre>
+
+  <h2 id="environment-isolation">Environment Isolation</h2>
+
+  <p>Environments provide isolation at multiple levels:</p>
+
+  <ol>
+    <li>
+      <strong>Resource Isolation</strong>: Services in different environments use separate cloud
+      resources
+    </li>
+    <li>
+      <strong>Namespace Isolation</strong>: Kubernetes deployments use environment-specific
+      namespaces
+    </li>
+    <li>
+      <strong>Configuration Isolation</strong>: Each environment can have different provisioning
+      configs
+    </li>
+    <li><strong>Access Control</strong>: Environments can have different access policies</li>
+  </ol>
+
+  <h2 id="examples">Examples</h2>
+
+  <h3>Create a Development Environment</h3>
+
+  <pre><code>odin create env dev --accounts aws/dev</code></pre>
+
+  <h3>Create a Production Environment with Multiple Accounts</h3>
+
+  <pre><code>odin create env production \
+  --accounts aws/prod-compute,aws/prod-data,aws/shared-services</code></pre>
+
+  <h3>Check All Services in an Environment</h3>
+
+  <pre><code>odin status env staging</code></pre>
+
+  <p>Output:</p>
+  <pre><code>Environment: staging
+Status: READY
+
+Services:
+┌──────────────┬─────────┬────────────┬────────────┐
+│ Service      │ Version │ Status     │ Components │
+├──────────────┼─────────┼────────────┼────────────┤
+│ user-api     │ 1.2.0   │ DEPLOYED   │ 3          │
+│ payment-svc  │ 2.0.1   │ DEPLOYED   │ 2          │
+│ analytics    │ 1.0.0   │ DEPLOYING  │ 4          │
+└──────────────┴─────────┴────────────┴────────────┘</code></pre>
+
+  <h2>Related Concepts</h2>
+
+  <ul>
+    <li><a href="/odin/docs/concepts/service">Service</a>: Deploy services to environments</li>
+    <li>
+      <a href="/odin/docs/concepts/provisioning">Provisioning</a>: Configure how components are
+      deployed in environments
+    </li>
+  </ul>
+</DocsLayout>
+

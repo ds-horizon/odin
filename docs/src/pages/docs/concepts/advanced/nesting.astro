@@ -1,0 +1,69 @@
+---
+import DocsLayout from '../../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Concepts', href: '/odin/docs/concepts/overview' },
+  { label: 'Advanced', href: '/odin/docs/concepts/advanced/overview' },
+  { label: 'Nesting' },
+];
+
+const headings = [
+  { depth: 2, slug: 'overview', text: 'Overview' },
+  { depth: 2, slug: 'examples', text: 'Examples' },
+];
+---
+
+<DocsLayout
+  title="Nesting"
+  description="Creating nested data structures"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="overview">Overview</h2>
+
+  <p>Create nested JSON structures by defining object fields:</p>
+
+  <pre set:html={`<code>model User {
+  fields {
+    id() int
+    profile() object
+  }
+
+  gens {
+    func id() {
+      return iter + 1
+    }
+
+    func profile() {
+      return {
+        "firstName": FirstName(),
+        "lastName": LastName(),
+        "address": {
+          "city": City(),
+          "country": Country()
+        }
+      }
+    }
+  }
+}</code>`}></pre>
+
+  <h2 id="examples">Examples</h2>
+
+  <h3>Nested Address</h3>
+
+  <pre set:html={`<code>func address() {
+  return {
+    "street": Address(),
+    "city": City(),
+    "state": State(),
+    "zip": ZipCode()
+  }
+}</code>`}></pre>
+
+  <h2>Related Documentation</h2>
+  <ul>
+    <li><a href="/odin/docs/language/dsl-specification">DSL Specification</a></li>
+  </ul>
+</DocsLayout>
+

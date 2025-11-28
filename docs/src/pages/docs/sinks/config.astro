@@ -1,0 +1,68 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Sinks', href: '/odin/docs/sinks/overview' },
+  { label: 'Configuration' },
+];
+
+const headings = [
+  { depth: 2, slug: 'configuration-file', text: 'Configuration File' },
+  { depth: 2, slug: 'environment-variables', text: 'Environment Variables' },
+];
+---
+
+<DocsLayout
+  title="Sink Configuration"
+  description="How to configure data sinks in datagenc"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="configuration-file">Configuration File</h2>
+
+  <p>
+    Sinks are configured in <code>~/.datagenc/config.yaml</code>:
+  </p>
+
+  <pre><code>sinks:
+  mysql:
+    host: localhost
+    port: 3306
+    database: testdb
+    username: root
+    password: secret
+  
+  postgres:
+    host: localhost
+    port: 5432
+    database: testdb
+    username: postgres
+    password: secret</code></pre>
+
+  <h2 id="environment-variables">Environment Variables</h2>
+
+  <p>Override configuration with environment variables:</p>
+
+  <pre><code># MySQL
+export DATAGENC_MYSQL_HOST=localhost
+export DATAGENC_MYSQL_PORT=3306
+export DATAGENC_MYSQL_DATABASE=testdb
+export DATAGENC_MYSQL_USERNAME=root
+export DATAGENC_MYSQL_PASSWORD=secret
+
+# Postgres
+export DATAGENC_POSTGRES_HOST=localhost
+export DATAGENC_POSTGRES_PORT=5432
+export DATAGENC_POSTGRES_DATABASE=testdb
+export DATAGENC_POSTGRES_USERNAME=postgres
+export DATAGENC_POSTGRES_PASSWORD=secret</code></pre>
+
+  <h2>Related Documentation</h2>
+
+  <ul>
+    <li><a href="/odin/docs/sinks/overview">Sinks Overview</a></li>
+    <li><a href="/odin/docs/sinks/mysql">MySQL Sink</a></li>
+  </ul>
+</DocsLayout>
+

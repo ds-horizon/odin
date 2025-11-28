@@ -1,0 +1,68 @@
+---
+import DocsLayout from '../../../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Examples', href: '/odin/docs/examples/1_fields/fields-overview' },
+  { label: 'Multi Field Model' },
+];
+
+const headings = [
+  { depth: 2, slug: 'model', text: 'Model Definition' },
+  { depth: 2, slug: 'output', text: 'Output' },
+];
+---
+
+<DocsLayout
+  title="Multi Field Model"
+  description="Example with multiple fields of different types"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="model">Model Definition</h2>
+
+  <pre set:html={`<code>model User {
+  fields {
+    id() int
+    name() string
+    age() int
+    active() bool
+    salary() float
+  }
+
+  gens {
+    func id() {
+      return iter + 1
+    }
+
+    func name() {
+      return Name()
+    }
+
+    func age() {
+      return IntBetween(18, 65)
+    }
+
+    func active() {
+      return Bool()
+    }
+
+    func salary() {
+      return FloatBetween(30000.0, 150000.0)
+    }
+  }
+}</code>`}></pre>
+
+  <h2 id="output">Output</h2>
+
+  <pre set:html={`<code>User{id:1 name:John Smith age:34 active:true salary:75342.56}
+User{id:2 name:Jane Doe age:28 active:false salary:92100.23}
+User{id:3 name:Bob Johnson age:45 active:true salary:115678.90}</code>`}></pre>
+
+  <h2>Related Examples</h2>
+  <ul>
+    <li><a href="/odin/docs/examples/1_fields/single_field_model/single-field-model">Single Field Model</a></li>
+    <li><a href="/odin/docs/examples/2_calls/calls">Function Calls</a></li>
+  </ul>
+</DocsLayout>
+

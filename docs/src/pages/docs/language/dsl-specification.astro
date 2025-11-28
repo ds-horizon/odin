@@ -1,0 +1,116 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import Callout from '../../../components/docs/Callout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Language' },
+  { label: 'DSL Specification' },
+];
+
+const headings = [
+  { depth: 2, slug: 'overview', text: 'Overview' },
+  { depth: 2, slug: 'model-structure', text: 'Model Structure' },
+  { depth: 2, slug: 'fields', text: 'Fields' },
+  { depth: 2, slug: 'generators', text: 'Generators' },
+  { depth: 2, slug: 'metadata', text: 'Metadata' },
+];
+---
+
+<DocsLayout
+  title="DSL Specification"
+  description="Complete specification of the datagen DSL syntax"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="overview">Overview</h2>
+
+  <p>
+    The datagen DSL is a domain-specific language for defining data models and generation rules.
+  </p>
+
+  <h2 id="model-structure">Model Structure</h2>
+
+  <p>A model consists of several sections:</p>
+
+  <pre set:html={`<code>model ModelName {
+  fields {
+    // Field declarations
+  }
+
+  gens {
+    // Generator functions
+  }
+
+  metadata {
+    // Optional metadata
+  }
+
+  misc {
+    // Optional constants and types
+  }
+}</code>`}></pre>
+
+  <Callout type="caution" title="File Naming">
+    <p>
+      The filename (without extension) must match the model name exactly (case-sensitive).
+      Example: file <code>User.dg</code> must contain <code>model User</code>.
+    </p>
+  </Callout>
+
+  <h2 id="fields">Fields</h2>
+
+  <p>Fields define the structure:</p>
+
+  <pre set:html={`<code>fields {
+  name() string
+  age() int
+  salary() float
+  active() bool
+  created_at() datetime
+}</code>`}></pre>
+
+  <h3>Supported Types</h3>
+  <ul>
+    <li><code>string</code> - Text values</li>
+    <li><code>int</code> - Integer numbers</li>
+    <li><code>float</code> - Decimal numbers</li>
+    <li><code>bool</code> - Boolean values</li>
+    <li><code>datetime</code> - Date and time</li>
+  </ul>
+
+  <h2 id="generators">Generators</h2>
+
+  <p>Generators define how to create values:</p>
+
+  <pre set:html={`<code>gens {
+  func name() {
+    return Name()
+  }
+
+  func age() {
+    return IntBetween(18, 65)
+  }
+
+  func salary() {
+    return FloatBetween(30000.0, 150000.0)
+  }
+}</code>`}></pre>
+
+  <h2 id="metadata">Metadata</h2>
+
+  <p>Optional configuration:</p>
+
+  <pre set:html={`<code>metadata {
+  count = 1000
+  tags = ["users", "test"]
+}</code>`}></pre>
+
+  <h2>Related Documentation</h2>
+  <ul>
+    <li><a href="/odin/docs/language/built-in-functions">Built-in Functions</a></li>
+    <li><a href="/odin/docs/concepts/data-model">Data Model Concepts</a></li>
+    <li><a href="/odin/docs/examples/1_fields/fields-overview">Field Examples</a></li>
+  </ul>
+</DocsLayout>
+

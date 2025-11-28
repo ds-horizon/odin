@@ -1,0 +1,48 @@
+---
+import DocsLayout from '../../../../../layouts/DocsLayout.astro';
+
+const breadcrumbs = [
+  { label: 'Documentation', href: '/odin/docs/introduction/overview' },
+  { label: 'Examples', href: '/odin/docs/examples/1_fields/fields-overview' },
+  { label: 'Single Field Model' },
+];
+
+const headings = [
+  { depth: 2, slug: 'model', text: 'Model Definition' },
+  { depth: 2, slug: 'output', text: 'Output' },
+];
+---
+
+<DocsLayout
+  title="Single Field Model"
+  description="Basic example with a single field"
+  breadcrumbs={breadcrumbs}
+  headings={headings}
+>
+  <h2 id="model">Model Definition</h2>
+
+  <pre set:html={`<code>model SingleField {
+  fields {
+    name() string
+  }
+
+  gens {
+    func name() {
+      return "Static Value"
+    }
+  }
+}</code>`}></pre>
+
+  <h2 id="output">Output</h2>
+
+  <pre set:html={`<code>SingleField{name:Static Value}
+SingleField{name:Static Value}
+SingleField{name:Static Value}</code>`}></pre>
+
+  <h2>Related Examples</h2>
+  <ul>
+    <li><a href="/odin/docs/examples/1_fields/multi_field_model/multi-field-model">Multi Field Model</a></li>
+    <li><a href="/odin/docs/examples/1_fields/fields-overview">Fields Overview</a></li>
+  </ul>
+</DocsLayout>
+

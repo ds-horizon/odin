@@ -1,0 +1,134 @@
+---
+/**
+ * RoadmapItem Component - Roadmap item card
+ * Displays status, title, description, and quarter
+ */
+
+interface Props {
+  title: string;
+  description: string;
+  quarter?: string;
+  status: 'completed' | 'in-progress' | 'planned' | 'future';
+}
+
+const { title, description, quarter, status } = Astro.props;
+
+const statusConfig = {
+  'completed': { label: '✓', color: '#27C93F', bg: 'rgba(39, 201, 63, 0.1)' },
+  'in-progress': { label: '◐', color: '#EF5350', bg: 'rgba(239, 83, 80, 0.1)' },
+  'planned': { label: '○', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.1)' },
+  'future': { label: '◇', color: '#9E9E9E', bg: 'rgba(158, 158, 158, 0.1)' }
+};
+
+const config = statusConfig[status];
+---
+
+<div class={`roadmap-item roadmap-item-${status} animate-on-scroll`} data-status={status}>
+  <div class="roadmap-status" style={`background: ${config.color};`}>
+    {config.label}
+  </div>
+  <div class="roadmap-content">
+    <div class="roadmap-header">
+      <h3 class="roadmap-title">{title}</h3>
+      {quarter && <span class="roadmap-quarter">{quarter}</span>}
+    </div>
+    <p class="roadmap-description">{description}</p>
+  </div>
+</div>
+
+<style>
+  .roadmap-item {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .roadmap-item:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateX(6px);
+    border-left: 3px solid var(--primary-red);
+  }
+  
+  .roadmap-item:hover .roadmap-status {
+    box-shadow: var(--border-glow-subtle);
+  }
+  
+  .roadmap-status {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: var(--font-weight-bold);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .roadmap-content {
+    flex: 1;
+    min-width: 0; /* Prevent flex item from overflowing */
+  }
+  
+  .roadmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .roadmap-title {
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0;
+    flex: 1;
+    line-height: var(--line-height-snug);
+  }
+  
+  .roadmap-quarter {
+    background: var(--bg-section-gray);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .roadmap-description {
+    font-family: var(--font-sans);
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+  
+  @media (max-width: 768px) {
+    .roadmap-item {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .roadmap-status {
+      align-self: flex-start;
+    }
+    
+    .roadmap-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
