@@ -9,7 +9,7 @@
 - [What is Odin?](#what-is-odin)
 - [Core Concepts](#core-concepts)
 - [Installation](#installation)
-- [Getting Started Tutorial](https://ds-horizon.github.io/odin/introduction/getting-started/#next-steps-deploy-your-first-service)
+- [Getting Started Tutorial](https://dream-horizon-org.github.io/odin/introduction/getting-started/#next-steps-deploy-your-first-service)
 - [References](#references-and-links)
 
 ---
@@ -54,7 +54,7 @@ No prerequisites, no jargon, just curiosity required.
 
 Ready to get started? Follow our comprehensive installation guide:
 
-**📖 [Installation Guide](https://ds-horizon.github.io/odin/introduction/getting-started/)**
+**📖 [Installation Guide](https://.github.io/odin/introduction/getting-started/)**
 
 The guide covers:
 - Prerequisites and system requirements
@@ -72,17 +72,17 @@ The guide covers:
 
 #### Repositories
 
-- **[odin](https://github.com/ds-horizon/odin)** - Main repository with Helm charts and installation scripts
-- **[odin-deployer](https://github.com/ds-horizon/odin-deployer)** - API backend to handle environment, service components deployment & operations data
-- **[odin-account-manager](https://github.com/ds-horizon/odin-account-manager)** - Manages organizations and accounts
-- **[odin-orchestrator](https://github.com/ds-horizon/odin-orchestrator)** - Main engine that orchestrates the deployments
-- **[odin-discovery](https://github.com/ds-horizon/odin-discovery)** - An abstraction over discovery providers to streamline discovery management
-- **[odin-discovery-controller](https://github.com/ds-horizon/odin-discovery-controller)** - Kubernetes controller for service discovery
-- **[odin-components](https://github.com/ds-horizon/odin-components)** - Production-ready components supported by the Odin team
-- **[odin-component-interface](https://github.com/ds-horizon/odin-component-interface)** - Create custom components that can seamlessly integrate with Odin
-- **[odin-cli](https://github.com/ds-horizon/odin-cli)** - Command-line interface for Odin
+- **[odin](https://github.com/dream-horizon-org/odin)** - Main repository with Helm charts and installation scripts
+- **[odin-deployer](https://github.com/dream-horizon-org/odin-deployer)** - API backend to handle environment, service components deployment & operations data
+- **[odin-account-manager](https://github.com/dream-horizon-org/odin-account-manager)** - Manages organizations and accounts
+- **[odin-orchestrator](https://github.com/dream-horizon-org/odin-orchestrator)** - Main engine that orchestrates the deployments
+- **[odin-discovery](https://github.com/dream-horizon-org/odin-discovery)** - An abstraction over discovery providers to streamline discovery management
+- **[odin-discovery-controller](https://github.com/dream-horizon-org/odin-discovery-controller)** - Kubernetes controller for service discovery
+- **[odin-components](https://github.com/dream-horizon-org/odin-components)** - Production-ready components supported by the Odin team
+- **[odin-component-interface](https://github.com/dream-horizon-org/odin-component-interface)** - Create custom components that can seamlessly integrate with Odin
+- **[odin-cli](https://github.com/dream-horizon-org/odin-cli)** - Command-line interface for Odin
 
 #### Links
 
-- **Issue Tracker**: https://github.com/ds-horizon/odin/issues
-- **Releases**: https://github.com/ds-horizon/odin/releases
+- **Issue Tracker**: https://github.com/dream-horizon-org/odin/issues
+- **Releases**: https://github.com/dream-horizon-org/odin/releases

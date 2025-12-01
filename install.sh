@@ -7,7 +7,7 @@
 set -euo pipefail
 
 # Configuration
-readonly REPO_URL="https://github.com/ds-horizon/odin.git"
+readonly REPO_URL="https://github.com/dream-horizon-org/odin.git"
 readonly BRANCH="${BRANCH:-master}"
 
 # Color codes

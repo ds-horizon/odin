@@ -27,8 +27,8 @@ fi
 # Install Odin CLI binary from GitHub releases
 install_odin_cli() {
     local binary_name="odin"
-    local api_repo_url="https://api.github.com/repos/ds-horizon/odin-cli"
-    local download_base_url="https://github.com/ds-horizon/odin-cli/releases/download"
+    local api_repo_url="https://api.github.com/repos/dream-horizon-org/odin-cli"
+    local download_base_url="https://github.com/dream-horizon-org/odin-cli/releases/download"
 
     # Install to home directory
     local install_dir="${HOME}"

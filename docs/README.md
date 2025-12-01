@@ -30,9 +30,9 @@ npm run preview
 ## 📝 Documentation Structure
 
 ### GitHub Pages Setup
-- **Site URL**: `https://ds-horizon.github.io/odin/`
+- **Site URL**: `https://dream-horizon-org.github.io/odin/`
 - **Base Path**: `/odin/`
-- **Repository**: `https://github.com/ds-horizon/odin`
+- **Repository**: `https://github.com/dream-horizon-org/odin`
 
 ### Documentation Sections
 
@@ -84,7 +84,7 @@ This site is configured for GitHub Pages deployment:
 2. Build workflow deploys to the `gh-pages` branch
 3. Site published from the `gh-pages` branch
 
-The site will be accessible at: `https://ds-horizon.github.io/odin/`
+The site will be accessible at: `https://dream-horizon-org.github.io/odin/`
 
 ## 📚 Content Guidelines
 

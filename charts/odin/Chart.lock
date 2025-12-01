@@ -18,7 +18,7 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 3.1.13
 - name: odin-discovery-controller
-  repository: https://ds-horizon.github.io/odin-discovery-controller/
+  repository: https://dream-horizon-org.github.io/odin-discovery-controller/
   version: 0.0.1
 digest: sha256:65a191745c5589612e5583226f8b9ea7d0b1e61ff5f92ddfc7257f303da95bdc
 generated: "2025-11-26T19:37:23.267956+05:30"

@@ -431,7 +431,7 @@ main() {
         fi
     else
         log_step_skipped "Installing Odin CLI" "user declined"
-        log_info "You can download it later from: https://github.com/ds-horizon/odin-cli/releases"
+        log_info "You can download it later from: https://github.com/dream-horizon-org/odin-cli/releases"
     fi
 
     # Display post-installation information

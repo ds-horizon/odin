@@ -3,7 +3,7 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ds-horizon.github.io/odin/',
+  site: 'https://dream-horizon-org.github.io/odin/',
   base: '/odin/',
   integrations: [
     starlight({
@@ -35,7 +35,7 @@ export default defineConfig({
         {
           icon: 'github',
           label: 'GitHub',
-          href: 'https://github.com/ds-horizon/odin',
+          href: 'https://github.com/dream-horizon-org/odin',
         },
       ],
       sidebar: [

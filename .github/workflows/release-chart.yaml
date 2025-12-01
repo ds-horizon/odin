@@ -29,7 +29,7 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
           helm repo add percona https://percona.github.io/percona-helm-charts/
-          helm repo add discovery-controller https://ds-horizon.github.io/odin-discovery-controller/
+          helm repo add discovery-controller https://dream-horizon-org.github.io/odin-discovery-controller/
 
       - name: Update Chart.lock
         working-directory: charts/odin
