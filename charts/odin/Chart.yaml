@@ -34,6 +34,11 @@ dependencies:
     version: 3.1.13
     alias: fluentbit
     condition: fluentbit.internal.enabled
+  - name: odin-discovery-controller
+    repository: https://ds-horizon.github.io/odin-discovery-controller/
+    alias: discoveryController
+    version: 0.0.1
+    condition: discoveryController.enabled
 maintainers:
   - name: ds-horizon
     url: https://github.com/ds-horizon/odin
