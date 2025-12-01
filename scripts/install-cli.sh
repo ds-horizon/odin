@@ -27,33 +27,11 @@ fi
 # Install Odin CLI binary from GitHub releases
 install_odin_cli() {
     local binary_name="odin"
-    local repo_url="https://api.github.com/repos/ds-horizon/odin-cli"
+    local api_repo_url="https://api.github.com/repos/ds-horizon/odin-cli"
+    local download_base_url="https://github.com/ds-horizon/odin-cli/releases/download"
 
     # Install to home directory
     local install_dir="${HOME}"
-
-    # Get GitHub PAT from environment variable or prompt user
-    local github_token
-    if [[ -n "${GITHUB_TOKEN:-}" ]]; then
-        github_token="${GITHUB_TOKEN}"
-        log_info "Using GitHub PAT from GITHUB_TOKEN environment variable"
-    elif [[ -t 0 ]]; then
-        # prompt user for PAT
-        log_info "GitHub Personal Access Token (PAT) is required to download the CLI binary."
-        log_info "You can create one at: https://github.com/settings/tokens"
-        log_info "Required scope: 'public_repo' or 'repo'"
-        read -rsp "Enter your GitHub PAT: " github_token
-        echo ""
-    else
-        log_error "Non-interactive terminal detected and GITHUB_TOKEN not set."
-        log_info "Please set GITHUB_TOKEN environment variable or run in an interactive terminal."
-        return 1
-    fi
-
-    if [[ -z "${github_token}" ]]; then
-        log_error "GitHub PAT is required to download the CLI binary"
-        return 1
-    fi
 
     # Detect OS + ARCH
     local os_type arch_type
@@ -78,7 +56,6 @@ install_odin_cli() {
     esac
 
     log_info "Detected system: ${os_type} ${arch_type}"
-    log_info "Fetching latest release metadata..."
 
     local temp_dir=""
     temp_dir=$(mktemp -d)
@@ -87,57 +64,49 @@ install_odin_cli() {
     local archive_path="${temp_dir}/odin.tar.gz"
     local asset_name="odin_${os_type}_${arch_type}.tar.gz"
 
-    local latest_tag
-    if ! latest_tag=$(curl -s -L -H "Authorization: token ${github_token}" \
-        "${repo_url}/releases/latest" \
-        | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'); then
-        log_error "Failed to fetch latest release tag"
-        trap - EXIT INT TERM
-        rm -rf "${temp_dir}"
-        return 1
+    # Check if a specific version is requested via environment variable
+    local release_tag
+    if [[ -n "${ODIN_CLI_VERSION:-}" ]]; then
+        if [[ "${ODIN_CLI_VERSION}" =~ ^v ]]; then
+            release_tag="${ODIN_CLI_VERSION}"
+        else
+            release_tag="v${ODIN_CLI_VERSION}"
+        fi
+        log_info "Using specified version: ${release_tag}"
+    else
+        log_info "Fetching latest release metadata..."
+        if ! release_tag=$(curl -s -L \
+            "${api_repo_url}/releases/latest" \
+            | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'); then
+            log_error "Failed to fetch latest release tag"
+            trap - EXIT INT TERM
+            rm -rf "${temp_dir}"
+            return 1
+        fi
+
+        if [[ -z "${release_tag}" ]]; then
+            log_error "Unable to determine latest release tag"
+            trap - EXIT INT TERM
+            rm -rf "${temp_dir}"
+            return 1
+        fi
+        log_info "Latest release: ${release_tag}"
     fi
 
-    if [[ -z "${latest_tag}" ]]; then
-        log_error "Unable to determine latest release tag"
-        trap - EXIT INT TERM
-        rm -rf "${temp_dir}"
-        return 1
-    fi
-
-    log_info "Latest release: ${latest_tag}"
-
-    # Check if jq is available for parsing JSON
-    if ! command -v jq >/dev/null 2>&1; then
-        log_error "jq is required to parse GitHub API response"
-        log_info "Please install jq: brew install jq (macOS) or apt-get install jq (Linux)"
-        trap - EXIT INT TERM
-        rm -rf "${temp_dir}"
-        return 1
-    fi
-
-    # Extract asset ID from JSON
-    local asset_id
-    asset_id=$(curl -s -L -H "Authorization: token ${github_token}" \
-        "${repo_url}/releases/tags/${latest_tag}" \
-        | jq -r --arg name "${asset_name}" '.assets[] | select(.name == $name) | .id')
-
-    if [[ -z "${asset_id}" || "${asset_id}" == "null" ]]; then
-        log_error "Release asset not found for: ${asset_name}"
-        trap - EXIT INT TERM
-        rm -rf "${temp_dir}"
-        return 1
-    fi
-
-    log_info "Found asset ID: ${asset_id}"
-    log_info "Downloading asset (${asset_name})..."
+    local download_url="${download_base_url}/${release_tag}/${asset_name}"
+    log_info "Downloading ${asset_name} from ${release_tag}..."
 
     # Download the asset
-    if ! curl -L \
-        -H "Authorization: token ${github_token}" \
-        -H "Accept: application/octet-stream" \
-        "${repo_url}/releases/assets/${asset_id}" \
-        -o "${archive_path}"; then
-        log_error "Failed to download asset from GitHub"
+    local http_code
+    http_code=$(curl -sL -o "${archive_path}" -w "%{http_code}" "${download_url}")
+
+    if [[ "${http_code}" -ne 200 ]]; then
+        if [[ "${http_code}" -eq 404 ]]; then
+            log_error "Release asset not found: ${asset_name} for version ${release_tag}"
+            log_info "Please verify the version and asset name exist in the repository"
+        else
+            log_error "Failed to download asset (HTTP ${http_code})"
+        fi
         trap - EXIT INT TERM
         rm -rf "${temp_dir}"
         return 1

@@ -13,6 +13,24 @@ export default defineConfig({
       logo: {
         src: './src/assets/odin-logo.png',
       },
+      head: [
+        {
+          tag: 'script',
+          attrs: {
+            src: 'https://www.googletagmanager.com/gtag/js?id=G-SJ0LD5F754',
+            async: true,
+          },
+        },
+        {
+          tag: 'script',
+          content: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-SJ0LD5F754');
+          `,
+        },
+      ],
       social: [
         {
           icon: 'github',

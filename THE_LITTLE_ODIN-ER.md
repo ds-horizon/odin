@@ -32,18 +32,6 @@ A: As many as you like. But no two services with the same name. Duplicates aren'
 
 A: Not yet, but we're getting there.
 
-**Q: How long does an environment live?**
-
-A: By default, it lives for 7 days.
-
-**Q: What happens after 7 days?**
-
-A: It's automatically deleted, along with all the services deployed in it.
-
-**Q: Can I make it last longer?**
-
-A: Yes, you can extend the environment lifetime.
-
 ---
 
 ## Service

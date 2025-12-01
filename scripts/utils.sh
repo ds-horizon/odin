@@ -304,7 +304,8 @@ OPTIONS:
     -n, --namespace NAME    Kubernetes namespace (default: odin)
     -r, --release NAME      Helm release name (default: odin)
     -v, --values FILE       Path to custom values file
-    --debug                Enable debug output and logging
+    --debug                 Enable debug output and logging
+    --preload-images        Preload Docker images to Kind cluster (Kind clusters only)
 
 PREREQUISITES:
     The script will automatically check for and optionally install:
@@ -320,6 +321,9 @@ EXAMPLES:
 
     # Install with custom values and namespace
     $0 -n production -v my-values.yaml
+
+    # Install on Kind cluster with image preloading
+    $0 --preload-images
 
 For more information, see the README.md file.
 EOF
@@ -347,6 +351,10 @@ parse_args() {
                 ;;
             --debug)
                 DEBUG=true
+                shift
+                ;;
+            --preload-images)
+                export PRELOAD_IMAGES=true
                 shift
                 ;;
             *)
