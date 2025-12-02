@@ -658,20 +658,6 @@ install_percona_operator() {
 
     log_info "${action_display} Percona MySQL Server Operator version ${version}..."
 
-    # Add Percona Helm repository
-    log_debug "Adding Percona Helm repository"
-    if ! helm repo add percona https://percona.github.io/percona-helm-charts/ 2>&1 | tee -a "${LOG_FILE}"; then
-        log_error "Failed to add Percona Helm repository"
-        return 1
-    fi
-
-    # Update Helm repositories
-    log_debug "Updating Helm repositories"
-    if ! helm repo update 2>&1 | tee -a "${LOG_FILE}"; then
-        log_error "Failed to update Helm repositories"
-        return 1
-    fi
-
     # Install or upgrade the operator
     local helm_cmd="helm"
     if [[ "${action}" == "upgrade" ]]; then
@@ -680,8 +666,8 @@ install_percona_operator() {
         helm_cmd="helm install"
     fi
 
-    log_debug "Running: ${helm_cmd} percona-operator percona/ps-operator --version ${version} --create-namespace --namespace ${NAMESPACE}"
-    if ! ${helm_cmd} percona-operator percona/ps-operator --version "${version}" --create-namespace --namespace "${NAMESPACE}" 2>&1 | tee -a "${LOG_FILE}"; then
+    log_debug "Running: ${helm_cmd} percona-operator ps-operator --version ${version} --create-namespace --namespace ${NAMESPACE} --repo https://percona.github.io/percona-helm-charts"
+    if ! ${helm_cmd} percona-operator ps-operator --version "${version}" --create-namespace --namespace "${NAMESPACE}" --repo https://percona.github.io/percona-helm-charts 2>&1 | tee -a "${LOG_FILE}"; then
         log_error "Failed to ${action} Percona MySQL Server Operator"
         return 1
     fi
@@ -820,23 +806,9 @@ ensure_local_docker_registry() {
 install_keda() {
     log_info "Installing KEDA (Kubernetes Event-driven Autoscaling)..."
 
-    # Add KEDA Helm repository
-    log_debug "Adding KEDA Helm repository"
-    if ! helm repo add kedacore https://kedacore.github.io/charts 2>&1 | tee -a "${LOG_FILE}"; then
-        log_error "Failed to add KEDA Helm repository"
-        return 1
-    fi
-
-    # Update Helm repositories
-    log_debug "Updating Helm repositories"
-    if ! helm repo update 2>&1 | tee -a "${LOG_FILE}"; then
-        log_error "Failed to update Helm repositories"
-        return 1
-    fi
-
     # Install KEDA
     log_debug "Installing KEDA using Helm"
-    if ! helm install keda kedacore/keda --create-namespace --namespace keda --version 2.18.1 2>&1 | tee -a "${LOG_FILE}"; then
+    if ! helm install keda keda --create-namespace --namespace keda --version 2.18.1 --repo https://kedacore.github.io/charts 2>&1 | tee -a "${LOG_FILE}"; then
         log_error "Failed to install KEDA"
         return 1
     fi
