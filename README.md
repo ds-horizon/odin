@@ -54,7 +54,7 @@ No prerequisites, no jargon, just curiosity required.
 
 Ready to get started? Follow our comprehensive installation guide:
 
-**📖 [Installation Guide](https://.github.io/odin/introduction/getting-started/)**
+**📖 [Installation Guide](https://dream-horizon-org.github.io/odin/introduction/getting-started/)**
 
 The guide covers:
 - Prerequisites and system requirements
