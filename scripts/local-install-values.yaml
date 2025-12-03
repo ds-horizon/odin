@@ -32,7 +32,6 @@ mysql:
 accountManager:
   resources:
     limits:
-      cpu: 200m
       memory: 512Mi
   extraEnvVars:
     - name: JVM_OPTS
