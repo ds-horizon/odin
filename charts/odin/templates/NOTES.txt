@@ -1,0 +1,54 @@
+
+                 .:-                        ::.
+               @@@@@+                      #@@@@@
+             :@@@%:                          -@@@@
+             %@@#        :%@@@@@@@@@@*.       :@@@+
+             @@@+      =@@@@@@@@@@@@@@@@:      @@@#
+             @@@+    :@@@@@+:     .:%@@@@+    .@@@#
+             @@@=   :@@@@*.          :@@@@*   .@@@#
+            :@@@:  .@@@@+             :@@@@:   #@@@:
+           @@@@+.  :@@@@:              *@@@+   .#@@@@
+          :@@@@-   :@@@@.              +@@@+   .=@@@@-
+            #@@@:  .@@@@=             .@@@@-   *@@@+
+             @@@+   -@@@@:           .#@@@@.  .@@@@
+             @@@+    =@@@@#:.      .=@@@@%.   .@@@%
+             @@@+     :@@@@@@@#**%@@@@@@+     .@@@#
+             @@@*       :@@@@@@@@@@@@@+.      .@@@*
+             +@@@*.         :-+**=:.         .@@@@
+              =@@@@@=                      *@@@@@:
+                .*%%.                      :@@+
+
+
+Odin installation completed successfully!
+
+Post-installation checklist:
+----------------------------------
+
+1. Check the status of your pods:
+   kubectl get pods -n {{ .Release.Namespace }}
+
+2. Check the services:
+   kubectl get services -n {{ .Release.Namespace }}
+
+3. View the logs:
+   kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} -f --max-log-requests 9
+
+Accessing the Odin backend locally:
+----------------------------------
+To forward Odin's deployer service to your local machine:
+   kubectl port-forward svc/{{ .Release.Name }}-deployer -n {{ .Release.Namespace }} 8080:80
+
+Configure Odin CLI:
+----------------------------------
+Run the following command to configure Odin locally:
+   odin configure --org-id 0 --backend-address 127.0.0.1:8080 -I -P
+
+Creating your first environment:
+----------------------------------
+A local account has already been onboarded as part of the installation.
+You can now create an environment using:
+   odin create env <env-name> --accounts local
+
+Documentation:
+----------------------------------
+For more information, visit: https://dream-horizon-org.github.io/odin/

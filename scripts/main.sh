@@ -336,46 +336,6 @@ install_odin() {
     fi
 }
 
-# Display post-installation information
-post_install_info() {
-    log_info ""
-    log_info "🎉 Odin installation completed successfully!"
-    log_info ""
-    log_info "📌 Post-installation checklist:"
-    log_info "----------------------------------"
-    log_info "1. Check the status of your pods:"
-    log_info "   kubectl get pods -n ${NAMESPACE}"
-    log_info ""
-    log_info "2. Check the services:"
-    log_info "   kubectl get services -n ${NAMESPACE}"
-    log_info ""
-    log_info "3. View the logs:"
-    log_info "   kubectl logs -n ${NAMESPACE} -l app.kubernetes.io/instance=odin -f --max-log-requests 9"
-    log_info ""
-    log_info "4. For troubleshooting, check the installation log:"
-    log_info "   ${LOG_FILE}"
-    log_info ""
-    log_info "🖥️  Accessing the Odin backend locally:"
-    log_info "----------------------------------"
-    log_info "To forward Odin's deployer service to your local machine:"
-    log_info "   kubectl port-forward svc/${RELEASE_NAME}-deployer -n ${NAMESPACE} 8080:80"
-    log_info ""
-
-    log_info "⚙️  Configure Odin CLI:"
-    log_info "----------------------------------"
-    log_info "Run the following command to configure Odin locally:"
-    log_info "   odin configure --org-id 0 --backend-address 127.0.0.1:8080 -I -P"
-    log_info ""
-
-    log_info "🚀 Creating your first environment:"
-    log_info "----------------------------------"
-    log_info "A local account has already been onboarded as part of the installation."
-    log_info "You can now create an environment using:"
-    log_info "   odin create env <env-name> --accounts local"
-    log_info ""
-    log_success "Installation completed!"
-}
-
 #==============================================================================
 # MAIN EXECUTION
 #==============================================================================
@@ -433,9 +393,6 @@ main() {
         log_step_skipped "Installing Odin CLI" "user declined"
         log_info "You can download it later from: https://github.com/dream-horizon-org/odin-cli/releases"
     fi
-
-    # Display post-installation information
-    post_install_info
 }
 
 # Execute main function with all arguments
