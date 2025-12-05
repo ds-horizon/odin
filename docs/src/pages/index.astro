@@ -9,7 +9,6 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Hero from '../components/product/Hero.astro';
 import Section from '../components/product/Section.astro';
-import Card from '../components/product/Card.astro';
 import VideoEmbed from '../components/product/VideoEmbed.astro';
 import TerminalDemo from '../components/product/TerminalDemo.astro';
 ---
@@ -57,7 +56,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
   <Hero
     logoText="{odin}"
     primaryCTA={{ text: 'Get Started', href: '/odin/docs/introduction/getting-started/' }}
-    secondaryCTA={{ text: 'View on GitHub', href: 'https://github.com/ds-horizon/odin' }}
+    secondaryCTA={{ text: 'View on GitHub', href: 'https://github.com/dream-horizon-org/odin' }}
   />
   
   <!-- Video Demo Section -->
@@ -78,46 +77,24 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
   <!-- Features Grid -->
   <Section variant="white">
     <div class="section-header-custom">
-      <span class="section-badge">FEATURES</span>
-      <h2 class="section-title-custom">Why Teams Choose Odin</h2>
-      <p class="section-subtitle-custom">Everything you need to accelerate your software development lifecycle</p>
-    </div>
-    <div class="features-grid">
-      <Card
-        title="Ephemeral Environments"
-        description="Spin up isolated environments instantly for testing and development. Create one or five with a single command. No more waiting for shared staging."
-        icon="⚡"
-        href="/odin/docs/concepts/environment/"
-      />
-      <Card
-        title="Environment Parity"
-        description="The same Service Definition works consistently across development, staging, and production. Write once, deploy everywhere."
-        icon="🎯"
-        href="/odin/docs/concepts/overview/"
-      />
-      <Card
-        title="Zero Configuration"
-        description="Deploy services without needing to understand internal dependencies and wiring. Odin handles the complexity for you."
-        icon="🚀"
-        href="/odin/docs/howto/deploy-first-service/"
-      />
-      <Card
-        title="Guaranteed Deployment"
-        description="Built-in validation and rollback capabilities ensure reliable deployments. Safe guards for production workloads."
-        icon="🔒"
-        href="/odin/docs/concepts/overview/"
-      />
-      <Card
-        title="Immutable Versioning"
-        description="All services and components are versioned and immutable. Use SNAPSHOT for dev/QA, CONCRETE for production."
-        icon="📦"
-      />
-      <Card
-        title="Multi-Cloud Support"
-        description="Deploy across EC2 and Kubernetes with the same configuration. Cloud-agnostic by design."
-        icon="☁️"
-        href="/odin/concepts/provisioning/"
-      />
+      <h2 class="section-title-custom">Why Choose Odin?</h2>
+      
+      <div class="features-intro">
+        <div class="feature-block">
+          <h3 class="feature-block-title">Accelerate and Standardise Deployment</h3>
+          <p class="feature-block-text">Odin eliminates slow, error-prone releases by providing a consistent, developer friendly, multi-cloud deployment solution, drastically reducing operational overhead and the need for large, central DevOps teams.</p>
+        </div>
+        
+        <div class="feature-block">
+          <h3 class="feature-block-title">Built for Developer Productivity</h3>
+          <p class="feature-block-text">With features like on-demand ephemeral environments created in minutes and local deployment on a developer's laptop. Odin drives productivity and enables a "define once, deploy anywhere, any number of times" approach - essential for the modern shift to Platform Engineering.</p>
+        </div>
+        
+        <div class="feature-block">
+          <h3 class="feature-block-title">Advanced, Operational Capabilities</h3>
+          <p class="feature-block-text">Beyond simple provisioning, Odin offers operational capabilities which are very specific to diverse technology stacks like datastore, cache, and messaging systems.</p>
+        </div>
+      </div>
     </div>
   </Section>
   
@@ -157,21 +134,21 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
                 <circle cx="10" cy="10" r="10" fill="#10B981"/>
                 <path d="M6 10l2.5 2.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>Automatic prerequisite detection</span>
+              <span>Setup on your laptop and start developing</span>
             </li>
             <li>
               <svg class="check-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <circle cx="10" cy="10" r="10" fill="#10B981"/>
                 <path d="M6 10l2.5 2.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>Local Kind cluster creation</span>
+              <span>Deploy to cloud for production-grade usage</span>
             </li>
             <li>
               <svg class="check-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <circle cx="10" cy="10" r="10" fill="#10B981"/>
                 <path d="M6 10l2.5 2.5L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>Ready in under 15 minutes</span>
+              <span>Complete installation in under 15 minutes</span>
             </li>
           </ul>
           
@@ -185,7 +162,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
           <TerminalDemo 
             title="Terminal"
             commands={[
-              "$ bash <(curl -fsSL https://raw.githubusercontent.com/ds-horizon/odin/master/install.sh)",
+              "$ bash <(curl -fsSL https://raw.githubusercontent.com/dream-horizon-org/odin/master/install.sh)",
               "",
               "✓ Checking prerequisites...",
               "✓ Creating Kind cluster...",
@@ -213,7 +190,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       </p>
     </div>
     <div class="github-feature-container">
-      <a href="https://github.com/ds-horizon/odin" class="github-feature-card animate-on-scroll" target="_blank" rel="noopener noreferrer">
+      <a href="https://github.com/dream-horizon-org/odin" class="github-feature-card animate-on-scroll" target="_blank" rel="noopener noreferrer">
         <!-- Animated background particles -->
         <div class="github-particles">
           <span class="particle"></span>
@@ -271,7 +248,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     // Fetch GitHub repository stats
     async function fetchGitHubStats() {
       try {
-        const response = await fetch('https://api.github.com/repos/ds-horizon/odin');
+        const response = await fetch('https://api.github.com/repos/dream-horizon-org/odin');
         const data = await response.json();
         
         // Animate the numbers counting up
@@ -372,6 +349,47 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     line-height: var(--line-height-relaxed);
     max-width: 700px;
     margin: 0 auto;
+  }
+
+  /* Features Introduction Blocks */
+  .features-intro {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .feature-block {
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-slow);
+  }
+  
+  .feature-block:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-medium);
+  }
+  
+  .feature-block-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-red);
+    margin-bottom: 0.75rem;
+    line-height: var(--line-height-tight);
+  }
+  
+  .feature-block-text {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin: 0;
   }
 
   /* Features Grid */
@@ -781,6 +799,24 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
   
   /* Responsive */
   @media (max-width: 768px) {
+    .features-intro {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .feature-block {
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+    }
+    
+    .feature-block-title {
+      font-size: 1.25rem;
+    }
+    
+    .feature-block-text {
+      font-size: 1rem;
+    }
+    
     .features-grid,
     .stats-grid {
       grid-template-columns: 1fr;
