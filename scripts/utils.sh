@@ -126,6 +126,10 @@ download_with_retry() {
 # ENVIRONMENT AND CONFIGURATION FUNCTIONS
 #==============================================================================
 
+detect_os_type() {
+    uname -s | tr '[:upper:]' '[:lower:]'
+}
+
 # Log environment and configuration
 log_environment() {
     log_debug "=== Environment Information ==="

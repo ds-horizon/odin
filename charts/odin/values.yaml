@@ -1308,7 +1308,7 @@ elasticsearch:
   ##
   sysctlImage:
     ## @param elasticsearch.sysctlImage.enabled Enable kernel settings modifier image
-    enabled: true
+    enabled: false
     ## @param elasticsearch.sysctlImage.registry Elasticsearch sysctlImage registry
     ##
     registry: docker.io

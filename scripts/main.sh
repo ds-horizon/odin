@@ -302,7 +302,7 @@ collect_user_input() {
 # Install Odin Helm chart
 install_odin() {
     # Prepare Helm command (using upgrade --install for idempotency)
-    local helm_cmd="helm upgrade --install ${RELEASE_NAME} ${CHART_NAME}"
+    local helm_cmd="helm upgrade --install ${RELEASE_NAME} charts/odin"
     log_info "Executing Helm upgrade --install..."
 
     # Add namespace
@@ -322,6 +322,12 @@ install_odin() {
     # Add debug flag if enabled
     if [[ "${DEBUG}" == "true" ]]; then
         helm_cmd="${helm_cmd} --debug"
+    fi
+
+    # Add Linux-specific overrides
+    if [[ "$(detect_os_type)" == "linux" ]]; then
+        log_info "Detected Linux system. Enabling elasticsearch.sysctlImage..."
+        helm_cmd="${helm_cmd} --set elasticsearch.sysctlImage.enabled=true"
     fi
 
     log_debug "Executing: ${helm_cmd}"
