@@ -21,131 +21,103 @@ const headings = [
   breadcrumbs={breadcrumbs}
   headings={headings}
 >
-  <p class="page-description">
-    Track our progress and see what's coming next. We're building Odin for teams like yours—share your feedback and help influence the roadmap.
-  </p>
 
   <Callout type="tip" title="Want to Contribute?">
     <p>
-      We welcome feature requests and contributions! 
-      <a href="https://github.com/ds-horizon/odin/issues/new" target="_blank" rel="noopener noreferrer">Request a feature</a> or 
-      join the <a href="https://github.com/ds-horizon/odin/discussions" target="_blank" rel="noopener noreferrer">discussion</a>.
+      We welcome feature requests and contributions!
+      <a href="https://github.com/dream-horizon-org/odin/issues/new" target="_blank" rel="noopener noreferrer">Request a feature</a> or
+      join the <a href="https://github.com/dream-horizon-org/odin/discussions" target="_blank" rel="noopener noreferrer">discussion</a>.
     </p>
   </Callout>
 
-  <h2 id="completed">✅ Completed</h2>
+  <h2 id="in-progress">In Progress</h2>
 
-  <h3>Core CLI & Deployment Engine <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q1-Q2</span></h3>
+  <h3>Parallel Operations on Components <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
   <p>
-    Fundamental CLI interface with deployment orchestration, service management, and environment operations. The core engine provides 
-    robust deployment workflows with validation, rollback, and status tracking capabilities.
+    Execute operations across multiple components of a service simultaneously, dramatically reducing deployment and management time.
+    Enables concurrent scaling, updates, and lifecycle operations with intelligent dependency handling and failure isolation.
   </p>
 
-  <h3>Kubernetes Support <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q2</span></h3>
+  <h3>Robust State Transition with Enhanced Locking <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
   <p>
-    Native Kubernetes deployment with Helm charts, service discovery, and resource management. Full support for K8s primitives including 
-    deployments, services, config maps, and persistent volumes.
+    Reliable state machine management for component and service lifecycles with distributed locking mechanisms. Prevents race conditions
+    and ensures atomic state transitions across concurrent operations, providing consistency guarantees even in highly parallel environments.
   </p>
 
-  <h3>EC2 Support <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q3</span></h3>
+  <h3>Fine-Grained Authorization Capabilities <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
   <p>
-    Direct EC2 instance deployment with same service definitions as Kubernetes. Enables true environment parity across cloud-native and 
-    traditional infrastructure.
+    Granular access control for environments, services, and components with role-based and attribute-based policies. Define precise
+    permissions for teams and individuals, controlling who can deploy, scale, or modify specific resources across your infrastructure.
   </p>
 
-  <h3>Service Versioning <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q3</span></h3>
+  <h3>Custom Request Interceptors <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
   <p>
-    Immutable SNAPSHOT and CONCRETE versioning system for safe deployments. SNAPSHOT versions enable rapid development iterations while 
-    CONCRETE versions provide production-grade immutability and rollback capabilities.
+    Extensible middleware hooks for intercepting and modifying deployment requests on the fly. Transform configurations, inject
+    environment-specific values, validate inputs, or apply custom business logic before operations execute.
   </p>
 
-  <h3>Component Lifecycle Management <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2024 Q4</span></h3>
+  <h3>Odin Events <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
   <p>
-    Deploy, undeploy, scale, and operate individual components within services. Fine-grained control over component lifecycle without 
-    affecting the entire service.
+    Event-driven architecture exposing all deployment lifecycle events for external consumption. Subscribe to deployment, scaling,
+    and state change events to build custom CI/CD pipelines, trigger notifications, or integrate with external automation systems.
   </p>
 
-  <h2 id="in-progress">🚧 In Progress</h2>
-
-  <h3>Enhanced Monitoring & Observability <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
+  <h3>Expanding Component Registry <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
   <p>
-    Built-in metrics collection, log aggregation, and real-time status dashboards. Integration with Prometheus, Grafana, and popular 
-    observability platforms for comprehensive monitoring.
+    Growing library of production-grade infrastructure components following the Odin Component Interface (OCI) specification.
+    Check out the <a href="https://github.com/dream-horizon-org/odin-components" target="_blank" rel="noopener noreferrer">Odin Components Repository</a> to
+    explore supported components and track new components currently in development.
   </p>
 
-  <h3>Web UI Dashboard <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1-Q2</span></h3>
-  <p>
-    Visual interface for managing environments, services, and deployments alongside CLI. Provides intuitive views for teams who prefer 
-    graphical interfaces while maintaining CLI power for automation.
-  </p>
-
-  <h3>Advanced Health Checks <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q1</span></h3>
-  <p>
-    Configurable health check strategies with automatic healing and alerting. Support for custom health check endpoints, readiness probes, 
-    and liveness checks with intelligent failure detection.
-  </p>
-
-  <h2 id="planned">📋 Planned</h2>
-
-  <h3>Auto-Scaling <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q2</span></h3>
-  <p>
-    Automatic horizontal and vertical scaling based on metrics and policies. Define scaling rules and let Odin automatically adjust 
-    resources based on CPU, memory, request rate, or custom metrics.
-  </p>
-
-  <h3>GitOps Integration <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q2</span></h3>
-  <p>
-    Declarative GitOps workflows with automatic reconciliation and drift detection. Store service definitions in Git and let Odin 
-    continuously sync your infrastructure state with the repository.
-  </p>
-
-  <h3>Cost Optimization <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q3</span></h3>
-  <p>
-    Automated resource optimization, idle environment detection, and cost tracking. Get insights into resource usage and automatic 
-    recommendations for reducing cloud spend without sacrificing performance.
-  </p>
-
-  <h3>Blue-Green & Canary Deployments <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q3</span></h3>
-  <p>
-    Zero-downtime deployment strategies with automated traffic shifting. Deploy new versions safely with gradual rollout, automatic 
-    health monitoring, and instant rollback if issues are detected.
-  </p>
+  <h2 id="planned">Planned</h2>
 
   <h3>Secrets Management <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q3</span></h3>
   <p>
-    Integrated secrets management with vault support and encryption. Securely manage sensitive configuration with rotation policies, 
-    audit logging, and integration with HashiCorp Vault, AWS Secrets Manager, and Azure Key Vault.
+    Integrated secrets management with vault support and encryption. Securely manage sensitive configuration with rotation policies,
+    audit logging, and integration with HashCorp Vault, AWS Secrets Manager, and Azure Key Vault.
   </p>
 
-  <h2 id="future">🔮 Future</h2>
-
-  <h3>Multi-Region Deployments</h3>
+  <h3>Odin Log Command <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q2</span></h3>
   <p>
-    Deploy and manage services across multiple regions with global load balancing. Automatic DNS management, traffic routing, and 
-    region failover for truly global applications.
+    Unified log access for deployed services and components directly from the CLI. Retrieve historical
+    entries for post-deployment audits, debugging, and troubleshooting across all environments.
   </p>
 
-  <h3>Disaster Recovery</h3>
+  <h3>Odin Analytics Dashboard <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q2</span></h3>
   <p>
-    Automated backup, recovery, and failover capabilities for critical services. Define recovery time objectives (RTO) and recovery 
-    point objectives (RPO) with automated testing of disaster recovery procedures.
+    Comprehensive analytics interface for tracking deployment metrics, environment health, and Odin system performance. Visualize
+    deployment frequency, success rates, environment utilization, and platform health with actionable insights and historical trends.
   </p>
 
-  <h3>Service Mesh Integration</h3>
+  <h3>Service Set Support <span style="color: var(--text-tertiary); font-weight: 400; font-size: 0.875rem;">2025 Q2</span></h3>
   <p>
-    Native integration with Istio, Linkerd for advanced traffic management. Leverage service mesh capabilities for advanced routing, 
-    observability, and security without complex configuration.
+    Group related services into logical sets for coordinated deployments and management. Deploy, update, or operate on multiple
+    services as a single unit while maintaining individual service autonomy and versioning.
   </p>
+
+  <h2 id="future">Future</h2>
 
   <h3>AI-Powered Insights</h3>
   <p>
-    Intelligent recommendations for optimization, cost reduction, and performance. Machine learning models analyze your deployment 
+    Intelligent recommendations for optimization, cost reduction, and performance. Machine learning models analyze your deployment
     patterns and provide actionable insights for improving reliability and reducing costs.
+  </p>
+
+  <h3>AI-Powered Service Onboarding</h3>
+  <p>
+    Streamlined service onboarding with AI-assisted configuration generation. Automatically analyze your application code, detect
+    dependencies, and generate optimized service definitions with minimal manual input.
+  </p>
+
+  <h3>Environment Cloning</h3>
+  <p>
+    Instantly replicate entire environments with a single command. Clone production to staging, create isolated testing environments,
+    or spin up developer sandboxes with full service configurations and data snapshots.
   </p>
 
   <Callout type="note" title="Roadmap is Subject to Change">
     <p>
-      Our roadmap is based on community feedback and evolving needs. Timelines are estimates and features may be adjusted based on 
+      Our roadmap is based on community feedback and evolving needs. Timelines are estimates and features may be adjusted based on
       priorities. Have a feature request? <a href="https://github.com/ds-horizon/odin/issues/new" target="_blank" rel="noopener noreferrer">Let us know!</a>
     </p>
   </Callout>
@@ -266,4 +238,3 @@ const headings = [
     }
   }
 </style>
-

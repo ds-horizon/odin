@@ -17,48 +17,15 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
   title="Production-Ready Deployment Platform"
   description="Deploy anywhere, anytime with ephemeral environments on demand. One definition works everywhere—from development to production."
 >
-<<<<<<< HEAD
-  <CardGrid>
-    <Card title="Environment Parity" icon="puzzle">
-      Minimal and easy-to-understand DSL to define services that works across EC2 and Kubernetes platforms seamlessly.
-    </Card>
-    <Card title="Service as Functional Unit" icon="rocket">
-      Define boundaries with a set of components which can be treated as blackbox, making deployment and management simple.
-    </Card>
-    <Card title="Versioning & Immutability" icon="star">
-      All services and components are versioned in Odin and are immutable. Use SNAPSHOT for dev/QA, CONCRETE for production.
-    </Card>
-    <Card title="Consistent Deployment" icon="approve-check">
-      Guaranteed and consistent deployment across environments with built-in validation, rollback capabilities, and audit trails.
-    </Card>
-  </CardGrid>
-
-  <footer style="margin-top: 3rem; padding: 2rem 0; text-align: center; border-top: 1px solid var(--sl-color-gray-5);">
-    <a 
-      href="https://github.com/dream-horizon-org/odin" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--sl-color-white); text-decoration: none; font-size: 1rem; transition: opacity 0.2s;"
-      onmouseover="this.style.opacity='0.7'"
-      onmouseout="this.style.opacity='1'"
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display: block;">
-        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-      </svg>
-      GitHub
-    </a>
-  </footer>
-</StarlightPage>
-=======
   <Header />
-  
+
   <!-- Hero Section -->
   <Hero
     logoText="{odin}"
     primaryCTA={{ text: 'Get Started', href: '/odin/docs/introduction/getting-started/' }}
     secondaryCTA={{ text: 'View on GitHub', href: 'https://github.com/dream-horizon-org/odin' }}
   />
-  
+
   <!-- Video Demo Section -->
   <Section variant="gray">
     <div class="section-header-custom">
@@ -67,29 +34,29 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       <p class="section-subtitle-custom">Learn about Odin's vision, architecture, and how it simplifies deployment workflows</p>
     </div>
     <div style="max-width: 900px; margin: 0 auto;">
-      <VideoEmbed 
+      <VideoEmbed
         videoId="CI1SWkC9hW8"
         title="What is Odin? - Introduction Video"
       />
     </div>
   </Section>
-  
+
   <!-- Features Grid -->
   <Section variant="white">
     <div class="section-header-custom">
       <h2 class="section-title-custom">Why Choose Odin?</h2>
-      
+
       <div class="features-intro">
         <div class="feature-block">
           <h3 class="feature-block-title">Accelerate and Standardise Deployment</h3>
           <p class="feature-block-text">Odin eliminates slow, error-prone releases by providing a consistent, developer friendly, multi-cloud deployment solution, drastically reducing operational overhead and the need for large, central DevOps teams.</p>
         </div>
-        
+
         <div class="feature-block">
           <h3 class="feature-block-title">Built for Developer Productivity</h3>
           <p class="feature-block-text">With features like on-demand ephemeral environments created in minutes and local deployment on a developer's laptop. Odin drives productivity and enables a "define once, deploy anywhere, any number of times" approach - essential for the modern shift to Platform Engineering.</p>
         </div>
-        
+
         <div class="feature-block">
           <h3 class="feature-block-title">Advanced, Operational Capabilities</h3>
           <p class="feature-block-text">Beyond simple provisioning, Odin offers operational capabilities which are very specific to diverse technology stacks like datastore, cache, and messaging systems.</p>
@@ -97,7 +64,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       </div>
     </div>
   </Section>
-  
+
   <!-- Stats Section -->
   <Section variant="gray">
     <div class="stats-grid">
@@ -115,7 +82,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       </div>
     </div>
   </Section>
-  
+
   <!-- Quick Start Section -->
   <section class="quick-start-section">
     <div class="container">
@@ -127,7 +94,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
           <p class="quick-start-description">
             One command installs everything you need. No complex setup, no configuration headaches.
           </p>
-          
+
           <ul class="quick-start-features">
             <li>
               <svg class="check-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -151,15 +118,15 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
               <span>Complete installation in under 15 minutes</span>
             </li>
           </ul>
-          
+
           <a href="/odin/docs/introduction/getting-started/" class="quick-start-link">
             Read the full guide →
           </a>
         </div>
-        
+
         <!-- Right Column: Terminal -->
         <div class="quick-start-terminal">
-          <TerminalDemo 
+          <TerminalDemo
             title="Terminal"
             commands={[
               "$ bash <(curl -fsSL https://raw.githubusercontent.com/dream-horizon-org/odin/master/install.sh)",
@@ -178,8 +145,8 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       </div>
     </div>
   </section>
-  
-  
+
+
   <!-- Community Section -->
   <Section variant="gray">
     <div class="section-header-custom">
@@ -198,7 +165,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
           <span class="particle"></span>
           <span class="particle"></span>
         </div>
-        
+
         <div class="card-content">
           <div class="card-icon-wrapper github-icon-wrapper">
             <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -250,7 +217,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
           <span class="particle"></span>
           <span class="particle"></span>
         </div>
-        
+
         <div class="card-content">
           <div class="card-icon-wrapper discord-icon-wrapper">
             <svg class="card-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -280,7 +247,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       </a>
     </div>
   </Section>
-  
+
   <!-- GitHub Stats Script -->
   <script>
     // Fetch GitHub repository stats
@@ -288,7 +255,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       try {
         const response = await fetch('https://api.github.com/repos/dream-horizon-org/odin');
         const data = await response.json();
-        
+
         // Animate the numbers counting up
         animateValue('github-stars', 0, data.stargazers_count, 1500);
         animateValue('github-forks', 0, data.forks_count, 1500);
@@ -299,30 +266,30 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
         document.getElementById('github-forks').innerHTML = '<span class="loading-placeholder">⑂</span>';
       }
     }
-    
+
     // Animate number counting up
     function animateValue(id, start, end, duration) {
       const element = document.getElementById(id);
       const startTime = performance.now();
-      
+
       function update(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         // Easing function for smooth animation
         const easeOutQuart = 1 - Math.pow(1 - progress, 4);
         const current = Math.floor(start + (end - start) * easeOutQuart);
-        
+
         element.textContent = current.toLocaleString();
-        
+
         if (progress < 1) {
           requestAnimationFrame(update);
         }
       }
-      
+
       requestAnimationFrame(update);
     }
-    
+
     // Load stats when page loads
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', fetchGitHubStats);
@@ -330,7 +297,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       fetchGitHubStats();
     }
   </script>
-  
+
   <Footer />
 </ProductLayout>
 
@@ -340,7 +307,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     text-align: center;
     margin-bottom: 3rem;
   }
-  
+
   .section-badge {
     display: inline-block;
     background: rgba(16, 185, 129, 0.1);
@@ -354,22 +321,22 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     margin-bottom: 1rem;
     font-family: var(--font-sans);
   }
-  
+
   .section-badge-blue {
     background: var(--primary-red);
     color: white;
   }
-  
+
   .section-badge-purple {
     background: rgba(139, 92, 246, 0.1);
     color: #7c3aed;
   }
-  
+
   .section-badge-red {
     background: rgba(239, 68, 68, 0.1);
     color: #dc2626;
   }
-  
+
   .section-title-custom {
     font-family: var(--font-display);
     font-size: clamp(2rem, 4vw, 2.75rem);
@@ -379,7 +346,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-tight);
   }
-  
+
   .section-subtitle-custom {
     font-family: var(--font-sans);
     font-size: 1.125rem;
@@ -397,7 +364,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     margin-left: auto;
     margin-right: auto;
   }
-  
+
   .feature-block {
     margin-bottom: 2.5rem;
     padding: 2rem;
@@ -406,13 +373,13 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     border: 1px solid var(--border-light);
     transition: all var(--transition-slow);
   }
-  
+
   .feature-block:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     border-color: var(--border-medium);
   }
-  
+
   .feature-block-title {
     font-family: var(--font-display);
     font-size: 1.5rem;
@@ -421,7 +388,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     margin-bottom: 0.75rem;
     line-height: var(--line-height-tight);
   }
-  
+
   .feature-block-text {
     font-family: var(--font-sans);
     font-size: 1.0625rem;
@@ -436,7 +403,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
   }
-  
+
   /* Stats Grid */
   .stats-grid {
     display: grid;
@@ -447,19 +414,19 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     margin: 0 auto;
     padding: 2rem 0;
   }
-  
+
   .stat-item {
     padding: 1.5rem;
     border-radius: var(--radius-lg);
     background: var(--bg-white);
     transition: all var(--transition-slow);
   }
-  
+
   .stat-item:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
   }
-  
+
   .stat-number {
     font-family: var(--font-display);
     font-size: clamp(3rem, 6vw, 4rem);
@@ -468,7 +435,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     margin-bottom: 0.5rem;
     line-height: 1;
   }
-  
+
   .stat-label {
     font-family: var(--font-sans);
     font-size: 1.1rem;
@@ -476,24 +443,24 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     font-weight: 500;
     line-height: var(--line-height-normal);
   }
-  
+
   /* Quick Start Section */
   .quick-start-section {
     background: var(--bg-page);
     padding: var(--spacing-3xl) var(--spacing-lg);
   }
-  
+
   .quick-start-grid {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
     gap: 4rem;
     align-items: center;
   }
-  
+
   .quick-start-content {
     padding-right: 2rem;
   }
-  
+
   .quick-start-badge {
     display: inline-block;
     background: rgba(16, 185, 129, 0.1);
@@ -507,7 +474,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     margin-bottom: 1.5rem;
     font-family: var(--font-sans);
   }
-  
+
   .quick-start-title {
     font-family: var(--font-display);
     font-size: clamp(2rem, 4vw, 2.75rem);
@@ -516,7 +483,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     margin-bottom: 1rem;
     line-height: var(--line-height-tight);
   }
-  
+
   .quick-start-description {
     font-family: var(--font-sans);
     font-size: 1.125rem;
@@ -524,13 +491,13 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     line-height: var(--line-height-relaxed);
     margin-bottom: 2rem;
   }
-  
+
   .quick-start-features {
     list-style: none;
     padding: 0;
     margin: 0 0 2rem 0;
   }
-  
+
   .quick-start-features li {
     display: flex;
     align-items: center;
@@ -540,11 +507,11 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     font-size: 1rem;
     color: var(--text-primary);
   }
-  
+
   .check-icon {
     flex-shrink: 0;
   }
-  
+
   .quick-start-link {
     display: inline-flex;
     align-items: center;
@@ -555,15 +522,15 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     transition: transform var(--transition-base);
     font-family: var(--font-sans);
   }
-  
+
   .quick-start-link:hover {
     transform: translateX(4px);
   }
-  
+
   .quick-start-terminal {
     position: relative;
   }
-  
+
   /* Community Cards Section */
   .community-cards-grid {
     display: grid;
@@ -572,7 +539,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     max-width: 1200px;
     margin: 0 auto;
   }
-  
+
   .community-card {
     display: block;
     border-radius: 20px;
@@ -580,7 +547,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     text-decoration: none;
     color: white;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
       0 4px 6px rgba(0, 0, 0, 0.1),
       0 10px 30px rgba(0, 0, 0, 0.2),
       0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -592,7 +559,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
   .github-card {
     background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
   }
-  
+
   .github-card::before {
     content: '';
     position: absolute;
@@ -600,22 +567,22 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-      rgba(88, 166, 255, 0.15) 0%, 
+    background: linear-gradient(135deg,
+      rgba(88, 166, 255, 0.15) 0%,
       rgba(138, 93, 255, 0.1) 50%,
       transparent 100%);
     opacity: 0;
     transition: opacity 0.4s ease;
   }
-  
+
   .github-card:hover {
     transform: translateY(-10px) scale(1.01);
-    box-shadow: 
+    box-shadow:
       0 8px 12px rgba(0, 0, 0, 0.15),
       0 20px 50px rgba(88, 166, 255, 0.3),
       0 0 0 1px rgba(88, 166, 255, 0.4);
   }
-  
+
   .github-card:hover::before {
     opacity: 1;
   }
@@ -632,8 +599,8 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-      rgba(138, 93, 255, 0.15) 0%, 
+    background: linear-gradient(135deg,
+      rgba(138, 93, 255, 0.15) 0%,
       rgba(88, 166, 255, 0.1) 50%,
       transparent 100%);
     opacity: 0;
@@ -642,7 +609,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
 
   .discord-card:hover {
     transform: translateY(-10px) scale(1.01);
-    box-shadow: 
+    box-shadow:
       0 8px 12px rgba(0, 0, 0, 0.15),
       0 20px 50px rgba(138, 93, 255, 0.3),
       0 0 0 1px rgba(138, 93, 255, 0.4);
@@ -651,7 +618,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
   .discord-card:hover::before {
     opacity: 1;
   }
-  
+
   /* Animated particles */
   .card-particles {
     position: absolute;
@@ -662,14 +629,14 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     overflow: hidden;
     z-index: 0;
   }
-  
+
   .particle {
     position: absolute;
     background: rgba(88, 166, 255, 0.6);
     border-radius: 50%;
     animation: float 8s infinite ease-in-out;
   }
-  
+
   .particle:nth-child(1) {
     width: 4px;
     height: 4px;
@@ -677,7 +644,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     left: 10%;
     animation-delay: 0s;
   }
-  
+
   .particle:nth-child(2) {
     width: 6px;
     height: 6px;
@@ -685,7 +652,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     left: 80%;
     animation-delay: 2s;
   }
-  
+
   .particle:nth-child(3) {
     width: 3px;
     height: 3px;
@@ -693,7 +660,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     left: 30%;
     animation-delay: 4s;
   }
-  
+
   @keyframes float {
     0%, 100% {
       transform: translateY(0px) translateX(0px);
@@ -704,7 +671,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       opacity: 1;
     }
   }
-  
+
   .card-content {
     display: flex;
     align-items: center;
@@ -712,7 +679,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     position: relative;
     z-index: 1;
   }
-  
+
   .card-icon-wrapper {
     flex-shrink: 0;
     width: 80px;
@@ -733,7 +700,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
   .discord-icon-wrapper {
     background: linear-gradient(135deg, rgba(138, 93, 255, 0.15) 0%, rgba(88, 166, 255, 0.1) 100%);
   }
-  
+
   .card-icon-glow {
     position: absolute;
     top: 50%;
@@ -753,7 +720,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
   .discord-icon-wrapper .card-icon-glow {
     background: radial-gradient(circle, rgba(138, 93, 255, 0.4) 0%, transparent 70%);
   }
-  
+
   .github-card:hover .github-icon-wrapper {
     background: linear-gradient(135deg, rgba(88, 166, 255, 0.3) 0%, rgba(138, 93, 255, 0.2) 100%);
     transform: scale(1.08) rotate(5deg);
@@ -765,11 +732,11 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     transform: scale(1.08) rotate(-5deg);
     box-shadow: 0 8px 24px rgba(138, 93, 255, 0.3);
   }
-  
+
   .community-card:hover .card-icon-glow {
     opacity: 1;
   }
-  
+
   .card-icon {
     width: 48px;
     height: 48px;
@@ -778,15 +745,15 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     z-index: 1;
     transition: transform 0.4s ease;
   }
-  
+
   .community-card:hover .card-icon {
     transform: scale(1.1);
   }
-  
+
   .card-text {
     flex: 1;
   }
-  
+
   .card-text h3 {
     font-family: var(--font-display);
     font-size: 1.75rem;
@@ -798,7 +765,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   .card-text p {
     font-family: var(--font-sans);
     font-size: 1rem;
@@ -806,13 +773,13 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     margin: 0 0 1.5rem 0;
     line-height: 1.6;
   }
-  
+
   .card-stats-wrapper {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
-  
+
   .card-stat-box {
     display: flex;
     align-items: center;
@@ -824,24 +791,24 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
   }
-  
+
   .github-card .card-stat-box:hover {
     background: rgba(88, 166, 255, 0.15);
     border-color: rgba(88, 166, 255, 0.3);
     transform: translateY(-2px);
   }
-  
+
   .card-stat-box svg {
     color: rgba(255, 255, 255, 0.8);
     flex-shrink: 0;
   }
-  
+
   .card-stat-content {
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
   }
-  
+
   .card-stat-number {
     font-family: var(--font-display);
     font-size: 1.35rem;
@@ -849,7 +816,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     color: white;
     line-height: 1;
   }
-  
+
   .card-stat-label {
     font-family: var(--font-sans);
     font-size: 0.7rem;
@@ -885,17 +852,17 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     width: 18px;
     height: 18px;
   }
-  
+
   .loading-placeholder {
     opacity: 0.5;
     animation: pulse 1.5s infinite;
   }
-  
+
   @keyframes pulse {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 0.8; }
   }
-  
+
   .card-arrow {
     flex-shrink: 0;
     width: 44px;
@@ -909,7 +876,7 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .github-card:hover .card-arrow {
     background: rgba(88, 166, 255, 0.25);
     border-color: rgba(88, 166, 255, 0.4);
@@ -923,42 +890,42 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     transform: translateX(8px) scale(1.1);
     box-shadow: 0 4px 12px rgba(138, 93, 255, 0.3);
   }
-  
+
   .card-arrow svg {
     color: white;
   }
-  
+
   /* Responsive */
   @media (max-width: 768px) {
     .features-intro {
       margin-top: 2rem;
       margin-bottom: 2rem;
     }
-    
+
     .feature-block {
       margin-bottom: 1.5rem;
       padding: 1.5rem;
     }
-    
+
     .feature-block-title {
       font-size: 1.25rem;
     }
-    
+
     .feature-block-text {
       font-size: 1rem;
     }
-    
+
     .features-grid,
     .stats-grid {
       grid-template-columns: 1fr;
       gap: 1.5rem;
     }
-    
+
     .quick-start-grid {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
-    
+
     .quick-start-content {
       padding-right: 0;
     }
@@ -967,48 +934,48 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
       grid-template-columns: 1fr;
       gap: 1.5rem;
     }
-    
+
     .community-card {
       padding: 2rem 1.5rem;
     }
-    
+
     .card-content {
       flex-direction: column;
       text-align: center;
       gap: 1.5rem;
     }
-    
+
     .card-icon-wrapper {
       width: 70px;
       height: 70px;
     }
-    
+
     .card-icon {
       width: 42px;
       height: 42px;
     }
-    
+
     .card-text h3 {
       font-size: 1.5rem;
     }
-    
+
     .card-text p {
       font-size: 0.95rem;
     }
-    
+
     .card-stats-wrapper {
       justify-content: center;
       gap: 0.875rem;
     }
-    
+
     .card-stat-box {
       padding: 0.6rem 0.95rem;
     }
-    
+
     .card-stat-number {
       font-size: 1.25rem;
     }
-    
+
     .card-arrow {
       display: none;
     }
@@ -1019,4 +986,3 @@ import TerminalDemo from '../components/product/TerminalDemo.astro';
     }
   }
 </style>
->>>>>>> 53e01ba (odin landing page added with design)
