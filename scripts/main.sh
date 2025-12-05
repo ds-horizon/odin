@@ -208,26 +208,27 @@ setup_local_dev_data() {
 
     # Generate kubeconfig for in-cluster access
     log_info "Generating kubeconfig for in-cluster access..."
-    local kubeconfig_base64
-    kubeconfig_base64=$(
-    kubectl config view --minify --raw \
-        | sed 's#server: .*#server: https://kubernetes.default.svc.cluster.local#' \
-        | base64 | tr -d '\n'
-    )
+    kubeconfig_base64="$(
+        kubectl config view --minify --raw \
+            | sed 's#server: .*#server: https://kubernetes.default.svc.cluster.local#' \
+            | base64 | tr -d '\n'
+    )"
+
     if [[ -z "${kubeconfig_base64}" ]]; then
         log_error "Failed to generate kubeconfig"
         return 1
     fi
 
-    # Update kubeconfig field in the JSON file
     log_info "Updating kubeconfig in kind_service_account.json..."
 
-    escaped_kc=$(printf '%s' "${kubeconfig_base64}" | sed 's/[&/\]/\\&/g')
-
-    if ! sed -i '' "s/\"kubeconfig\": \".*\"/\"kubeconfig\": \"${escaped_kc}\"/" "${kind_sa_file}"; then
+    if ! jq --arg kc "${kubeconfig_base64}" \
+          '.kubeconfig = $kc' \
+          "${kind_sa_file}" > "${kind_sa_file}.tmp"; then
         log_error "Failed to update kubeconfig in ${kind_sa_file}"
         return 1
     fi
+
+    mv "${kind_sa_file}.tmp" "${kind_sa_file}"
 
     log_info "Starting port-forward to account-manager service..."
 
@@ -321,6 +322,12 @@ install_odin() {
     # Add debug flag if enabled
     if [[ "${DEBUG}" == "true" ]]; then
         helm_cmd="${helm_cmd} --debug"
+    fi
+
+    # Add Linux-specific overrides
+    if [[ "$(detect_os_type)" == "linux" ]]; then
+        log_info "Detected Linux system. Enabling elasticsearch.sysctlImage..."
+        helm_cmd="${helm_cmd} --set elasticsearch.sysctlImage.enabled=true"
     fi
 
     log_debug "Executing: ${helm_cmd}"

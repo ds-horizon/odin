@@ -93,13 +93,21 @@ connect_to_existing_kind_cluster() {
     kubectl config use-context "kind-${cluster_name}" >/dev/null 2>&1
 
     # Verify cluster connectivity
-    if kubectl cluster-info >/dev/null 2>&1; then
-        log_success "Connected to Kind cluster '${cluster_name}'"
-        return 0
-    else
-        log_error "Failed to connect to existing Kind cluster"
-        return 1
-    fi
+    max_retries=10
+    sleep_seconds=3
+
+    for ((i=1; i<=max_retries; i++)); do
+        if kubectl cluster-info >/dev/null 2>&1; then
+            log_success "Connected to Kind cluster '${cluster_name}'"
+            return 0
+        fi
+
+        log_info "Cluster not available yet (attempt ${i}/${max_retries})"
+        sleep "${sleep_seconds}"
+    done
+
+    log_error "Failed to connect to Kind cluster '${cluster_name}' after ${max_retries} attempts"
+    return 1
 }
 
 # Create a new Kind cluster

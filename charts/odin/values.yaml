@@ -1304,10 +1304,17 @@ elasticsearch:
     ##
     tag: 9.1.2-debian-12-r0
 
-  ## @param elasticsearch.sysctlImage.enabled Enable kernel settings modifier image
+  ## Elasticsearch sysctl image configuration
   ##
   sysctlImage:
+    ## @param elasticsearch.sysctlImage.enabled Enable kernel settings modifier image
     enabled: false
+    ## @param elasticsearch.sysctlImage.registry Elasticsearch sysctlImage registry
+    ##
+    registry: docker.io
+    ## @param elasticsearch.sysctlImage.repository Elasticsearch sysctlImage repository
+    ##
+    repository: bitnamilegacy/os-shell
 
   ## Internal Elasticsearch security configuration
   ##

@@ -10,7 +10,7 @@ mysql:
   mysql:
     size: 1
     configuration: |
-      max_connections=50
+      max_connections=200
       innodb_buffer_pool_size=256M
     resources:
       requests:
