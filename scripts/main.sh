@@ -302,7 +302,7 @@ collect_user_input() {
 # Install Odin Helm chart
 install_odin() {
     # Prepare Helm command (using upgrade --install for idempotency)
-    local helm_cmd="helm upgrade --install ${RELEASE_NAME} charts/odin"
+    local helm_cmd="helm upgrade --install ${RELEASE_NAME} ${CHART_NAME}"
     log_info "Executing Helm upgrade --install..."
 
     # Add namespace
