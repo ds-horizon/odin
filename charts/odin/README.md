@@ -93,7 +93,7 @@ helm install <my-release> oci://registry-1.docker.io/odinhq/odin
 | `orchestrator.enabled`           | Enable orchestrator deployment                                        | `true`                |
 | `orchestrator.image.registry`    | Orchestrator image registry                                           | `docker.io`           |
 | `orchestrator.image.repository`  | Orchestrator image repository                                         | `odinhq/orchestrator` |
-| `orchestrator.image.tag`         | Orchestrator image tag (immutable tags are recommended)               | `0.0.3`               |
+| `orchestrator.image.tag`         | Orchestrator image tag (immutable tags are recommended)               | `0.0.4`               |
 | `orchestrator.image.pullPolicy`  | Image pull policy                                                     | `IfNotPresent`        |
 | `orchestrator.image.pullSecrets` | Orchestrator image pull secrets                                       | `[]`                  |
 | `orchestrator.labels`            | Labels to add to all deployed objects (sub-charts are not considered) | `{}`                  |

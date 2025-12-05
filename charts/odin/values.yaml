@@ -263,7 +263,7 @@ orchestrator:
   image:
     registry: docker.io
     repository: odinhq/orchestrator
-    tag: 0.0.3
+    tag: 0.0.4
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
     ##
